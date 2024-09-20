@@ -43,7 +43,7 @@ public class FactController {
                     fact.setObject(updatedFact.getObject());
                     fact.setBasis(updatedFact.getBasis());
                     fact.setDescription(updatedFact.getDescription());
-                    fact.setPnL(updatedFact.getPnL());
+                    fact.setPnl(updatedFact.getPnl());
                     factRepository.save(fact);
                     return ResponseEntity.ok(fact);
                 })

@@ -13,3 +13,4 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("Произошла ошибка: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+

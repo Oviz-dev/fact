@@ -1,6 +1,15 @@
 package Money.Repository;
 
+import Money.Model.ObjectEntity;
 import Money.Model.Unit;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UnitRepository extends JpaRepository<Unit, Long> {}
+import java.util.Optional;
+
+public interface UnitRepository extends JpaRepository<Unit, Long> {
+    // Проверка, существует ли объект с данным именем
+    boolean existsByName(String name);
+
+    // Пример метода для поиска по имени, если нужно
+    Optional<ObjectEntity> findByName(String name);
+}

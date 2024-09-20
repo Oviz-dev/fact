@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-
-
 @Entity
 @Table(name="Fact")
 @Data
@@ -44,5 +42,5 @@ public class Fact {
 
     @ManyToOne
     @JoinColumn(name = "pnl_id", nullable = false)
-    private PnL pnL;
+    private PnL pnl;
 }
