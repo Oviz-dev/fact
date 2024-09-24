@@ -64,6 +64,7 @@ const ObjectTable: React.FC<ObjectTableProps> = ({ objects, refreshObjects }) =>
       dataIndex: 'name',
       key: 'name',
       sorter: (a:ObjectEntityDTO, b:ObjectEntityDTO) => a.name.localeCompare(b.name),
+
       filterDropdown: () => (
         <Input
           placeholder="Поиск по наименованию"
@@ -73,6 +74,7 @@ const ObjectTable: React.FC<ObjectTableProps> = ({ objects, refreshObjects }) =>
         />
       ),
       filterIcon: <SearchOutlined />,
+
       render: (_: any, record: ObjectEntityDTO) => {
         const editable = isEditing(record);
         return editable ? (

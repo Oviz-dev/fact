@@ -2,14 +2,15 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import FactPage from './pages/FactPage';
 import FactForm from './pages/FactForm';
 import ObjectPage from './pages/ObjectPage';
-import ObjectForm from './pages/ObjectForm'
+import ObjectForm from './pages/ObjectForm';
+import Main from './pages/Main';
 
 const App = () => {
   return (
     <Router>
       <Routes>
         {/* Добавьте маршрут для корневого пути */}
-        <Route path="/" element={<Navigate to="/objects" />} />
+        <Route path="/" element={<Main />} />
         <Route path="/facts" element={<FactPage />} />
         <Route path="/fact-form" element={<FactForm />} />
         <Route path="/objects" element={<ObjectPage />} />
