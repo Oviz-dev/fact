@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import UnitForm from './UnitForm';
 import UnitTable from './UnitTable';
 import { UnitDTO } from '../types/UnitDTO';
-import { fetchUnits } from '../services/unitService';
+import { fetchUnits, importUnits } from '../services/unitService';
 import Header from '../components/Header';
 import ControlPanel from '../components/ControlPanel';
 
@@ -35,6 +35,27 @@ const UnitPage: React.FC = () => {
     document.body.removeChild(link);
   };
 
+  // Функция для импорта данных
+  const handleImport = async (file: File) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const csvData = e.target?.result as string;
+
+      // Здесь можно добавить проверку и обработку CSV
+      const rows = csvData.split('\n').map(row => row.split(','));
+      const importedUnits = rows.map(row => ({ name: row[1] })); // Предполагаем, что вторая колонка - это name
+
+      try {
+        await importUnits(importedUnits); // Сохраняем  в базе данных
+        refreshUnits(); // Обновляем список
+      } catch (error) {
+        console.error('Ошибка импорта:', error);
+      }
+    };
+
+    reader.readAsText(file); // Читаем файл как текст
+  };
+
   // Загружаем при первом рендере
   useEffect(() => {
     refreshUnits();
@@ -49,7 +70,7 @@ const UnitPage: React.FC = () => {
                 <UnitForm onUnitCreated={refreshUnits} />
             </Col>
             <Col flex="40%">
-                <ControlPanel onExport={handleExport} />
+                <ControlPanel onExport={handleExport} onImport={handleImport} />
             </Col>
           </Row>
         <UnitTable units={units} refreshUnits={refreshUnits} />

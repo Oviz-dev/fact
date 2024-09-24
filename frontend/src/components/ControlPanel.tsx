@@ -24,8 +24,9 @@ const ControlPanel: React.FC<ControlPanelProps> = ({ onExport, onImport }) => {
           accept=".csv"
           showUploadList={false} // Скрыть список загруженных файлов
           beforeUpload={handleImport}
-        />
-      <Button icon={<UploadOutlined />} style={{ marginRight: 5 }}/>
+        >
+            <Button icon={<UploadOutlined />} style={{ marginRight: 5 }}/>
+        </Upload>
       </Tooltip>
     </Space>
   );

@@ -25,3 +25,7 @@ export const updateUnit = async (id: number, unit: UnitDTO) => {
   return axios.put(`${API_URL}/${id}`, unit);
 };
 
+// Импорт
+export const importUnits = async (units: { name: string }[]) => {
+  await axios.post(API_URL, units);
+};

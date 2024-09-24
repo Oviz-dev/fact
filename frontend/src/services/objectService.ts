@@ -23,3 +23,7 @@ export const updateObject = async (id: number, object: ObjectEntityDTO) => {
   return axios.put(`${API_URL}/${id}`, object);
 };
 
+// Импорт объектов
+export const importObjects = async (objects: { name: string }[]) => {
+  await axios.post(API_URL, objects);
+};

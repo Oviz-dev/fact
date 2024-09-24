@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import ObjectForm from './ObjectForm';
 import ObjectTable from './ObjectTable';
 import { ObjectEntityDTO } from '../types/ObjectEntityDTO';
-import { fetchObjects } from '../services/objectService';
+import { fetchObjects, importObjects } from '../services/objectService';
 import Header from '../components/Header'; // Импортируем наш компонент Header
 import ControlPanel from '../components/ControlPanel';
 
@@ -21,6 +21,39 @@ const ObjectPage: React.FC = () => {
       console.error('Ошибка загрузки объектов:', error);
     }
   };
+  // Функция для выгрузки данных
+  const handleExport = () => {
+    const csvContent = objects.map(obj => `${obj.id},${obj.name}`).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.setAttribute('download', 'objects.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Функция для импорта данных
+  const handleImport = async (file: File) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const csvData = e.target?.result as string;
+
+      // Здесь можно добавить проверку и обработку CSV
+      const rows = csvData.split('\n').map(row => row.split(','));
+      const importedObjects = rows.map(row => ({ name: row[1] })); // Предполагаем, что вторая колонка - это name
+
+      try {
+        await importObjects(importedObjects); // Сохраняем объекты в базе данных
+        refreshObjects(); // Обновляем список объектов
+      } catch (error) {
+        console.error('Ошибка импорта:', error);
+      }
+    };
+
+    reader.readAsText(file); // Читаем файл как текст
+  };
 
   // Загружаем объекты при первом рендере
   useEffect(() => {
@@ -36,7 +69,7 @@ const ObjectPage: React.FC = () => {
                 <ObjectForm onObjectCreated={refreshObjects} />
             </Col>
             <Col flex="40%">
-                <ControlPanel />
+                <ControlPanel onExport={handleExport} onImport={handleImport} />
             </Col>
           </Row>
         <ObjectTable objects={objects} refreshObjects={refreshObjects} />
