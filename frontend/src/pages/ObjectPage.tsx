@@ -1,10 +1,11 @@
-import { Layout, Space } from 'antd';
+import { Layout, Space,  Row, Col } from 'antd';
 import React, { useState, useEffect } from 'react';
 import ObjectForm from './ObjectForm';
 import ObjectTable from './ObjectTable';
 import { ObjectEntityDTO } from '../types/ObjectEntityDTO';
 import { fetchObjects } from '../services/objectService';
 import Header from '../components/Header'; // Импортируем наш компонент Header
+import ControlPanel from '../components/ControlPanel';
 
 const { Content } = Layout;
 
@@ -27,10 +28,17 @@ const ObjectPage: React.FC = () => {
   }, []);
 
   return (
-    <Layout style={{ padding: '24px' }}>
+    <Layout style={{ padding: '10px' }}>
       <Header/>
-      <Content style={{ margin: '24px 16px 0' }}>
-        <ObjectForm onObjectCreated={refreshObjects} />
+      <Content style={{ margin: '10px 10px 0' }}>
+        <Row gutter={10}>
+          <Col flex="60%">
+                <ObjectForm onObjectCreated={refreshObjects} />
+            </Col>
+            <Col flex="40%">
+                <ControlPanel />
+            </Col>
+          </Row>
         <ObjectTable objects={objects} refreshObjects={refreshObjects} />
       </Content>
     </Layout>

@@ -28,6 +28,7 @@ const Header: React.FC = () => {
       >
         <Menu.Item key="/">Главная</Menu.Item>
         <Menu.Item key="/objects">Объекты</Menu.Item>
+        <Menu.Item key="/units">Е.И.</Menu.Item>
         <Menu.Item key="/facts">Приёмка факта</Menu.Item>
       </Menu>
     </AntHeader>

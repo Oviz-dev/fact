@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import { Table, Button, Input, Form, message } from 'antd';
 import { SearchOutlined, DeleteOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons';
-import { ObjectEntityDTO } from '../types/ObjectEntityDTO';
-import { deleteObject, updateObject } from '../services/objectService';
+import { UnitDTO } from '../types/UnitDTO';
+import { deleteUnit, updateUnit } from '../services/unitService';
 
-interface ObjectTableProps {
-  objects: ObjectEntityDTO[];
-  refreshObjects: () => void;
+interface UnitProps {
+  units: UnitDTO[];
+  refreshUnits: () => void;
 }
 
-const ObjectTable: React.FC<ObjectTableProps> = ({ objects, refreshObjects }) => {
+const UnitTable: React.FC<UnitProps> = ({ units, refreshUnits }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form] = Form.useForm();
   const [searchText, setSearchText] = useState<string>('');
-  const [filteredData, setFilteredData] = useState<ObjectEntityDTO[]>([]);
-  const isEditing = (record: ObjectEntityDTO) => record.id === editingId;
+  const [filteredData, setFilteredData] = useState<UnitDTO[]>([]);
+  const isEditing = (record: UnitDTO) => record.id === editingId;
 
-  const edit = (record: ObjectEntityDTO) => {
+  const edit = (record: UnitDTO) => {
     form.setFieldsValue({ name: record.name });
     setEditingId(record.id);
   };
@@ -28,20 +28,20 @@ const ObjectTable: React.FC<ObjectTableProps> = ({ objects, refreshObjects }) =>
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteObject(id); // Удаляем объект
-      message.success('Объект удален');
-      refreshObjects(); // Обновляем таблицу после удаления
+      await deleteUnit(id); // Удаляем
+      message.success('Единица измерения удалена');
+      refreshUnits(); // Обновляем таблицу после удаления
     } catch (error) {
-      message.error('Ошибка при удалении объекта');
+      message.error('Ошибка при удалении');
     }
   };
 
   const save = async (id: number) => {
     try {
       const row = await form.validateFields();
-      await updateObject(id, row);
+      await updateUnit(id, row);
       setEditingId(null);
-      refreshObjects(); // Обновляем таблицу после обновления
+      refreshUnits(); // Обновляем таблицу после обновления
     } catch (error) {
       console.error('Ошибка обновления:', error);
     }
@@ -51,7 +51,7 @@ const ObjectTable: React.FC<ObjectTableProps> = ({ objects, refreshObjects }) =>
       const value = e.target.value;
       setSearchText(value);
       setFilteredData(
-        objects.filter((obj) =>
+        units.filter((obj) =>
           obj.name.toLowerCase().includes(value.toLowerCase())
         )
       );
@@ -63,7 +63,7 @@ const ObjectTable: React.FC<ObjectTableProps> = ({ objects, refreshObjects }) =>
       width: '60%',
       dataIndex: 'name',
       key: 'name',
-      sorter: (a:ObjectEntityDTO, b:ObjectEntityDTO) => a.name.localeCompare(b.name),
+      sorter: (a:UnitDTO, b:UnitDTO) => a.name.localeCompare(b.name),
 
       filterDropdown: () => (
         <Input
@@ -75,13 +75,13 @@ const ObjectTable: React.FC<ObjectTableProps> = ({ objects, refreshObjects }) =>
       ),
       filterIcon: <SearchOutlined />,
 
-      render: (_: any, record: ObjectEntityDTO) => {
+      render: (_: any, record: UnitDTO) => {
         const editable = isEditing(record);
         return editable ? (
           <Form.Item
             name="name"
             style={{ margin: 0 }}
-            rules={[{ required: true, message: 'Введите наименование объекта!' }]}
+            rules={[{ required: true, message: 'Введите название единицы измерения' }]}
           >
             <Input />
           </Form.Item>
@@ -93,7 +93,7 @@ const ObjectTable: React.FC<ObjectTableProps> = ({ objects, refreshObjects }) =>
     {
       title: 'Действия',
       key: 'action',
-      render: (_: any, record: ObjectEntityDTO) => {
+      render: (_: any, record: UnitDTO) => {
         const editable = isEditing(record);
         return editable ? (
           <>
@@ -110,7 +110,7 @@ const ObjectTable: React.FC<ObjectTableProps> = ({ objects, refreshObjects }) =>
     <Form form={form} component={false}>
       <Table
         columns={columns}
-        dataSource={objects}// переделать на FilteredData
+        dataSource={units}// переделать на FilteredData
         rowKey="id"
         pagination={{ pageSize: 50 }}
         scroll={{ y: 600 }}
@@ -120,4 +120,4 @@ const ObjectTable: React.FC<ObjectTableProps> = ({ objects, refreshObjects }) =>
   );
 };
 
-export default ObjectTable;
+export default UnitTable;

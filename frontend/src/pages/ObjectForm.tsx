@@ -31,7 +31,7 @@ const ObjectForm: React.FC<ObjectFormProps> = ({ onObjectCreated }) => {
       <Form.Item
         name="name"
         rules={[{ required: true, message: 'Введите наименование объекта!' }]}
-        style={{ width: '300px' }}
+        style={{ width: '80%' }}
       >
         <Input placeholder="Наименование нового объекта" />
       </Form.Item>
