@@ -1,26 +1,31 @@
 // components/ControlPanel.tsx
 import React from 'react';
-import { Button, Space,Tooltip } from 'antd';
+import { Button, Space,Tooltip, Upload} from 'antd';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 
-const ControlPanel: React.FC = () => {
-  const handleExport = () => {
-    // Логика для выгрузки
-    console.log('Выгрузка данных');
-  };
+interface ControlPanelProps {
+  onExport: () => void;
+  onImport: (file: File) => void;
+}
 
-  const handleImport = () => {
-    // Логика для загрузки
-    console.log('Загрузка данных');
+const ControlPanel: React.FC<ControlPanelProps> = ({ onExport, onImport }) => {
+  // Функция обработки импорта
+  const handleImport = (file: File) => {
+    onImport(file);
+    return false; // Предотвращаем автоматическую загрузку файла
   };
-
   return (
     <Space style={{ margin: '5px 0' }}>
       <Tooltip title="Выгрузить">
-      <Button onClick={handleExport} icon={<DownloadOutlined />} style={{ marginRight: 5 }}/>
+      <Button onClick={onExport} icon={<DownloadOutlined />} style={{ marginRight: 5 }}/>
       </Tooltip>
       <Tooltip title="Загрузить">
-      <Button onClick={handleImport} icon={<UploadOutlined />} style={{ marginRight: 5 }}/>
+        <Upload
+          accept=".csv"
+          showUploadList={false} // Скрыть список загруженных файлов
+          beforeUpload={handleImport}
+        />
+      <Button icon={<UploadOutlined />} style={{ marginRight: 5 }}/>
       </Tooltip>
     </Space>
   );

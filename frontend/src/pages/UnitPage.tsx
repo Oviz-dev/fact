@@ -22,6 +22,19 @@ const UnitPage: React.FC = () => {
     }
   };
 
+  // Функция для выгрузки данных
+  const handleExport = () => {
+    const csvContent = units.map(unt => `${unt.id},${unt.name}`).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.setAttribute('download', 'units.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Загружаем при первом рендере
   useEffect(() => {
     refreshUnits();
@@ -36,7 +49,7 @@ const UnitPage: React.FC = () => {
                 <UnitForm onUnitCreated={refreshUnits} />
             </Col>
             <Col flex="40%">
-                <ControlPanel />
+                <ControlPanel onExport={handleExport} />
             </Col>
           </Row>
         <UnitTable units={units} refreshUnits={refreshUnits} />
