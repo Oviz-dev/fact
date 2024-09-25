@@ -13,6 +13,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ImportService {
@@ -56,27 +58,58 @@ public class ImportService {
         return rows;
     }
 
-    // Импорт объектов
-    private void importObjects(List<String[]> csvData) {
-        List<ObjectEntity> objects = new ArrayList<>();
-        for (String[] row : csvData) {
-            String name = row[1]; // Предполагаем, что во второй колонке имя объекта
-            ObjectEntity objectEntity = new ObjectEntity();
-            objectEntity.setName(name);
-            objects.add(objectEntity);
-        }
-        objectRepository.saveAll(objects); // Сохраняем объекты в базу
+    // Универсальная функция для фильтрации дублей по имени
+    private <T> List<T> filterDuplicates(List<T> newEntities, Set<String> existingNames, java.util.function.Function<T, String> nameExtractor) {
+        return newEntities.stream()
+                .filter(entity -> !existingNames.contains(nameExtractor.apply(entity)))
+                .collect(Collectors.toList());
     }
 
-    // Импорт юнитов
+    // Импорт объектов с проверкой дублей
+    private void importObjects(List<String[]> csvData) {
+        // Получаем список имен, которые уже есть в базе
+        Set<String> existingNames = objectRepository.findAll().stream()
+                .map(ObjectEntity::getName)
+                .collect(Collectors.toSet());
+
+        // Подготавливаем новые объекты
+        List<ObjectEntity> objects = csvData.stream()
+                .map(row -> {
+                    String name = row[1]; // Предполагаем, что во второй колонке наименование
+                    ObjectEntity objectEntity = new ObjectEntity();
+                    objectEntity.setName(name);
+                    return objectEntity;
+                })
+                .collect(Collectors.toList());
+
+        // Фильтруем дубликаты
+        List<ObjectEntity> uniqueObjects = filterDuplicates(objects, existingNames, ObjectEntity::getName);
+
+        // Сохраняем только уникальные объекты
+        objectRepository.saveAll(uniqueObjects);
+    }
+
+    // Импорт юнитов с проверкой дублей
     private void importUnits(List<String[]> csvData) {
-        List<Unit> units = new ArrayList<>();
-        for (String[] row : csvData) {
-            String name = row[1]; // Предполагаем, что во второй колонке имя юнита
-            Unit unitEntity = new Unit();
-            unitEntity.setName(name);
-            units.add(unitEntity);
-        }
-        unitRepository.saveAll(units); // Сохраняем юниты в базу
+        // Получаем список имен, которые уже есть в базе
+        Set<String> existingNames = unitRepository.findAll().stream()
+                .map(Unit::getName)
+                .collect(Collectors.toSet());
+
+        // Подготавливаем новые юниты
+        List<Unit> units = csvData.stream()
+                .map(row -> {
+                    String name = row[1]; // Предполагаем, что во второй колонке наименование
+                    Unit unitEntity = new Unit();
+                    unitEntity.setName(name);
+                    return unitEntity;
+                })
+                .collect(Collectors.toList());
+
+        // Фильтруем дубликаты
+        List<Unit> uniqueUnits = filterDuplicates(units, existingNames, Unit::getName);
+
+        // Сохраняем только уникальные юниты
+        unitRepository.saveAll(uniqueUnits);
     }
 }
