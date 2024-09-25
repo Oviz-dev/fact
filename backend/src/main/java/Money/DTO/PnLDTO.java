@@ -3,6 +3,7 @@ package Money.DTO;
 public class PnLDTO {
     private String name;
     private Long parentId;
+    private String direction; // Добавляем направление
 
     // Геттеры и сеттеры
     public String getName() {
@@ -20,4 +21,13 @@ public class PnLDTO {
     public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
 }
+

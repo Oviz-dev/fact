@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import FactPage from './pages/FactPage';
 import ObjectPage from './pages/ObjectPage';
 import UnitPage from './pages/UnitPage';
+import PnLPage from './pages/PnLPage';
 import Main from './pages/Main';
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/facts" element={<FactPage />} />
         <Route path="/objects" element={<ObjectPage />} />
         <Route path="/units" element={<UnitPage />} />
+        <Route path="/pnl" element={<PnLPage />} />
       </Routes>
     </Router>
   );
