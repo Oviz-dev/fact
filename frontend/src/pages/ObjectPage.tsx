@@ -4,8 +4,10 @@ import ObjectForm from './ObjectForm';
 import ObjectTable from './ObjectTable';
 import { ObjectEntityDTO } from '../types/ObjectEntityDTO';
 import { fetchObjects, importObjects } from '../services/objectService';
-import Header from '../components/Header'; // Импортируем наш компонент Header
+import Header from '../components/Header';
 import ControlPanel from '../components/ControlPanel';
+import { exportData } from '../functions/exportData';
+import { importFile } from '../functions/importFile';
 
 const { Content } = Layout;
 
@@ -22,38 +24,17 @@ const ObjectPage: React.FC = () => {
     }
   };
   // Функция для выгрузки данных
-  const handleExport = () => {
-    const csvContent = objects.map(obj => `${obj.id},${obj.name}`).join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.href = url;
-    link.setAttribute('download', 'objects.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // Функция для импорта данных
-  const handleImport = async (file: File) => {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const csvData = e.target?.result as string;
-
-      // Здесь можно добавить проверку и обработку CSV
-      const rows = csvData.split('\n').map(row => row.split(','));
-      const importedObjects = rows.map(row => ({ name: row[1] })); // Предполагаем, что вторая колонка - это name
-
-      try {
-        await importObjects(importedObjects); // Сохраняем объекты в базе данных
-        refreshObjects(); // Обновляем список объектов
-      } catch (error) {
-        console.error('Ошибка импорта:', error);
-      }
+    const handleExport = () => {
+      const headers = ['ID', 'Name'];
+      const data = objects.map(obj => [obj.id, obj.name]); // Преобразуем объекты в массив массивов
+      exportData(data, 'objects', headers);
     };
 
-    reader.readAsText(file); // Читаем файл как текст
-  };
+  // Функция для импорта данных
+    const handleImport = (file: File) => {
+      importFile(file, 'object', refreshObjects); // Вызываем универсальную функцию импорта
+      //refreshUnits();
+    };
 
   // Загружаем объекты при первом рендере
   useEffect(() => {
