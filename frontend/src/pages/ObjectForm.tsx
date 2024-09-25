@@ -36,7 +36,7 @@ const ObjectForm: React.FC<ObjectFormProps> = ({ onObjectCreated }) => {
         <Input placeholder="Наименование нового объекта" />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit" loading={loading} icon={<PlusOutlined />} /> {/* Иконка вместо текста */}
+        <Button type="primary" htmlType="submit" loading={loading} icon={<PlusOutlined />} />
       </Form.Item>
     </Form>
   );
