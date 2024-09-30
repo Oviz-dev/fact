@@ -1,7 +1,7 @@
 export interface PnLDTO {
-  id: number;            // Добавляем id
+  id: number;
   name: string;
   parentId: number | null;
   direction: string;
-  children?: PnLDTO[];    // Добавляем поле children для иерархических данных
+  subPnL?: PnLDTO[];
 }

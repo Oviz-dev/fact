@@ -12,10 +12,20 @@ const { Content } = Layout;
 const PnLPage: React.FC = () => {
   const [pnlList, setPnLList] = useState<PnLDTO[]>([]);
 
-  const loadPnLs = async () => {
-    const response = await fetchPnL();
-    setPnLList(response);
-  };
+const loadPnLs = async () => {
+  const response = await fetchPnL();
+
+  const modifiedResponse = response.map(item => ({
+    ...item,
+    parentId: item.parentId || null // Используем существующий parentId или null
+  }));
+
+  setPnLList(modifiedResponse);
+  console.log('Данные с бэка:', response);
+  console.log('Мод Данные с бэка:', modifiedResponse);
+};
+
+
 
   useEffect(() => {
     loadPnLs();
@@ -23,7 +33,6 @@ const PnLPage: React.FC = () => {
 
   const handleCreatePnL = async (data: PnLDTO) => {
     await createPnL(data);
-    await loadPnLs(); // Обновляем список после создания
   };
 
   return (
@@ -40,8 +49,5 @@ const PnLPage: React.FC = () => {
     </Layout>
   );
 };
-
-
-
 
 export default PnLPage;

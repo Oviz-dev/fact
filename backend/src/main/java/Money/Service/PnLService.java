@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PnLService {
@@ -40,9 +41,12 @@ public class PnLService {
         return pnlRepository.save(existingPnl);
     }
 
-    // Получение всех статей
-    public List<PnL> getAllPnLs() {
-        return pnlRepository.findAll();
+    // Получение всех статей с добавлением parentId в DTO
+    public List<PnLDTO> getAllPnLs() {
+        List<PnL> pnlList = pnlRepository.findAll();
+        return pnlList.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     // Получение статьи по ID
@@ -76,13 +80,23 @@ public class PnLService {
         }
     }
 
+    // Преобразование PnL в PnLDTO
+    private PnLDTO mapToDto(PnL pnl) {
+        return new PnLDTO(
+                pnl.getId(),
+                pnl.getName(),
+                pnl.getDirection(),
+                pnl.getParentPnL() != null ? pnl.getParentPnL().getId() : null // Устанавливаем parentId
+        );
+    }
+
     // Преобразование DTO в сущность
     private PnL mapToEntity(PnLDTO pnlDto) {
         PnL pnl = new PnL();
         pnl.setName(pnlDto.getName());
+        pnl.setDirection(pnlDto.getDirection());
         pnl.setParentPnL(pnlRepository.findById(pnlDto.getParentId()).orElse(null)); // Если есть родитель
 
         return pnl;
     }
 }
-

@@ -32,7 +32,7 @@ generateData(z);
 
 const App: React.FC = () => {
   const [gData, setGData] = useState(defaultData);
-  const [expandedKeys] = useState(['0-0', '0-0-0', '0-0-0-0']);
+  //const [expandedKeys] = useState(['0-0', '0-0-0', '0-0-0-0']);
 
   const onDragEnter: TreeProps['onDragEnter'] = (info) => {
     console.log(info);
@@ -98,7 +98,7 @@ const App: React.FC = () => {
   return (
     <Tree
       className="draggable-tree"
-      defaultExpandedKeys={expandedKeys}
+      //defaultExpandedKeys={expandedKeys}
       draggable
       checkable
       selectable

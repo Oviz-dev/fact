@@ -20,14 +20,18 @@ const PnLForm: React.FC<PnLFormProps> = ({ onSubmit, refreshPnLs, pnlList }) => 
   const handleFinish = async (values: PnLDTO) => {
     await onSubmit(values);
     await refreshPnLs(); // Обновляем данные после отправки формы
+    setName('');  // Сбрасываем форму
+    setParentId(undefined);  // Сбрасываем выбранного родителя
   };
 
   const convertToTreeData = (data: PnLDTO[]): any[] => {
-    return data.map((pnl) => ({
+    return data
+    //.filter(pnl => pnl.parentId === null)
+    .map((pnl) => ({
       title: pnl.name,
       value: pnl.id,
       parent: pnl.parentId,
-      children: pnl.children ? convertToTreeData(pnl.children) : [],
+      children: pnl.subPnL ? convertToTreeData(pnl.subPnL) : [],
     }));
   };
 
@@ -36,7 +40,7 @@ const PnLForm: React.FC<PnLFormProps> = ({ onSubmit, refreshPnLs, pnlList }) => 
       <Form.Item label="Наименование статьи" name="name" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      <Form.Item label="Корневая статья" name="parent" rules={[{ required: true }]}>
+      <Form.Item label="Корневая статья" name="parent" rules={[{ required: false }]}>
             <TreeSelect
               style={{ width: '100%', marginBottom: '10px' }}
               value={parentId}

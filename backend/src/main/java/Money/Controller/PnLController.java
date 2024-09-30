@@ -1,56 +1,71 @@
 package Money.Controller;
 
+import Money.DTO.PnLDTO;
 import Money.Model.PnL;
-import Money.Repository.PnLRepository;
+import Money.Service.PnLService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/pnl")
 @RequiredArgsConstructor
 public class PnLController {
-    private final PnLRepository pnlRepository;
 
+    private final PnLService pnlService;
+
+    // Получение всех статей с parentId
     @GetMapping
-    public List<PnL> getAllPnL() {
-        return pnlRepository.findAll();
+    public ResponseEntity<List<PnLDTO>> getAllPnL() {
+        List<PnLDTO> pnlList = pnlService.getAllPnLs();
+        return ResponseEntity.ok(pnlList);
     }
 
+    // Получение потомков статьи по ID
     @GetMapping("/{id}/children")
-    public ResponseEntity<List<PnL>> getSubArticles(@PathVariable Long id) {
-        return pnlRepository.findById(id)
-                .map(pnl -> ResponseEntity.ok(pnl.getSubPnL()))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<List<PnLDTO>> getSubArticles(@PathVariable Long id) {
+        PnL pnl = pnlService.getPnLById(id);
+        List<PnLDTO> subPnLDTOs = pnl.getSubPnL().stream()
+                .map(subPnL -> new PnLDTO(subPnL.getId(), subPnL.getName(), subPnL.getDirection(),
+                        subPnL.getParentPnL() != null ? subPnL.getParentPnL().getId() : null))
+                .toList();
+        return ResponseEntity.ok(subPnLDTOs);
     }
 
+    // Создание новой статьи
     @PostMapping
-    public PnL createPnL(@RequestBody PnL pnl) {
-        return pnlRepository.save(pnl);
+    public ResponseEntity<PnLDTO> createPnL(@RequestBody PnLDTO pnlDto) {
+        PnL createdPnL = pnlService.createPnL(pnlDto);
+        PnLDTO createdPnLDTO = new PnLDTO(
+                createdPnL.getId(),
+                createdPnL.getName(),
+                createdPnL.getDirection(),
+                createdPnL.getParentPnL() != null ? createdPnL.getParentPnL().getId() : null
+        );
+        return ResponseEntity.ok(createdPnLDTO);
     }
 
+    // Обновление статьи
     @PutMapping("/{id}")
-    public ResponseEntity<PnL> updatePnL(@PathVariable Long id, @RequestBody PnL updatedPnL) {
-        return pnlRepository.findById(id)
-                .map(pnl -> {
-                    pnl.setName(updatedPnL.getName());
-                    pnl.setParentPnL(updatedPnL.getParentPnL());
-                    pnl.setDirection(updatedPnL.getDirection());
-                    pnlRepository.save(pnl);
-                    return ResponseEntity.ok(pnl);
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<PnLDTO> updatePnL(@PathVariable Long id, @RequestBody PnLDTO updatedPnLDto) {
+        PnL updatedPnL = pnlService.updatePnL(id, updatedPnLDto);
+        PnLDTO updatedPnLDTO = new PnLDTO(
+                updatedPnL.getId(),
+                updatedPnL.getName(),
+                updatedPnL.getDirection(),
+                updatedPnL.getParentPnL() != null ? updatedPnL.getParentPnL().getId() : null
+        );
+        return ResponseEntity.ok(updatedPnLDTO);
     }
 
+    // Удаление статьи
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deletePnL(@PathVariable Long id) {
-        return pnlRepository.findById(id)
-                .map(pnl -> {
-                    pnlRepository.delete(pnl);
-                    return ResponseEntity.ok().build();
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Void> deletePnL(@PathVariable Long id) {
+        pnlService.deletePnL(id);
+        return ResponseEntity.ok().build();
     }
 }

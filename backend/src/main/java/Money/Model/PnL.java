@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Data
 @Table(name="PnL")
@@ -21,10 +23,11 @@ public class PnL {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private Direction direction;  // Направление теперь здесь
+    private Direction direction;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
+    @JsonIgnore // Added annotation
     private PnL parentPnL;
 
     @OneToMany(mappedBy = "parentPnL", cascade = CascadeType.ALL)
