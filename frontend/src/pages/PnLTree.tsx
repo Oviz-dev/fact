@@ -8,9 +8,11 @@ import type { TreeDataNode, TreeProps } from 'antd';
 interface PnLTreeProps {
   pnlList: PnLDTO[];
   refreshPnLs: () => void;
+    setSelectedNodeKey: (key: string | null) => void; // Новый пропс для установки выделенного узла
+
 }
 
-const PnLTree: React.FC<PnLTreeProps> = ({ pnlList, refreshPnLs }) => {
+const PnLTree: React.FC<PnLTreeProps> = ({ pnlList, refreshPnLs, setSelectedNodeKey}) => {
   const [gData, setGData] = useState<TreeDataNode[]>([]);
 
   // Функция для создания дерева, исключая дочерние элементы на верхнем уровне
@@ -127,6 +129,10 @@ useEffect(() => {
   return (
     <Tree
       treeData={gData}
+        onSelect={(selectedKeys) => {
+          // Устанавливаем выделенный узел
+          setSelectedNodeKey(selectedKeys.length > 0 ? selectedKeys[0].toString() : null);
+        }}
       draggable
       checkable
       defaultExpandAll
@@ -134,13 +140,6 @@ useEffect(() => {
       titleRender={(node: any) => (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span>{node.title}</span>
-          <Button
-            size="small"
-            danger
-            onClick={() => handleDelete(Number(node.key))}
-            icon={<DeleteOutlined />}
-            style={{ marginRight: 10 }}
-          />
         </div>
       )}
     />
