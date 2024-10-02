@@ -8,6 +8,7 @@ import Header from '../components/Header';
 import ControlPanel from '../components/ControlPanel';
 import { exportData} from '../functions/exportData';
 import { importFile } from '../functions/importFile';
+import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 
 const { Content } = Layout;
 
@@ -37,6 +38,23 @@ const UnitPage: React.FC = () => {
       //refreshUnits();
     };
 
+  // Список кнопок для панели управления
+    const controlButtons = [
+          {
+            //label: 'Выгрузить',
+            onClick: handleExport, // onClick присутствует
+            icon: <DownloadOutlined />,
+            tooltip: 'Выгрузить',
+          },
+          {
+            //label: 'Загрузить',
+            icon: <UploadOutlined />,
+            tooltip: 'Загрузить',
+            upload: true, // Флаг для загрузки файлов
+            importHandler: handleImport, // Используем importHandler вместо onClick
+          },
+    ];
+
   // Загружаем при первом рендере
   useEffect(() => {
     refreshUnits();
@@ -51,7 +69,7 @@ const UnitPage: React.FC = () => {
                 <UnitForm onUnitCreated={refreshUnits} />
             </Col>
             <Col flex="40%">
-                <ControlPanel onExport={handleExport} onImport={handleImport} />
+                <ControlPanel buttons={controlButtons} />
             </Col>
           </Row>
         <UnitTable units={units} refreshUnits={refreshUnits} />

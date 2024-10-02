@@ -6,6 +6,7 @@ import PnLForm from './PnLForm';
 import PnLTree from './PnLTree';
 import Header from '../components/Header';
 import { DeleteOutlined } from '@ant-design/icons';
+import ControlPanel from '../components/ControlPanel';
 
 const { Content } = Layout;
 
@@ -48,6 +49,18 @@ const PnLPage: React.FC = () => {
     }
   };
 
+  // Кнопки для панели управления
+  const controlButtons = [
+    {
+      //label: 'Удалить',
+      danger: true,
+      onClick: handleDelete,
+      icon: <DeleteOutlined />,
+      tooltip: 'Удалить статью',
+      type: 'default' as const,
+    },
+  ];
+
   return (
     <Layout style={{ padding: '10px' }}>
       <Header />
@@ -57,12 +70,7 @@ const PnLPage: React.FC = () => {
             <PnLForm onSubmit={handleCreatePnL} refreshPnLs={loadPnLs} pnlList={pnlList} />
           </Col>
           <Col flex="20%">
-            <Button
-              danger
-              onClick={handleDelete} // Удаляем выделенную статью
-              icon={<DeleteOutlined />}
-              style={{ marginRight: 10 }}
-            />
+                <ControlPanel buttons={controlButtons} />
           </Col>
         </Row>
         <PnLTree pnlList={pnlList} refreshPnLs={loadPnLs} setSelectedNodeKey={setSelectedNodeKey} />

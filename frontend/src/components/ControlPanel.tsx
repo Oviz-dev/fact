@@ -1,33 +1,53 @@
-// components/ControlPanel.tsx
 import React from 'react';
-import { Button, Space,Tooltip, Upload} from 'antd';
+import { Button, Space, Tooltip, Upload } from 'antd';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 
-interface ControlPanelProps {
-  onExport: () => void;
-  onImport: (file: File) => void;
+export interface ControlButton {
+  label?: string;
+  danger?: boolean;
+  onClick?: () => void | Promise<void>;  // Учитываем возможность Promise
+  icon?: React.ReactNode;
+  tooltip?: string;
+  type?: 'primary' | 'default' | 'dashed' | 'link' | 'text';  // Тип кнопки
+  upload?: boolean;
+  importHandler?: (file: File) => void;
 }
 
-const ControlPanel: React.FC<ControlPanelProps> = ({ onExport, onImport }) => {
-  // Функция обработки импорта
-  const handleImport = (file: File) => {
-    onImport(file);
-    return false; // Предотвращаем автоматическую загрузку файла
-  };
+interface ControlPanelProps {
+  buttons: ControlButton[];
+}
+
+const ControlPanel: React.FC<ControlPanelProps> = ({ buttons }) => {
   return (
     <Space style={{ margin: '5px 0' }}>
-      <Tooltip title="Выгрузить">
-      <Button onClick={onExport} icon={<DownloadOutlined />} style={{ marginRight: 5 }}/>
-      </Tooltip>
-      <Tooltip title="Загрузить">
-        <Upload
-          accept=".csv"
-          showUploadList={false} // Скрыть список загруженных файлов
-          beforeUpload={handleImport}
-        >
-            <Button icon={<UploadOutlined />} style={{ marginRight: 5 }}/>
-        </Upload>
-      </Tooltip>
+      {buttons.map((button, index) => (
+        <React.Fragment key={index}>
+          {button.upload ? (
+            <Tooltip title={button.tooltip}>
+              <Upload
+                accept=".csv"
+                showUploadList={false}
+                beforeUpload={(file) => {
+                  if (button.importHandler) {
+                    button.importHandler(file);
+                  }
+                  return false;
+                }}
+              >
+                <Button icon={button.icon} type={button.type || 'default'} style={{ marginRight: 5 }}>
+                  {button.label}
+                </Button>
+              </Upload>
+            </Tooltip>
+          ) : (
+            <Tooltip title={button.tooltip}>
+              <Button danger={button.danger} onClick={button.onClick} icon={button.icon} type={button.type || 'default'} style={{ marginRight: 5 }}>
+                {button.label}
+              </Button>
+            </Tooltip>
+          )}
+        </React.Fragment>
+      ))}
     </Space>
   );
 };
