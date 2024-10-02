@@ -1,8 +1,10 @@
-package Money.Service;
+package Money.Model;
 
-import Money.DTO.FactDto;
+import Money.Fact.*;
 import Money.Exception.*;
-import Money.Model.*;
+import Money.Object.ObjectEntity;
+import Money.Object.ObjectNotFoundException;
+import Money.Object.ObjectRepository;
 import Money.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

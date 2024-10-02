@@ -4,6 +4,8 @@ import ObjectPage from './pages/ObjectPage';
 import UnitPage from './pages/UnitPage';
 import PnLPage from './pages/PnLPage';
 import Main from './pages/Main';
+import ContractPage from './contract/pages/ContractPage';
+
 
 const App = () => {
   return (
@@ -15,6 +17,7 @@ const App = () => {
         <Route path="/objects" element={<ObjectPage />} />
         <Route path="/units" element={<UnitPage />} />
         <Route path="/pnl" element={<PnLPage />} />
+        <Route path="/contracts"  element={<ContractPage/>} />
       </Routes>
     </Router>
   );

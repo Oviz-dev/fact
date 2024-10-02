@@ -1,8 +1,8 @@
 package Money.Service;
 
-import Money.Model.ObjectEntity;
+import Money.Object.ObjectEntity;
 import Money.Model.Unit;
-import Money.Repository.ObjectRepository;
+import Money.Object.ObjectRepository;
 import Money.Repository.UnitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

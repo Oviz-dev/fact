@@ -5,7 +5,7 @@ import Money.Exception.PnLNotFoundException;
 import Money.Exception.PnLInUseException;
 import Money.Model.PnL;
 import Money.Repository.PnLRepository;
-import Money.Repository.FactRepository;
+import Money.Fact.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

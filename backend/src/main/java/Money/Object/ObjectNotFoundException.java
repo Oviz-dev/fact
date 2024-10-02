@@ -1,4 +1,4 @@
-package Money.Exception;
+package Money.Object;
 
 public class ObjectNotFoundException extends RuntimeException {
     public ObjectNotFoundException(String message) {

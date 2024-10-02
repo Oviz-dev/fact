@@ -1,6 +1,5 @@
-package Money.Repository;
+package Money.Object;
 
-import Money.Model.ObjectEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

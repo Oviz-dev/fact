@@ -1,5 +1,8 @@
-package Money.Model;
+package Money.Fact;
 
+import Money.Object.ObjectEntity;
+import Money.Model.PnL;
+import Money.Model.Unit;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

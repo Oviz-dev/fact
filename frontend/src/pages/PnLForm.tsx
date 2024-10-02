@@ -41,8 +41,8 @@ const handleFinish = async (values: PnLDTO) => {
   return (
     <Form form={form} layout="inline" onFinish={handleFinish}>
       <Form.Item label="Наименование статьи" name="name" rules={[{ required: true }]}
-      style={{  width: '30%' }}>
-        <Input value={name} onChange={(e) => setName(e.target.value)} />
+      style={{  width: '30%' }} >
+        <Input value={name} placeholder="Название новой статьи" onChange={(e) => setName(e.target.value)} />
       </Form.Item>
 
       <Form.Item label="Корневая статья" name="parent" rules={[{ required: false }]}>

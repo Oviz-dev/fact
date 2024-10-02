@@ -1,6 +1,6 @@
 package Money.Repository;
 
-import Money.Model.ObjectEntity;
+import Money.Object.ObjectEntity;
 import Money.Model.Unit;
 import org.springframework.data.jpa.repository.JpaRepository;
 

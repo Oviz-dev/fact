@@ -1,10 +1,6 @@
-package Money.Service;
+package Money.Object;
 
-import Money.DTO.ObjectEntityDTO;
-import Money.Exception.ObjectNotFoundException;
-import Money.Model.ObjectEntity;
-import Money.Repository.FactRepository;
-import Money.Repository.ObjectRepository;
+import Money.Fact.FactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;

@@ -1,7 +1,5 @@
-package Money.Controller;
+package Money.Fact;
 
-import Money.Model.Fact;
-import Money.Repository.FactRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

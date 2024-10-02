@@ -1,4 +1,4 @@
-package Money.DTO;
+package Money.Object;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
