@@ -4,14 +4,14 @@ import ContractForm from './ContractForm';
 import ContractTable from './ContractTable';
 import { fetchContracts } from '../services/ContractService';
 import { ContractDTO, ContractStatus, ContractType, Contractor } from '../DTO/ContractDTO';
-import Header from '../components/Header';
+import Header from '../../components/Header';
 
 const { Content } = Layout;
 
 const ContractPage = () => {
   const [contracts, setContracts] = useState<ContractDTO[]>([]);
 
-    // Функция обновления объектов
+    // Функция обновления реестра
     const refreshContracts = async () => {
       try {
         const response = await fetchContracts();

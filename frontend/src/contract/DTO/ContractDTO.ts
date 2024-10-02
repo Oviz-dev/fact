@@ -1,22 +1,22 @@
 // ContractDTO.ts
 
-export enum ContractStatus {
-    ACTIVE = 'ACTIVE',
-    COMPLETED = 'COMPLETED',
-    CANCELLED = 'CANCELLED',
-    SUSPENDED = 'SUSPENDED'
+export enum ContractStatus { //вынести в справочник,
+    DRAFT = 'Черновик',
+    ACTIVE = 'Действует',
+    COMPLETED = 'Выполнен',
+    CANCELLED = 'Отменён',
 }
 
-export enum ContractType {
-    PIR = 'SUPPLY',
-    SMR = 'SMR',
-    OTHER = 'CONSTRUCTION'
+export enum ContractType { //вынести в справочник,
+    PIR = 'ПИР',
+    SMR = 'СМР',
+    OTHER = 'Прочие'
 }
 
-export enum Contractor {
-    CONTRACTOR_A = 'CONTRACTOR_A',
-    CONTRACTOR_B = 'CONTRACTOR_B',
-    CONTRACTOR_C = 'CONTRACTOR_C'
+export enum Contractor { //вынести в справочник, заявать на типы контрактов
+    CONTRACTOR_A = 'Подрядчик по СМР',
+    CONTRACTOR_B = 'Подрядчик по ПИР',
+    CONTRACTOR_C = 'Подрядчик по прочим'
 }
 
 export interface ContractDTO {
@@ -31,8 +31,8 @@ export interface ContractDTO {
     endDate?: string;                   // Дата окончания договора
     plannedCostWithoutVAT: number;      // Плановая стоимость без НДС
     plannedVAT: number;                 // Плановая НДС
-    actualCostWithoutVAT: number;       // Фактическая стоимость без НДС
-    actualVAT: number;                  // Фактический НДС
+    actualCostWithoutVAT?: number;       // Фактическая стоимость без НДС
+    actualVAT?: number;                  // Фактический НДС
     warrantyReserve?: number;           // Гарантийный резерв (%)
     plannedAdvancePercent?: number;     // Плановый аванс (%)
     plannedAdvance?: number;            // Плановый аванс (рассчитывается на бэкенде)

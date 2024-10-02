@@ -4,7 +4,6 @@ import { SearchOutlined, DeleteOutlined, CloseOutlined, CheckOutlined } from '@a
 import ContractForm from './ContractForm';
 import { fetchContracts, deleteContract, updateContract} from '../services/ContractService';
 import { ContractDTO, ContractStatus, ContractType, Contractor } from '../DTO/ContractDTO';
-import Header from '../components/Header';
 
 interface ContractTableProps {
   contracts: ContractDTO[];
@@ -56,21 +55,6 @@ const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContrac
       dataIndex: 'name',
       key: 'name',
       sorter: (a:ContractDTO, b:ContractDTO) => a.name.localeCompare(b.name),
-
-      render: (_: any, record: ContractDTO) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <Form.Item
-            name="name"
-            style={{ margin: 0 }}
-            rules={[{ required: true, message: 'Введите наименование!' }]}
-          >
-            <Input />
-          </Form.Item>
-        ) : (
-          <div onClick={() => edit(record)}>{record.name}</div>
-        );
-      },
     },
     {
       title: 'Номер',
@@ -81,12 +65,50 @@ const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContrac
     },
     {
       title: 'Дата',
-      width: '150px',
+      width: '100px',
       dataIndex: 'contractDate',
       key: 'contractDate',
       sorter: (a:ContractDTO, b:ContractDTO) => a.contractDate.localeCompare(b.contractDate),
     },
-
+    {
+      title: 'Статус',
+      width: '80px',
+      dataIndex: 'status',
+      key: 'status',
+      sorter: (a:ContractDTO, b:ContractDTO) => a.status.localeCompare(b.status),
+    },
+    {
+      title: 'Тип',
+      width: '50px',
+      dataIndex: 'type',
+      key: 'type',
+      sorter: (a:ContractDTO, b:ContractDTO) => a.type.localeCompare(b.type),
+    },
+    {
+      title: 'Подрядчик',
+      width: '150px',
+      dataIndex: 'contractor',
+      key: 'contractor',
+      sorter: (a:ContractDTO, b:ContractDTO) => a.contractor.localeCompare(b.contractor),
+    },
+    {
+      title: 'Аванс (%)',
+      width: '80px',
+      dataIndex: 'plannedAdvancePercent',
+      key: 'plannedAdvancePercent',
+    },
+    {
+      title: 'Стоимость (план)',
+      width: '200px',
+      dataIndex: 'plannedCostWithoutVAT',
+      key: 'plannedCostWithoutVAT',
+    },
+    {
+      title: 'Стоимость (факт)',
+      width: '200px',
+      dataIndex: 'actualCostWithoutVAT',
+      key: 'actualCostWithoutVAT',
+    },
   ];
 
   return (
@@ -104,3 +126,11 @@ const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContrac
 };
 
 export default ContractTable;
+
+
+    //status: ContractStatus;             // Статус договора
+    //type: ContractType;                 // Тип договора
+    //contractor: Contractor;             // Подрядчик
+    //plannedAdvancePercent?: number;     // Плановый аванс (%)
+    //plannedCostWithoutVAT: number;      // Плановая стоимость без НДС
+    //actualCostWithoutVAT: number;       // Фактическая стоимость без НДС

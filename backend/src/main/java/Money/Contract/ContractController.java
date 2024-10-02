@@ -1,5 +1,6 @@
 package Money.Contract;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,7 @@ import java.util.Optional;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/contracts")
-
+@Slf4j
 
 public class ContractController {
 
@@ -40,6 +41,7 @@ public class ContractController {
     // Создание нового контракта
     @PostMapping
     public ResponseEntity<ContractDTO> createContract(@RequestBody ContractDTO contractDto) {
+        log.info("Received contract data: {}", contractDto);
         ContractDTO newContract = contractService.createContract(contractDto);
         return new ResponseEntity<>(newContract, HttpStatus.CREATED);
     }
