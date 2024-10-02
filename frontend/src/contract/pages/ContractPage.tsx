@@ -79,7 +79,7 @@ const ContractPage = () => {
         {/* Drawer с формой для создания контракта */}
         <Drawer
           title="Создать контракт"
-          width={'70%'} // Можно настроить ширину Drawer
+          width={'50%'} // Можно настроить ширину Drawer
           onClose={handleDrawerClose}
           visible={isDrawerVisible}
           bodyStyle={{ paddingBottom: 80 }}

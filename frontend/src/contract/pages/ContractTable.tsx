@@ -126,11 +126,3 @@ const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContrac
 };
 
 export default ContractTable;
-
-
-    //status: ContractStatus;             // Статус договора
-    //type: ContractType;                 // Тип договора
-    //contractor: Contractor;             // Подрядчик
-    //plannedAdvancePercent?: number;     // Плановый аванс (%)
-    //plannedCostWithoutVAT: number;      // Плановая стоимость без НДС
-    //actualCostWithoutVAT: number;       // Фактическая стоимость без НДС
