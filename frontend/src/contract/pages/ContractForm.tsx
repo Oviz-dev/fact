@@ -3,7 +3,6 @@ import { CheckOutlined } from '@ant-design/icons';
 import React, { useEffect } from 'react';
 import { Form, Input, Button, DatePicker, Select, InputNumber, Row, Col, Card,  message } from 'antd';
 import { ContractDTO, ContractStatus, ContractType, Contractor } from '../DTO/ContractDTO';
-import { createContract, deleteContract, updateContract} from '../services/ContractService';
 
 import moment from 'moment';
 const { Option } = Select;

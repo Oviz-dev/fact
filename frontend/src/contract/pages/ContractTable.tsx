@@ -1,10 +1,8 @@
 //ContractTable
 import React, { useState } from 'react';
-import { Table, Button, Input, Form, message } from 'antd';
-import { SearchOutlined, DeleteOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons';
-import ContractForm from './ContractForm';
+import { Table, Form, message } from 'antd';
 import { fetchContracts, deleteContract, updateContract} from '../services/ContractService';
-import { ContractDTO, ContractStatus, ContractType, Contractor } from '../DTO/ContractDTO';
+import { ContractDTO} from '../DTO/ContractDTO';
 
 interface ContractTableProps {
   contracts: ContractDTO[];
@@ -13,21 +11,9 @@ interface ContractTableProps {
 }
 
 const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContracts, onEdit }) => {
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId] = useState<number | null>(null);
   const [form] = Form.useForm();
-  const [searchText, setSearchText] = useState<string>('');
-  const [filteredData, setFilteredData] = useState<ContractDTO[]>([]);
   const isEditing = (record: ContractDTO) => record.id === editingId;
-
-  const edit = (record: ContractDTO) => {
-    form.setFieldsValue({ name: record.name });
-    setEditingId(record.id);
-  };
-
-  const cancel = () => {
-    setEditingId(null);
-    form.resetFields();
-  };
 
   const handleDelete = async (id: number) => {
     try {
@@ -35,18 +21,7 @@ const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContrac
       message.success('Объект удален');
       refreshContracts(); // Обновляем таблицу после удаления
     } catch (error) {
-      message.error('Ошибка при удалении объекта');
-    }
-  };
-
-  const save = async (id: number) => {
-    try {
-      const row = await form.validateFields();
-      await updateContract(id, row);
-      setEditingId(null);
-      refreshContracts(); // Обновляем таблицу после обновления
-    } catch (error) {
-      console.error('Ошибка обновления:', error);
+      message.error('Ошибка при удалении');
     }
   };
 
