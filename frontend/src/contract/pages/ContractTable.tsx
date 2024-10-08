@@ -9,9 +9,10 @@ import { ContractDTO, ContractStatus, ContractType, Contractor } from '../DTO/Co
 interface ContractTableProps {
   contracts: ContractDTO[];
   refreshContracts: () => void;
+  onEdit: (contract: ContractDTO) => void;
 }
 
-const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContracts }) => {
+const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContracts, onEdit }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form] = Form.useForm();
   const [searchText, setSearchText] = useState<string>('');
@@ -132,6 +133,11 @@ const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContrac
         pagination={{ pageSize: 50 }}
         scroll={{ y: 600 }}
         sticky
+        onRow={(record) => ({
+          onClick: () => {
+            onEdit(record);
+          },
+        })}
       />
     </Form>
   );

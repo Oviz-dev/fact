@@ -1,40 +1,61 @@
 //ContractForm
 import { CheckOutlined } from '@ant-design/icons';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Input, Button, DatePicker, Select, InputNumber, Row, Col, Card,  message } from 'antd';
 import { ContractDTO, ContractStatus, ContractType, Contractor } from '../DTO/ContractDTO';
 import { createContract, deleteContract, updateContract} from '../services/ContractService';
-const { Option } = Select;
 
+import moment from 'moment';
+const { Option } = Select;
 interface ContractFormProps {
   onSubmit: (contractData: ContractDTO) => void;
+  initialValues?: ContractDTO | null;
+  isEditing?: boolean;
 }
 
-const ContractForm: React.FC<ContractFormProps> = ({ onSubmit }) => {
+const ContractForm: React.FC<ContractFormProps> = ({
+  onSubmit,
+  initialValues,
+  isEditing = false
+}) => {
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue({
+        ...initialValues,
+        contractDate: initialValues.contractDate ? moment(initialValues.contractDate) : undefined,
+        startDate: initialValues.startDate ? moment(initialValues.startDate) : undefined,
+        endDate: initialValues.endDate ? moment(initialValues.endDate) : undefined,
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [initialValues, form]);
+
 
   // Обработчик отправки формы
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-    const contractData: ContractDTO = {
-      ...values,
-      plannedCostWithoutVAT: values.plannedCostWithoutVAT ? values.plannedCostWithoutVAT.toFixed(2) : '0',
-      plannedVAT: values.plannedVAT ? values.plannedVAT.toFixed(2) : '0',
-      actualCostWithoutVAT: values.actualCostWithoutVAT ? values.actualCostWithoutVAT.toFixed(2) : '0',
-      actualVAT: values.actualVAT ? values.actualVAT.toFixed(2) : '0',
-      warrantyReserve: values.warrantyReserve ? values.warrantyReserve.toFixed(2) : undefined,
-      plannedAdvancePercent: values.plannedAdvancePercent ? values.plannedAdvancePercent.toFixed(2) : '0',
-      actualAdvance: values.actualAdvance ? values.actualAdvance.toFixed(2) : '0',
-      contractDate: values.contractDate ? values.contractDate.format('YYYY-MM-DD') : undefined,
-      startDate: values.startDate ? values.startDate.format('YYYY-MM-DD') : undefined,
-      endDate: values.endDate ? values.endDate.format('YYYY-MM-DD') : undefined,
+      const contractData: ContractDTO = {
+        ...values,
+        id: initialValues?.id,
+        plannedCostWithoutVAT: values.plannedCostWithoutVAT ? Number(values.plannedCostWithoutVAT) : 0,
+        plannedVAT: values.plannedVAT ? Number(values.plannedVAT) : 0,
+        actualCostWithoutVAT: values.actualCostWithoutVAT ? Number(values.actualCostWithoutVAT) : 0,
+        actualVAT: values.actualVAT ? Number(values.actualVAT) : 0,
+        warrantyReserve: values.warrantyReserve ? Number(values.warrantyReserve) : undefined,
+        plannedAdvancePercent: values.plannedAdvancePercent ? Number(values.plannedAdvancePercent) : 0,
+        actualAdvance: values.actualAdvance ? Number(values.actualAdvance) : 0,
+        contractDate: values.contractDate ? values.contractDate.format('YYYY-MM-DD') : undefined,
+        startDate: values.startDate ? values.startDate.format('YYYY-MM-DD') : undefined,
+        endDate: values.endDate ? values.endDate.format('YYYY-MM-DD') : undefined,
     };
-
-      await createContract(contractData);
-      message.success('Контракт добавлен');
-      form.resetFields();
-      onSubmit(contractData);
+    await onSubmit(contractData);
+      if (!isEditing) {
+        form.resetFields();
+      }
     } catch (errorInfo) {
       console.error('Validation Failed:', errorInfo);
       message.error('Ошибка');
@@ -258,8 +279,14 @@ const ContractForm: React.FC<ContractFormProps> = ({ onSubmit }) => {
             </Form.Item>
       </Card>
 
-      {/* Кнопка отправки */}
-      <Button type="primary" htmlType="submit" icon={<CheckOutlined />} style={{ marginTop: 20 }}/>
+      <Button
+        type="primary"
+        htmlType="submit"
+        icon={<CheckOutlined />}
+        style={{ marginTop: 20 }}
+      >
+        {isEditing ? 'Сохранить' : 'Создать'}
+      </Button>
     </Form>
   );
 };
