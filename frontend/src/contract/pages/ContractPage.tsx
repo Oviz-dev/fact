@@ -110,6 +110,7 @@ const ContractPage = () => {
           onClose={handleDrawerClose}
           visible={isDrawerVisible}
           bodyStyle={{ paddingBottom: 80 }}
+          mask={false}
         >
           <ContractForm 
             onSubmit={handleFormSubmit}

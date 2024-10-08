@@ -11,9 +11,7 @@ interface ContractTableProps {
 }
 
 const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContracts, onEdit }) => {
-  const [editingId] = useState<number | null>(null);
   const [form] = Form.useForm();
-  const isEditing = (record: ContractDTO) => record.id === editingId;
 
   const handleDelete = async (id: number) => {
     try {
@@ -74,12 +72,6 @@ const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContrac
       sorter: (a:ContractDTO, b:ContractDTO) => a.contractor.localeCompare(b.contractor),
     },
     {
-      title: 'Аванс, %',
-      width: '100px',
-      dataIndex: 'plannedAdvancePercent',
-      key: 'plannedAdvancePercent',
-    },
-    {
       title: 'Стоимость, руб. без НДС',
       width: '200px',
       dataIndex: 'plannedCostWithoutVAT',
@@ -87,6 +79,12 @@ const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContrac
       render: (value: number) => formatNumber(value),
       sorter: (a: ContractDTO, b: ContractDTO) =>
           (a.plannedCostWithoutVAT ?? 0) - (b.plannedCostWithoutVAT ?? 0)
+    },
+    {
+      title: 'Аванс, %',
+      width: '100px',
+      dataIndex: 'plannedAdvancePercent',
+      key: 'plannedAdvancePercent',
     },
     {
       title: 'Выполнение, руб. без НДС',
