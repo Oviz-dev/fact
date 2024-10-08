@@ -1,3 +1,4 @@
+//ContractPage
 import { Layout, Space, Row, Col, Drawer, Button } from 'antd';
 import React, { useState, useEffect } from 'react';
 import ContractForm from './ContractForm';
@@ -79,7 +80,7 @@ const ContractPage = () => {
         {/* Drawer с формой для создания контракта */}
         <Drawer
           title="Создать контракт"
-          width={'50%'} // Можно настроить ширину Drawer
+          width={'750px'}
           onClose={handleDrawerClose}
           visible={isDrawerVisible}
           bodyStyle={{ paddingBottom: 80 }}

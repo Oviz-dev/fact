@@ -1,3 +1,4 @@
+//ContractTable
 import React, { useState } from 'react';
 import { Table, Button, Input, Form, message } from 'antd';
 import { SearchOutlined, DeleteOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons';
@@ -48,10 +49,15 @@ const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContrac
     }
   };
 
+  // Функция форматирования чисел
+   const formatNumber = (value: number | null | undefined) => {
+      return value != null ? new Intl.NumberFormat('ru-RU').format(value) : '';
+  };
+
   const columns = [
     {
       title: 'Наименование',
-      width: '20%',
+      width: '300px',
       dataIndex: 'name',
       key: 'name',
       sorter: (a:ContractDTO, b:ContractDTO) => a.name.localeCompare(b.name),
@@ -72,14 +78,14 @@ const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContrac
     },
     {
       title: 'Статус',
-      width: '80px',
+      width: '100px',
       dataIndex: 'status',
       key: 'status',
       sorter: (a:ContractDTO, b:ContractDTO) => a.status.localeCompare(b.status),
     },
     {
       title: 'Тип',
-      width: '50px',
+      width: '100px',
       dataIndex: 'type',
       key: 'type',
       sorter: (a:ContractDTO, b:ContractDTO) => a.type.localeCompare(b.type),
@@ -92,27 +98,33 @@ const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContrac
       sorter: (a:ContractDTO, b:ContractDTO) => a.contractor.localeCompare(b.contractor),
     },
     {
-      title: 'Аванс (%)',
-      width: '80px',
+      title: 'Аванс, %',
+      width: '100px',
       dataIndex: 'plannedAdvancePercent',
       key: 'plannedAdvancePercent',
     },
     {
-      title: 'Стоимость (план)',
+      title: 'Стоимость, руб. без НДС',
       width: '200px',
       dataIndex: 'plannedCostWithoutVAT',
       key: 'plannedCostWithoutVAT',
+      render: (value: number) => formatNumber(value),
+      sorter: (a: ContractDTO, b: ContractDTO) =>
+          (a.plannedCostWithoutVAT ?? 0) - (b.plannedCostWithoutVAT ?? 0)
     },
     {
-      title: 'Стоимость (факт)',
+      title: 'Выполнение, руб. без НДС',
       width: '200px',
       dataIndex: 'actualCostWithoutVAT',
       key: 'actualCostWithoutVAT',
+      render: (value: number) => formatNumber(value),
+      sorter: (a: ContractDTO, b: ContractDTO) =>
+            (a.actualCostWithoutVAT ?? 0) - (b.actualCostWithoutVAT ?? 0)
     },
   ];
 
   return (
-    <Form form={form} component={false}>
+    <Form form={form} component={false} >
       <Table
         columns={columns}
         dataSource={contracts}// переделать на FilteredData

@@ -66,10 +66,10 @@ const PnLPage: React.FC = () => {
       <Header />
       <Content style={{ margin: '10px 10px 0' }}>
         <Row gutter={10}>
-          <Col flex="80%">
+          <Col >
             <PnLForm onSubmit={handleCreatePnL} refreshPnLs={loadPnLs} pnlList={pnlList} />
           </Col>
-          <Col flex="20%">
+          <Col >
                 <ControlPanel buttons={controlButtons} />
           </Col>
         </Row>
