@@ -8,9 +8,15 @@ interface ContractTableProps {
   contracts: ContractDTO[];
   refreshContracts: () => void;
   onEdit: (contract: ContractDTO) => void;
+  SelectedContract: ContractDTO | null;
 }
 
-const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContracts, onEdit }) => {
+const ContractTable: React.FC<ContractTableProps> = ({
+    contracts,
+    refreshContracts,
+    onEdit,
+    SelectedContract
+    }) => {
   const [form] = Form.useForm();
 
   const handleDelete = async (id: number) => {
@@ -110,6 +116,9 @@ const ContractTable: React.FC<ContractTableProps> = ({ contracts, refreshContrac
           onClick: () => {
             onEdit(record);
           },
+        style: {
+          background: SelectedContract?.id === record.id ? '#e6f7ff' : undefined,
+        },
         })}
       />
     </Form>

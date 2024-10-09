@@ -52,9 +52,28 @@ const ContractPage = () => {
     setIsDrawerVisible(true);
   };
 
+  const handleSelect = (contract: ContractDTO) => {
+    setSelectedContract(contract);
+    setIsEditing(true);
+    setIsDrawerVisible(true);
+  };
+
   const handleDelete = async () => {
-    // Логика удаления контракта
-    refreshContracts();
+    if (!selectedContract) {
+      message.warning('Выберите контракт для удаления');
+      return;
+    }
+
+    try {
+      // Вызов сервиса для удаления контракта
+      await deleteContract(selectedContract.id);
+      message.success('Контракт успешно удалён');
+      setIsDrawerVisible(false);
+      setSelectedContract(null);
+      await refreshContracts();
+    } catch (error) {
+      message.error('Ошибка при удалении контракта');
+    }
   };
 
   const handleDrawerClose = () => {
@@ -102,6 +121,7 @@ const ContractPage = () => {
           contracts={contracts} 
           refreshContracts={refreshContracts}
           onEdit={handleEdit}
+          SelectedContract={selectedContract}
         />
 
         <Drawer
@@ -111,6 +131,9 @@ const ContractPage = () => {
           visible={isDrawerVisible}
           bodyStyle={{ paddingBottom: 80 }}
           mask={false}
+          getContainer={false}  // Привязываем Drawer к текущему контейнеру
+          style={{ position: 'absolute' }}  // Отключаем движение вместе со страницей
+
         >
           <ContractForm 
             onSubmit={handleFormSubmit}
