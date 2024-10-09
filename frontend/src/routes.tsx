@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import FactPage from './pages/FactPage';
+import FactPage from './fact/pages/FactPage';
 import ObjectPage from './pages/ObjectPage';
 import UnitPage from './pages/UnitPage';
 import PnLPage from './pages/PnLPage';

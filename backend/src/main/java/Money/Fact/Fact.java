@@ -3,6 +3,7 @@ package Money.Fact;
 import Money.Object.ObjectEntity;
 import Money.Model.PnL;
 import Money.Model.Unit;
+import Money.Contract.ContractModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +24,9 @@ public class Fact {
     private String name; //наименование
 
     @Column(nullable = false)
+    private String factNumber;
+
+    @Column(nullable = false)
     private LocalDate date; //дата
 
     @Column(nullable = false)
@@ -39,11 +43,16 @@ public class Fact {
     @JoinColumn(name = "object_id", nullable = false)
     private ObjectEntity object; //объект
 
-    private String basis; // основание
-
-    private String description; //описание
+    @ManyToOne
+    @JoinColumn(name = "contract_id", nullable = false)
+    private ContractModel contract; //договор
 
     @ManyToOne
     @JoinColumn(name = "pnl_id", nullable = false)
     private PnL pnl;
+
+    private String basis; // основание
+
+    private String description; //описание
+
 }

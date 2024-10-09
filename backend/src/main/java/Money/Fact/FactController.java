@@ -35,11 +35,13 @@ public class FactController {
         return factRepository.findById(id)
                 .map(fact -> {
                     fact.setName(updatedFact.getName());
+                    fact.setFactNumber(updatedFact.getFactNumber());
                     fact.setDate(updatedFact.getDate());
                     fact.setCost(updatedFact.getCost());
                     fact.setAmount(updatedFact.getAmount());
                     fact.setUnit(updatedFact.getUnit());
                     fact.setObject(updatedFact.getObject());
+                    fact.setContract(updatedFact.getContract());
                     fact.setBasis(updatedFact.getBasis());
                     fact.setDescription(updatedFact.getDescription());
                     fact.setPnl(updatedFact.getPnl());

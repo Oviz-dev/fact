@@ -1,13 +1,18 @@
 package Money.Model;
 
+import Money.Contract.ContractModel;
+import Money.Contract.ContractRepository;
 import Money.Fact.*;
 import Money.Exception.*;
+import Money.Contract.Exception.ContractNotFoundException;
 import Money.Object.ObjectEntity;
 import Money.Object.ObjectNotFoundException;
 import Money.Object.ObjectRepository;
 import Money.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 public class FactService {
@@ -16,34 +21,45 @@ public class FactService {
     private final UnitRepository unitRepository;
     private final PnLRepository pnlRepository;
     private final ObjectRepository objectRepository;
+    private final ContractRepository contractRepository;
 
     @Autowired
-    public FactService(FactRepository factRepository, UnitRepository unitRepository, PnLRepository pnlRepository, ObjectRepository objectRepository) {
+    public FactService(FactRepository factRepository, UnitRepository unitRepository, PnLRepository pnlRepository, ObjectRepository objectRepository, ContractRepository contractRepository) {
         this.factRepository = factRepository;
         this.unitRepository = unitRepository;
         this.pnlRepository = pnlRepository;
         this.objectRepository = objectRepository;
+        this.contractRepository = contractRepository;
     }
 
     public Fact createFact(FactDto factDto) {
         // Преобразуем ID в объекты через репозитории
         ObjectEntity objectEntity = getObjectById(factDto.getObjectId());
         PnL pnl = getPnlById(factDto.getPnlId());
+        ContractModel contract = getContractById(factDto.getContractId());  // Здесь возвращаем ContractModel, а не ContractRepository
 
         // Проверка на уникальность
-        if (factRepository.existsByNameAndDateAndCostAndObjectAndBasisAndPnl(
+        if (factRepository.existsByNameAndFactNumberAndDateAndCostAndObjectIdAndContractIdAndBasisAndPnlId(
                 factDto.getName(),
+                factDto.getFactNumber(),
                 factDto.getDate(),
                 factDto.getCost(),
-                objectEntity,  // Передаём объект, а не ID
+                objectEntity.getId(),
+                contract.getId(),
                 factDto.getBasis(),
-                pnl)) {  // Передаём объект, а не ID
+                pnl.getId()
+        )) {
             throw new FactAlreadyExistsException("Fact with such data already exists");
         }
 
         // Сохраняем факт
         Fact fact = mapToEntity(factDto);
         return factRepository.save(fact);
+    }
+
+    private ContractModel getContractById(Long contractId) {
+        return contractRepository.findById(contractId)
+                .orElseThrow(() -> new ContractNotFoundException("Contract not found with id: " + contractId));
     }
 
     public Fact getFactById(Long id) {
@@ -72,6 +88,7 @@ public class FactService {
 
         // Обновляем поля факта
         existingFact.setName(factDto.getName());
+        existingFact.setFactNumber(factDto.getFactNumber());
         existingFact.setDate(factDto.getDate());
         existingFact.setCost(factDto.getCost());
 
@@ -94,6 +111,7 @@ public class FactService {
     public Fact mapToEntity(FactDto factDto) {
         Fact fact = new Fact();
         fact.setName(factDto.getName());
+        fact.setFactNumber(factDto.getFactNumber());
         fact.setDate(factDto.getDate());
         fact.setCost(factDto.getCost());
         fact.setAmount(factDto.getAmount());
