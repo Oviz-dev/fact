@@ -1,8 +1,9 @@
 //FactForm
 import { CheckOutlined } from '@ant-design/icons';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, DatePicker, Select, InputNumber, Row, Col, Card,  message } from 'antd';
 import { FactDTO} from '../DTO/FactDTO';
+import DropdownWithSearch from '../../components/DropdownWithSearch';
 
 import moment from 'moment';
 const { Option } = Select;
@@ -10,20 +11,24 @@ interface FactFormProps {
   onSubmit: (FactData: FactDTO) => void;
   initialValues?: FactDTO | null;
   isEditing?: boolean;
+  contracts: { id: number; name: string }[];
 }
 
 const FactForm: React.FC<FactFormProps> = ({
   onSubmit,
   initialValues,
-  isEditing = false
+  isEditing = false,
+  contracts
 }) => {
   const [form] = Form.useForm();
+  const [selectedContractId, setSelectedContractId] = useState<number | null>(null);
 
   useEffect(() => {
     if (initialValues) {
       form.setFieldsValue({
         ...initialValues,
       });
+      setSelectedContractId(initialValues.contract?.id || null);
     } else {
       form.resetFields();
     }
@@ -40,6 +45,7 @@ const FactForm: React.FC<FactFormProps> = ({
         cost: values.cost ? Number(values.cost) : 0,
         amount: values.amount ? Number(values.amount) : 0,
         date: values.date ? values.date.format('YYYY-MM-DD') : undefined,
+        contract: contracts.find(contract => contract.id === selectedContractId) || undefined
     };
     await onSubmit(factData);
       if (!isEditing) {
@@ -49,6 +55,10 @@ const FactForm: React.FC<FactFormProps> = ({
       console.error('Validation Failed:', errorInfo);
       message.error('Ошибка');
     }
+  };
+
+  const handleContractChange = (contractId: number) => {
+    setSelectedContractId(contractId);
   };
 
   return (
@@ -70,6 +80,22 @@ const FactForm: React.FC<FactFormProps> = ({
                 </Form.Item>
             </Col>
         </Row>
+        <Row gutter={16}>
+            <Col span={24}>
+                <Form.Item
+                      label="Договор"
+                      name="contract"
+                      rules={[{ required: true, message: 'Выберите договор' }]}
+                    >
+                      <DropdownWithSearch
+                        options={contracts}  // Передаём контракты в дропдаун
+                        placeholder="Выберите договор"
+                        onChange={handleContractChange}
+                      />
+                </Form.Item>
+            </Col>
+        </Row>
+
         <Row gutter={16}>
             <Col span={12}>
                 <Form.Item

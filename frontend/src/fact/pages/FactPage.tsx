@@ -9,11 +9,13 @@ import ControlPanel from '../../components/ControlPanel';
 import { ShortTableButtons } from '../../components/Buttons';
 import { exportData } from '../../functions/exportData';
 import { importFile } from '../../functions/importFile';
+import { fetchContracts } from '../../contract/services/ContractService';
 
 const { Content } = Layout;
 
 const FactPage = () => {
   const [facts, setFacts] = useState<FactDTO[]>([]);
+  const [contracts, setContracts] = useState<{ id: number; name: string }[]>([]); // Добавлено состояние для контрактов
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [selectedFact, setSelectedFact] = useState<FactDTO | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -24,7 +26,17 @@ const FactPage = () => {
       const response = await fetchFacts();
       setFacts(response);
     } catch (error) {
-      console.error('Ошибка загрузки договоров:', error);
+      console.error('Ошибка загрузки:', error);
+    }
+  };
+
+  // Получение списка контрактов при загрузке страницы
+  const loadContracts = async () => {
+    try {
+      const contractsData = await fetchContracts(); // Получаем данные контрактов
+      setContracts(contractsData); // Устанавливаем список контрактов в состояние
+    } catch (error) {
+      console.error('Ошибка загрузки контрактов:', error);
     }
   };
 
@@ -65,7 +77,6 @@ const FactPage = () => {
     }
 
     try {
-      // Вызов сервиса для удаления контракта
       await deleteFact(selectedFact.id);
       message.success('Факт успешно удалён');
       setIsDrawerVisible(false);
@@ -85,11 +96,9 @@ const FactPage = () => {
   const handleFormSubmit = async (factData: FactDTO) => {
     try {
       if (isEditing && selectedFact) {
-        // Обновление существующего контракта
         await updateFact(selectedFact.id, factData);
         message.success('Факт успешно обновлен');
       } else {
-        // Создание нового контракта
         await createFact(factData);
         message.success('Факт успешно создан');
       }
@@ -102,6 +111,7 @@ const FactPage = () => {
       message.error('Ошибка при сохранении');
     }
   };
+
   // Кнопки для панели управления
   const controlButtons = ShortTableButtons({
     onCreate: handleCreate,
@@ -110,6 +120,7 @@ const FactPage = () => {
 
   useEffect(() => {
     refreshFacts();
+    loadContracts();
   }, []);
 
   return (
@@ -125,7 +136,7 @@ const FactPage = () => {
         />
 
         <Drawer
-          title={isEditing ? "Редактировать контракт" : "Создать контракт"}
+          title={isEditing ? "Редактировать" : "Создать"}
           width={'750px'}
           onClose={handleDrawerClose}
           visible={isDrawerVisible}
@@ -133,12 +144,12 @@ const FactPage = () => {
           mask={false}
           getContainer={false}  // Привязываем Drawer к текущему контейнеру
           style={{ position: 'absolute' }}  // Отключаем движение вместе со страницей
-
         >
           <FactForm
             onSubmit={handleFormSubmit}
             initialValues={selectedFact}
             isEditing={isEditing}
+            contracts={contracts} // Передаем список контрактов в форму
           />
         </Drawer>
       </Content>
