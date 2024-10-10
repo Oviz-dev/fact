@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Button, Input, Form, message } from 'antd';
 import { SearchOutlined, DeleteOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons';
-import { UnitDTO } from '../types/UnitDTO';
+import { UnitDTO } from '../DTO/UnitDTO';
 import { deleteUnit, updateUnit } from '../services/unitService';
 
 interface UnitProps {

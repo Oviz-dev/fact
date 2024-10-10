@@ -2,12 +2,12 @@ import { Layout, Space, Row, Col } from 'antd';
 import React, { useState, useEffect } from 'react';
 import UnitForm from './UnitForm';
 import UnitTable from './UnitTable';
-import { UnitDTO } from '../types/UnitDTO';
+import { UnitDTO } from '../DTO/UnitDTO';
 import { fetchUnits, importUnits } from '../services/unitService';
-import Header from '../components/Header';
-import ControlPanel from '../components/ControlPanel';
-import { exportData} from '../functions/exportData';
-import { importFile } from '../functions/importFile';
+import Header from '../../components/Header';
+import ControlPanel from '../../components/ControlPanel';
+import { exportData} from '../../functions/exportData';
+import { importFile } from '../../functions/importFile';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 
 const { Content } = Layout;

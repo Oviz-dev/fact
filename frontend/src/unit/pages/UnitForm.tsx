@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Form, Input, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { createUnit } from '../services/unitService';
-import { UnitDTO } from '../types/UnitDTO';
+import { UnitDTO } from '../DTO/UnitDTO';
 
 interface UnitFormProps {
   onUnitCreated: () => void;

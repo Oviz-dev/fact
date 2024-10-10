@@ -10,12 +10,14 @@ import { ShortTableButtons } from '../../components/Buttons';
 import { exportData } from '../../functions/exportData';
 import { importFile } from '../../functions/importFile';
 import { fetchContracts } from '../../contract/services/ContractService';
+import { fetchUnits } from '../../unit/services/unitService';
 
 const { Content } = Layout;
 
 const FactPage = () => {
   const [facts, setFacts] = useState<FactDTO[]>([]);
   const [contracts, setContracts] = useState<{ id: number; name: string }[]>([]); // Добавлено состояние для контрактов
+  const [units, setUnits] = useState<{ id: number; name: string }[]>([]);
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [selectedFact, setSelectedFact] = useState<FactDTO | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -39,6 +41,17 @@ const FactPage = () => {
       console.error('Ошибка загрузки контрактов:', error);
     }
   };
+
+  // Получение списка контрактов при загрузке страницы
+    const loadUnits = async () => {
+      try {
+        const response = await fetchUnits(); // Получаем данные через Axios
+        const unitsData = response.data; // Извлекаем данные из объекта AxiosResponse
+        setUnits(unitsData); // Устанавливаем список units в состояние
+      } catch (error) {
+        console.error('Ошибка загрузки:', error);
+      }
+    };
 
   // Функция для выгрузки данных
   const handleExport = () => {
@@ -121,6 +134,7 @@ const FactPage = () => {
   useEffect(() => {
     refreshFacts();
     loadContracts();
+    loadUnits();
   }, []);
 
   return (
@@ -150,6 +164,7 @@ const FactPage = () => {
             initialValues={selectedFact}
             isEditing={isEditing}
             contracts={contracts} // Передаем список контрактов в форму
+            units={units}
           />
         </Drawer>
       </Content>

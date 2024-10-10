@@ -1,7 +1,7 @@
 //unitService
 
 import axios from 'axios';
-import { UnitDTO } from '../types/UnitDTO';
+import { UnitDTO } from '../DTO/UnitDTO';
 
 const API_URL = 'http://localhost:8080/api/units';
 

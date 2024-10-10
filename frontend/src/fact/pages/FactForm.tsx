@@ -12,23 +12,26 @@ interface FactFormProps {
   initialValues?: FactDTO | null;
   isEditing?: boolean;
   contracts: { id: number; name: string }[];
+  units: { id: number; name: string }[];
 }
 
 const FactForm: React.FC<FactFormProps> = ({
   onSubmit,
   initialValues,
   isEditing = false,
-  contracts
+  contracts,
+  units
 }) => {
   const [form] = Form.useForm();
   const [selectedContractId, setSelectedContractId] = useState<number | null>(null);
-
+  const [selectedUnitId, setSelectedUnitId] = useState<number | null>(null);
   useEffect(() => {
     if (initialValues) {
       form.setFieldsValue({
         ...initialValues,
       });
       setSelectedContractId(initialValues.contract?.id || null);
+      setSelectedUnitId(initialValues.unit?.id || null);
     } else {
       form.resetFields();
     }
@@ -45,7 +48,8 @@ const FactForm: React.FC<FactFormProps> = ({
         cost: values.cost ? Number(values.cost) : 0,
         amount: values.amount ? Number(values.amount) : 0,
         date: values.date ? values.date.format('YYYY-MM-DD') : undefined,
-        contract: contracts.find(contract => contract.id === selectedContractId) || undefined
+        contract: contracts.find(contract => contract.id === selectedContractId) || undefined,
+        unit: units.find(unit => unit.id === selectedUnitId) || undefined
     };
     await onSubmit(factData);
       if (!isEditing) {
@@ -59,6 +63,10 @@ const FactForm: React.FC<FactFormProps> = ({
 
   const handleContractChange = (contractId: number) => {
     setSelectedContractId(contractId);
+  };
+
+  const handleUnitChange = (unitId: number) => {
+    setSelectedUnitId(unitId);
   };
 
   return (
@@ -129,7 +137,7 @@ const FactForm: React.FC<FactFormProps> = ({
                 <Form.Item
                   label="Выполнение, руб. без НДС "
                   name="cost"
-                  rules={[{ required: false }]}
+                  rules={[{ required: true,  message: 'Внесите стоимость ' }]}
                 >
                   <InputNumber
                     min={0}
@@ -137,6 +145,35 @@ const FactForm: React.FC<FactFormProps> = ({
                     placeholder="Введите стоимость без НДС"
                     formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
                   />
+                </Form.Item>
+              </Col>
+          </Row>
+          <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  label="Объём"
+                  name="amount"
+                  rules={[{ required: false }]}
+                >
+                  <InputNumber
+                    min={0}
+                    style={{ width: '100px' }}
+                    placeholder="Введите объём"
+                    formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                      label="е.и."
+                      name="unit"
+                      rules={[{ required: true, message: 'Выберите единицу' }]}
+                    >
+                      <DropdownWithSearch
+                        options={units}
+                        placeholder="Выберите единицу"
+                        onChange={handleUnitChange}
+                      />
                 </Form.Item>
               </Col>
           </Row>
