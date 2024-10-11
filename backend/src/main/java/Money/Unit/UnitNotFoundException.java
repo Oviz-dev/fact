@@ -1,4 +1,4 @@
-package Money.Exception;
+package Money.Unit;
 
 public class UnitNotFoundException extends RuntimeException {
     public UnitNotFoundException(String message) {

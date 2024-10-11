@@ -1,11 +1,8 @@
-package Money.Service;
+package Money.PnL;
 
-import Money.DTO.PnLDTO;
-import Money.Exception.PnLNotFoundException;
-import Money.Exception.PnLInUseException;
-import Money.Model.PnL;
-import Money.Repository.PnLRepository;
 import Money.Fact.FactRepository;
+import Money.PnL.Exception.PnLInUseException;
+import Money.PnL.Exception.PnLNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

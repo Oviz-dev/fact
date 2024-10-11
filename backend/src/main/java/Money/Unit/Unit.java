@@ -1,4 +1,4 @@
-package Money.Model;
+package Money.Unit;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

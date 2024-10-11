@@ -1,6 +1,5 @@
-package Money.Repository;
+package Money.PnL;
 
-import Money.Model.PnL;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

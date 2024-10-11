@@ -1,14 +1,10 @@
-package Money.Controller;
+package Money.PnL;
 
-import Money.DTO.PnLDTO;
-import Money.Model.PnL;
-import Money.Service.PnLService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")

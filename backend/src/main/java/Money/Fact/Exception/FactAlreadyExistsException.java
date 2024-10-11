@@ -1,4 +1,4 @@
-package Money.Fact;
+package Money.Fact.Exception;
 
 public class FactAlreadyExistsException extends RuntimeException {
     public FactAlreadyExistsException(String message) {

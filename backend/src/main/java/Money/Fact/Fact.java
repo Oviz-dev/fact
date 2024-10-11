@@ -1,8 +1,8 @@
 package Money.Fact;
 
 import Money.Object.ObjectEntity;
-import Money.Model.PnL;
-import Money.Model.Unit;
+import Money.PnL.PnL;
+import Money.Unit.Unit;
 import Money.Contract.ContractModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,7 +24,7 @@ public class Fact {
     private String name; //наименование
 
     @Column(nullable = false)
-    private String factNumber;
+    private String factNumber; //номер
 
     @Column(nullable = false)
     private LocalDate date; //дата
@@ -49,7 +49,7 @@ public class Fact {
 
     @ManyToOne
     @JoinColumn(name = "pnl_id", nullable = false)
-    private PnL pnl;
+    private PnL pnl; //статья учёта
 
     private String basis; // основание
 

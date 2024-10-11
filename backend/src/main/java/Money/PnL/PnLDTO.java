@@ -1,6 +1,6 @@
-package Money.DTO;
+package Money.PnL;
 
-import Money.Model.Direction;
+import Money.Unit.Direction;
 import java.util.List; // Добавляем импорт для списка
 
 public class PnLDTO {

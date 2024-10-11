@@ -1,5 +1,6 @@
-package Money.Model;
+package Money.PnL;
 
+import Money.Unit.Direction;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

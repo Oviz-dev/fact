@@ -81,7 +81,7 @@ const FactForm: React.FC<FactFormProps> = ({
                 <Form.Item
                   label="Наименование"
                   name="name"
-                  style={{ marginBottom: 10, width: '625px' , float: 'right' }}
+                  style={{ marginBottom: 10, width: '625px'}}
                   rules={[{ required: true, message: 'Введите наименование ' }]}
                 >
                   <Input placeholder="Введите наименование " style={{ marginBottom: 10, width: '500px' }}/>
@@ -96,7 +96,7 @@ const FactForm: React.FC<FactFormProps> = ({
                       rules={[{ required: true, message: 'Выберите договор' }]}
                     >
                       <DropdownWithSearch
-                        options={contracts}  // Передаём контракты в дропдаун
+                        options={contracts}
                         placeholder="Выберите договор"
                         onChange={handleContractChange}
                       />
@@ -109,7 +109,7 @@ const FactForm: React.FC<FactFormProps> = ({
                 <Form.Item
                   label="Номер "
                   name="factNumber"
-                  style={{ marginBottom: 10, width: '245px', float: 'right' }}
+                  style={{ marginBottom: 10, width: '245px'}}
                   rules={[{ required: true, message: 'Введите номер' }]}
                 >
                   <Input placeholder="Введите номер" style={{ marginBottom: 10, width: '150px' }}/>
@@ -133,15 +133,16 @@ const FactForm: React.FC<FactFormProps> = ({
         headStyle={{ backgroundColor:'#ffe8d9', color: '#000' }}
       >
           <Row gutter={16}>
-              <Col span={12}>
+              <Col span={24}>
                 <Form.Item
                   label="Выполнение, руб. без НДС "
                   name="cost"
                   rules={[{ required: true,  message: 'Внесите стоимость ' }]}
+                  style={{ float: 'right' }}
                 >
                   <InputNumber
                     min={0}
-                    style={{ width: '150px' }}
+                    style={{ width: '210px'}}
                     placeholder="Введите стоимость без НДС"
                     formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
                   />
@@ -149,23 +150,24 @@ const FactForm: React.FC<FactFormProps> = ({
               </Col>
           </Row>
           <Row gutter={16}>
-              <Col span={12}>
+              <Col span={16}>
                 <Form.Item
                   label="Объём"
                   name="amount"
                   rules={[{ required: false }]}
+                  style={{ float: 'right' }}
                 >
                   <InputNumber
                     min={0}
-                    style={{ width: '100px' }}
-                    placeholder="Введите объём"
+                    style={{ width: '150px' }}
+                    placeholder="Введите количество"
                     formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
                   />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col span={8}>
                 <Form.Item
-                      label="е.и."
+                      label=""
                       name="unit"
                       rules={[{ required: true, message: 'Выберите единицу' }]}
                     >
