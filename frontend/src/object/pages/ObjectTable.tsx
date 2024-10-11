@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Button, Input, Form, message } from 'antd';
 import { SearchOutlined, DeleteOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons';
-import { ObjectEntityDTO } from '../types/ObjectEntityDTO';
+import { ObjectEntityDTO } from '../DTO/ObjectEntityDTO';
 import { deleteObject, updateObject } from '../services/objectService';
 
 interface ObjectTableProps {

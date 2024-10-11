@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TreeSelect, Button, Form, Input, Select } from 'antd';
-import { PnLDTO } from '../types/PnLDTO';
+import { PnLDTO } from '../DTO/PnLDTO';
 import { PlusOutlined } from '@ant-design/icons';
 
 interface PnLFormProps {
@@ -26,7 +26,7 @@ const handleFinish = async (values: PnLDTO) => {
   setParentId(undefined);  // Сбрасываем выбранного родителя
 };
 
-  // Исправленная функция для преобразования данных в формат для TreeSelect
+  // функция для преобразования данных в формат для TreeSelect
   const convertToTreeSelectData = (data: PnLDTO[], parentId: number | null = null): any[] => {
     return data
       .filter(pnl => pnl.parentId === parentId) // Находим элементы, относящиеся к родителю

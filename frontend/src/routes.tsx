@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import FactPage from './fact/pages/FactPage';
-import ObjectPage from './pages/ObjectPage';
+import ObjectPage from './object/pages/ObjectPage';
 import UnitPage from './unit/pages/UnitPage';
-import PnLPage from './pages/PnLPage';
+import PnLPage from './pnl/pages/PnLPage';
 import Main from './pages/Main';
 import ContractPage from './contract/pages/ContractPage';
 

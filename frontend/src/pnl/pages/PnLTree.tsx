@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Tree, Button, message } from 'antd';
-import { PnLDTO } from '../types/PnLDTO';
+import { PnLDTO } from '../DTO/PnLDTO';
 import { deletePnL, updatePnL } from '../services/PnLService';
 import { DeleteOutlined } from '@ant-design/icons';
 import type { TreeDataNode, TreeProps } from 'antd';

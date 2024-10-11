@@ -13,6 +13,7 @@ interface FactFormProps {
   isEditing?: boolean;
   contracts: { id: number; name: string }[];
   units: { id: number; name: string }[];
+  objects: { id: number; name: string }[];
 }
 
 const FactForm: React.FC<FactFormProps> = ({
@@ -20,11 +21,14 @@ const FactForm: React.FC<FactFormProps> = ({
   initialValues,
   isEditing = false,
   contracts,
-  units
+  units,
+  objects
 }) => {
   const [form] = Form.useForm();
   const [selectedContractId, setSelectedContractId] = useState<number | null>(null);
   const [selectedUnitId, setSelectedUnitId] = useState<number | null>(null);
+  const [selectedObjectId, setSelectedObjectId] = useState<number | null>(null);
+
   useEffect(() => {
     if (initialValues) {
       form.setFieldsValue({
@@ -32,6 +36,7 @@ const FactForm: React.FC<FactFormProps> = ({
       });
       setSelectedContractId(initialValues.contract?.id || null);
       setSelectedUnitId(initialValues.unit?.id || null);
+      setSelectedObjectId(initialValues.object?.id || null);
     } else {
       form.resetFields();
     }
@@ -49,7 +54,8 @@ const FactForm: React.FC<FactFormProps> = ({
         amount: values.amount ? Number(values.amount) : 0,
         date: values.date ? values.date.format('YYYY-MM-DD') : undefined,
         contract: contracts.find(contract => contract.id === selectedContractId) || undefined,
-        unit: units.find(unit => unit.id === selectedUnitId) || undefined
+        unit: units.find(unit => unit.id === selectedUnitId) || undefined,
+        object: objects.find(object => object.id === selectedObjectId) || undefined,
     };
     await onSubmit(factData);
       if (!isEditing) {
@@ -67,6 +73,10 @@ const FactForm: React.FC<FactFormProps> = ({
 
   const handleUnitChange = (unitId: number) => {
     setSelectedUnitId(unitId);
+  };
+
+  const handleObjectChange = (objectId: number) => {
+      setSelectedObjectId(objectId);
   };
 
   return (
@@ -103,11 +113,25 @@ const FactForm: React.FC<FactFormProps> = ({
                 </Form.Item>
             </Col>
         </Row>
-
+        <Row gutter={16}>
+            <Col span={24}>
+                <Form.Item
+                      label="Объект"
+                      name="object"
+                      rules={[{ required: false}]}
+                    >
+                      <DropdownWithSearch
+                        options={objects}
+                        placeholder="Выберите объект"
+                        onChange={handleObjectChange}
+                      />
+                </Form.Item>
+            </Col>
+        </Row>
         <Row gutter={16}>
             <Col span={12}>
                 <Form.Item
-                  label="Номер "
+                  label="№"
                   name="factNumber"
                   style={{ marginBottom: 10, width: '245px'}}
                   rules={[{ required: true, message: 'Введите номер' }]}

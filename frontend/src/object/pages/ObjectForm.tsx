@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Form, Input, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { createObject } from '../services/objectService';
-import { ObjectEntityDTO } from '../types/ObjectEntityDTO';
+import { ObjectEntityDTO } from '../DTO/ObjectEntityDTO';
 
 interface ObjectFormProps {
   onObjectCreated: () => void;

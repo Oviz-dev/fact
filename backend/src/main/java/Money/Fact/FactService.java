@@ -9,7 +9,7 @@ import Money.Object.ObjectEntity;
 import Money.Object.ObjectNotFoundException;
 import Money.Object.ObjectRepository;
 import Money.PnL.PnL;
-import Money.PnL.Exception.PnLNotFoundException;
+import Money.PnL.PnLNotFoundException;
 import Money.PnL.PnLRepository;
 import Money.Unit.Unit;
 import Money.Unit.UnitNotFoundException;
@@ -42,17 +42,16 @@ public class FactService {
         ContractModel contract = getContractById(factDto.getContractId());  // Здесь возвращаем ContractModel, а не ContractRepository
 
         // Проверка на уникальность
-        if (factRepository.existsByNameAndFactNumberAndDateAndCostAndObjectIdAndContractIdAndBasisAndPnlId(
+        if (factRepository.existsByNameAndFactNumberAndDateAndCost(
                 factDto.getName(),
                 factDto.getFactNumber(),
                 factDto.getDate(),
-                factDto.getCost(),
-                objectEntity.getId(),
+                factDto.getCost()
+                /*objectEntity.getId(),
                 contract.getId(),
-                factDto.getBasis(),
-                pnl.getId()
+                pnl.getId()*/
         )) {
-            throw new FactAlreadyExistsException("Fact with such data already exists");
+            throw new FactAlreadyExistsException("факт уже существует");
         }
 
         // Сохраняем факт

@@ -6,24 +6,24 @@ export interface FactDTO{
   factNumber: string;
   date: string;
   cost: number;
-  amount: number;
-  unit: {
+  amount?: number;
+  unit?: {
     id: number;
     name: string;
   };
-  object: {
+  object?: {
     id: number;
     name: string;
   };
-  contract: {
+  contract?: {
     id: number;
     name: string;
   };
-  pnl: {
+  pnl?: {
     id: number;
     name: string;
   };
-  basis: string;
-  description: string;
+  basis?: string;
+  description?: string;
 
 }

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, Space, Row, Col, Button, message } from 'antd';
-import { PnLDTO } from '../types/PnLDTO';
+import { PnLDTO } from '../DTO/PnLDTO';
 import { fetchPnL, createPnL, deletePnL } from '../services/PnLService';
 import PnLForm from './PnLForm';
 import PnLTree from './PnLTree';
-import Header from '../components/Header';
+import Header from '../../components/Header';
 import { DeleteOutlined } from '@ant-design/icons';
-import ControlPanel from '../components/ControlPanel';
+import ControlPanel from '../../components/ControlPanel';
 
 const { Content } = Layout;
 

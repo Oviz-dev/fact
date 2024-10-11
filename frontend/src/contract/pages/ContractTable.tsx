@@ -40,14 +40,12 @@ const ContractTable: React.FC<ContractTableProps> = ({
       width: '300px',
       dataIndex: 'name',
       key: 'name',
-      sorter: (a:ContractDTO, b:ContractDTO) => a.name.localeCompare(b.name),
     },
     {
       title: 'Номер',
       width: '150px',
       dataIndex: 'contractNumber',
       key: 'contractNumber',
-      sorter: (a:ContractDTO, b:ContractDTO) => a.contractNumber.localeCompare(b.contractNumber),
     },
     {
       title: 'Дата',

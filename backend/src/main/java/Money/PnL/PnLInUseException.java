@@ -1,4 +1,4 @@
-package Money.PnL.Exception;
+package Money.PnL;
 
 public class PnLInUseException extends RuntimeException {
     public PnLInUseException(String message) {

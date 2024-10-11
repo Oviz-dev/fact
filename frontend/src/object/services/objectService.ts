@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ObjectEntityDTO } from '../types/ObjectEntityDTO';
+import { ObjectEntityDTO } from '../DTO/ObjectEntityDTO';
 
 const API_URL = 'http://localhost:8080/api/objects';
 

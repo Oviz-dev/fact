@@ -11,6 +11,7 @@ import { exportData } from '../../functions/exportData';
 import { importFile } from '../../functions/importFile';
 import { fetchContracts } from '../../contract/services/ContractService';
 import { fetchUnits } from '../../unit/services/unitService';
+import { fetchObjects } from '../../object/services/objectService';
 
 const { Content } = Layout;
 
@@ -18,6 +19,7 @@ const FactPage = () => {
   const [facts, setFacts] = useState<FactDTO[]>([]);
   const [contracts, setContracts] = useState<{ id: number; name: string }[]>([]); // Добавлено состояние для контрактов
   const [units, setUnits] = useState<{ id: number; name: string }[]>([]);
+  const [objects, setObjects] = useState<{ id: number; name: string }[]>([]);
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [selectedFact, setSelectedFact] = useState<FactDTO | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -42,12 +44,23 @@ const FactPage = () => {
     }
   };
 
-  // Получение списка контрактов при загрузке страницы
+  // Получение списка еи при загрузке страницы
     const loadUnits = async () => {
       try {
         const response = await fetchUnits(); // Получаем данные через Axios
         const unitsData = response.data; // Извлекаем данные из объекта AxiosResponse
         setUnits(unitsData); // Устанавливаем список units в состояние
+      } catch (error) {
+        console.error('Ошибка загрузки:', error);
+      }
+    };
+
+  // Получение списка объектов при загрузке страницы
+    const loadObjects = async () => {
+      try {
+        const response = await fetchObjects(); // Получаем данные через Axios
+        const objectsData = response.data; // Извлекаем данные из объекта AxiosResponse
+        setObjects(objectsData); // Устанавливаем список Objects в состояние
       } catch (error) {
         console.error('Ошибка загрузки:', error);
       }
@@ -135,6 +148,7 @@ const FactPage = () => {
     refreshFacts();
     loadContracts();
     loadUnits();
+    loadObjects();
   }, []);
 
   return (
@@ -165,6 +179,7 @@ const FactPage = () => {
             isEditing={isEditing}
             contracts={contracts} // Передаем список контрактов в форму
             units={units}
+            objects={objects}
           />
         </Drawer>
       </Content>

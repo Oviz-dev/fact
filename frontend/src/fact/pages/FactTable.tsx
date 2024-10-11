@@ -36,18 +36,17 @@ const FactTable: React.FC<FactTableProps> = ({
 
   const columns = [
     {
+      title: '№',
+      width: '40px',
+      dataIndex: 'factNumber',
+      key: 'factNumber',
+    },
+    {
       title: 'Наименование',
-      width: '300px',
+      width: '200px',
       dataIndex: 'name',
       key: 'name',
       sorter: (a:FactDTO, b:FactDTO) => a.name.localeCompare(b.name),
-    },
-    {
-      title: 'Номер',
-      width: '150px',
-      dataIndex: 'factNumber',
-      key: 'factNumber',
-      sorter: (a:FactDTO, b:FactDTO) => a.factNumber.localeCompare(b.factNumber),
     },
     {
       title: 'Дата',
@@ -57,13 +56,34 @@ const FactTable: React.FC<FactTableProps> = ({
       sorter: (a:FactDTO, b:FactDTO) => a.date.localeCompare(b.date),
     },
     {
-      title: 'Стоимость, руб. без НДС',
-      width: '200px',
+      title: 'Статья',
+      width: '150px',
+      dataIndex: 'pnl',
+      key: 'pnl',
+      sorter: (a:FactDTO, b:FactDTO) => a.date.localeCompare(b.date),
+    },
+    {
+      title: 'Сумма, руб. без НДС',
+      width: '100px',
       dataIndex: 'cost',
       key: 'cost',
       render: (value: number) => formatNumber(value),
       sorter: (a: FactDTO, b: FactDTO) =>
           (a.cost ?? 0) - (b.cost ?? 0)
+    },
+    {
+      title: 'Договор',
+      width: '100px',
+      dataIndex: 'contract',
+      key: 'contract',
+      sorter: (a:FactDTO, b:FactDTO) => a.date.localeCompare(b.date),
+    },
+    {
+      title: 'Объект',
+      width: '100px',
+      dataIndex: 'object',
+      key: 'object',
+      sorter: (a:FactDTO, b:FactDTO) => a.date.localeCompare(b.date),
     },
   ];
 

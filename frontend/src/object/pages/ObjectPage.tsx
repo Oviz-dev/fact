@@ -2,12 +2,12 @@ import { Layout, Space,  Row, Col } from 'antd';
 import React, { useState, useEffect } from 'react';
 import ObjectForm from './ObjectForm';
 import ObjectTable from './ObjectTable';
-import { ObjectEntityDTO } from '../types/ObjectEntityDTO';
+import { ObjectEntityDTO } from '../DTO/ObjectEntityDTO';
 import { fetchObjects, importObjects } from '../services/objectService';
-import Header from '../components/Header';
-import ControlPanel from '../components/ControlPanel';
-import { exportData } from '../functions/exportData';
-import { importFile } from '../functions/importFile';
+import Header from '../../components/Header';
+import ControlPanel from '../../components/ControlPanel';
+import { exportData } from '../../functions/exportData';
+import { importFile } from '../../functions/importFile';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 
 const { Content } = Layout;

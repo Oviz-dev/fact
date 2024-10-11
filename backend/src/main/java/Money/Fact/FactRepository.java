@@ -7,15 +7,14 @@ import java.time.LocalDate;
 
 public interface FactRepository extends JpaRepository<Fact, Long>, JpaSpecificationExecutor<Fact> {
     // Проверка уникальности факта по нескольким полям
-    boolean existsByNameAndFactNumberAndDateAndCostAndObjectIdAndContractIdAndBasisAndPnlId(
+    boolean existsByNameAndFactNumberAndDateAndCost(
             String name,
             String factNumber,
             LocalDate date,
-            BigDecimal cost,
-            Long objectId,
+            BigDecimal cost
+            /*Long objectId,
             Long contractId,
-            String basis,
-            Long pnlId
+            Long pnlId*/
     );
     boolean existsByPnlId(Long pnlId);
     boolean existsByUnitId(Long unitId);

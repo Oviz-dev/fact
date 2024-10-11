@@ -21,23 +21,23 @@ public class Fact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name; //наименование
+    private String name; //наименование+
 
     @Column(nullable = false)
-    private String factNumber; //номер
+    private String factNumber; //номер+
 
     @Column(nullable = false)
-    private LocalDate date; //дата
+    private LocalDate date; //дата+
 
     @Column(nullable = false)
-    private BigDecimal cost; //стоимость
+    private BigDecimal cost; //стоимость+
 
     @Column(nullable = false)
-    private BigDecimal amount; //количество
+    private BigDecimal amount; //количество+
 
     @ManyToOne
     @JoinColumn(name = "unit_id", nullable = false)
-    private Unit unit; //единица измерение
+    private Unit unit; //единица измерение+
 
     @ManyToOne
     @JoinColumn(name = "object_id", nullable = false)
@@ -45,7 +45,7 @@ public class Fact {
 
     @ManyToOne
     @JoinColumn(name = "contract_id", nullable = false)
-    private ContractModel contract; //договор
+    private ContractModel contract; //договор+
 
     @ManyToOne
     @JoinColumn(name = "pnl_id", nullable = false)

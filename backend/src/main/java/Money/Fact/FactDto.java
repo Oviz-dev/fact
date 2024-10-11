@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class FactDto {
     private Long id;
     private String name;              // наименование
-    private String factNumber;
+    private String factNumber;        // номер
     private LocalDate date;           // дата
     private BigDecimal cost;          // стоимость
     private BigDecimal amount;        // количество
