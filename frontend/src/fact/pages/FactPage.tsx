@@ -12,6 +12,7 @@ import { importFile } from '../../functions/importFile';
 import { fetchContracts } from '../../contract/services/ContractService';
 import { fetchUnits } from '../../unit/services/unitService';
 import { fetchObjects } from '../../object/services/objectService';
+import { fetchPnL } from '../../pnl/services/PnLService';
 
 const { Content } = Layout;
 
@@ -20,6 +21,7 @@ const FactPage = () => {
   const [contracts, setContracts] = useState<{ id: number; name: string }[]>([]); // Добавлено состояние для контрактов
   const [units, setUnits] = useState<{ id: number; name: string }[]>([]);
   const [objects, setObjects] = useState<{ id: number; name: string }[]>([]);
+  const [pnls, setPnls] = useState<{ id: number; name: string }[]>([]);
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [selectedFact, setSelectedFact] = useState<FactDTO | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -61,6 +63,17 @@ const FactPage = () => {
         const response = await fetchObjects(); // Получаем данные через Axios
         const objectsData = response.data; // Извлекаем данные из объекта AxiosResponse
         setObjects(objectsData); // Устанавливаем список Objects в состояние
+      } catch (error) {
+        console.error('Ошибка загрузки:', error);
+      }
+    };
+
+  // Получение списка статей при загрузке страницы
+    const loadPnls = async () => {
+      try {
+        const response = await fetchPnL(); // Получаем данные через Axios
+        const pnlsData = response; // Извлекаем данные из объекта AxiosResponse
+        setPnls(pnlsData); // Устанавливаем список PnLs в состояние
       } catch (error) {
         console.error('Ошибка загрузки:', error);
       }
@@ -149,6 +162,7 @@ const FactPage = () => {
     loadContracts();
     loadUnits();
     loadObjects();
+    loadPnls();
   }, []);
 
   return (
@@ -177,9 +191,10 @@ const FactPage = () => {
             onSubmit={handleFormSubmit}
             initialValues={selectedFact}
             isEditing={isEditing}
-            contracts={contracts} // Передаем список контрактов в форму
+            contracts={contracts}
             units={units}
             objects={objects}
+            pnls={pnls}
           />
         </Drawer>
       </Content>

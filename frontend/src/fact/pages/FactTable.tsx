@@ -61,6 +61,7 @@ const FactTable: React.FC<FactTableProps> = ({
       dataIndex: 'pnl',
       key: 'pnl',
       sorter: (a:FactDTO, b:FactDTO) => a.date.localeCompare(b.date),
+      render: (pnl: FactDTO['pnl']) => pnl?.name || '—',
     },
     {
       title: 'Сумма, руб. без НДС',
@@ -77,6 +78,7 @@ const FactTable: React.FC<FactTableProps> = ({
       dataIndex: 'contract',
       key: 'contract',
       sorter: (a:FactDTO, b:FactDTO) => a.date.localeCompare(b.date),
+      render: (contract: FactDTO['contract']) => contract?.name || '—',
     },
     {
       title: 'Объект',
@@ -84,6 +86,7 @@ const FactTable: React.FC<FactTableProps> = ({
       dataIndex: 'object',
       key: 'object',
       sorter: (a:FactDTO, b:FactDTO) => a.date.localeCompare(b.date),
+      render: (object: FactDTO['object']) => object?.name || '—',
     },
   ];
 

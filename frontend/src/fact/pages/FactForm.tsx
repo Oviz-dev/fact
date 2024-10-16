@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, DatePicker, Select, InputNumber, Row, Col, Card,  message } from 'antd';
 import { FactDTO} from '../DTO/FactDTO';
 import DropdownWithSearch from '../../components/DropdownWithSearch';
-
+import HierarchicalDropdown from '../../components/HierarchicalDropdown';
 import moment from 'moment';
+
 const { Option } = Select;
 interface FactFormProps {
   onSubmit: (FactData: FactDTO) => void;
@@ -14,6 +15,7 @@ interface FactFormProps {
   contracts: { id: number; name: string }[];
   units: { id: number; name: string }[];
   objects: { id: number; name: string }[];
+  pnls: { id: number; name: string }[];
 }
 
 const FactForm: React.FC<FactFormProps> = ({
@@ -22,21 +24,29 @@ const FactForm: React.FC<FactFormProps> = ({
   isEditing = false,
   contracts,
   units,
-  objects
+  objects,
+  pnls
 }) => {
   const [form] = Form.useForm();
-  const [selectedContractId, setSelectedContractId] = useState<number | null>(null);
-  const [selectedUnitId, setSelectedUnitId] = useState<number | null>(null);
-  const [selectedObjectId, setSelectedObjectId] = useState<number | null>(null);
+  const [selectedContractId, setSelectedContractId] = useState<number | undefined>(undefined);
+  const [selectedUnitId, setSelectedUnitId] = useState<number | undefined>(undefined);
+  const [selectedObjectId, setSelectedObjectId] = useState<number | undefined>(undefined);
+  const [selectedPnlId, setSelectedPnlId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     if (initialValues) {
       form.setFieldsValue({
         ...initialValues,
+          contract: initialValues.contract?.id || undefined,
+          unit: initialValues.unit?.id || undefined,
+          object: initialValues.object?.id || undefined,
+          pnl: initialValues.pnl?.id || undefined,
+          date: initialValues.date ? moment(initialValues.date, 'YYYY-MM-DD') : null,
       });
-      setSelectedContractId(initialValues.contract?.id || null);
-      setSelectedUnitId(initialValues.unit?.id || null);
-      setSelectedObjectId(initialValues.object?.id || null);
+      setSelectedContractId(initialValues.contract?.id || undefined);
+      setSelectedUnitId(initialValues.unit?.id || undefined);
+      setSelectedObjectId(initialValues.object?.id || undefined);
+      setSelectedPnlId(initialValues.pnl?.id || undefined);
     } else {
       form.resetFields();
     }
@@ -56,6 +66,7 @@ const FactForm: React.FC<FactFormProps> = ({
         contract: contracts.find(contract => contract.id === selectedContractId) || undefined,
         unit: units.find(unit => unit.id === selectedUnitId) || undefined,
         object: objects.find(object => object.id === selectedObjectId) || undefined,
+        pnl: pnls.find(pnl => pnl.id === selectedPnlId) || undefined,
     };
     await onSubmit(factData);
       if (!isEditing) {
@@ -77,6 +88,10 @@ const FactForm: React.FC<FactFormProps> = ({
 
   const handleObjectChange = (objectId: number) => {
       setSelectedObjectId(objectId);
+  };
+
+  const handlePnlChange = (pnlId: number) => {
+      setSelectedPnlId(pnlId);
   };
 
   return (
@@ -107,6 +122,7 @@ const FactForm: React.FC<FactFormProps> = ({
                     >
                       <DropdownWithSearch
                         options={contracts}
+                        value={selectedContractId}
                         placeholder="Выберите договор"
                         onChange={handleContractChange}
                       />
@@ -118,12 +134,29 @@ const FactForm: React.FC<FactFormProps> = ({
                 <Form.Item
                       label="Объект"
                       name="object"
-                      rules={[{ required: false}]}
+                      rules={[{ required: true, message: 'Выберите объект' }]}
                     >
                       <DropdownWithSearch
                         options={objects}
+                        value={selectedObjectId}
                         placeholder="Выберите объект"
                         onChange={handleObjectChange}
+                      />
+                </Form.Item>
+            </Col>
+        </Row>
+        <Row gutter={16}>
+            <Col span={24}>
+                <Form.Item
+                      label="Статья учёта"
+                      name="pnl"
+                      rules={[{ required: true, message: 'Выберите статью' }]}
+                    >
+                      <HierarchicalDropdown
+                        options={pnls}
+                        value={selectedPnlId}
+                        placeholder="Выберите статью"
+                        onChange={handlePnlChange}
                       />
                 </Form.Item>
             </Col>
@@ -146,7 +179,11 @@ const FactForm: React.FC<FactFormProps> = ({
                   style={{ marginBottom: 10, float: 'right'}}
                   rules={[{ required: true, message: 'Выберите дату ' }]}
                 >
-                  <DatePicker format="YYYY-MM-DD" style={{ marginBottom: 10, width: '150px', float: 'right'}} />
+                  <DatePicker
+                    format="YYYY-MM-DD"
+                    value={initialValues?.date ? moment(initialValues.date, 'YYYY-MM-DD') : null}
+                    style={{ marginBottom: 10, width: '150px', float: 'right'}}
+                  />
                 </Form.Item>
             </Col>
         </Row>

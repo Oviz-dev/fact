@@ -11,9 +11,10 @@ interface DropdownWithSearchProps {
   options: Option[];
   placeholder?: string;
   onChange: (value: number) => void;
+  value?: number;
 }
 
-const DropdownWithSearch: React.FC<DropdownWithSearchProps> = ({ options, placeholder, onChange }) => {
+const DropdownWithSearch: React.FC<DropdownWithSearchProps> = ({ options, placeholder, onChange, value }) => {
   return (
     <Select
       showSearch
@@ -21,10 +22,10 @@ const DropdownWithSearch: React.FC<DropdownWithSearchProps> = ({ options, placeh
       optionFilterProp="children"
       onChange={(value) => onChange(value)}
       filterOption={(input, option) => {
-        // Проверяем, что option?.children это строка
         const children = option?.children as unknown as string;
         return children?.toLowerCase().includes(input.toLowerCase());
       }}
+      value={value}
       style={{ width: '100%' }}
     >
       {options.map(option => (
