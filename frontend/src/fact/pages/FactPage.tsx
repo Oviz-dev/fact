@@ -21,7 +21,7 @@ const FactPage = () => {
   const [contracts, setContracts] = useState<{ id: number; name: string }[]>([]); // Добавлено состояние для контрактов
   const [units, setUnits] = useState<{ id: number; name: string }[]>([]);
   const [objects, setObjects] = useState<{ id: number; name: string }[]>([]);
-  const [pnls, setPnls] = useState<{ id: number; name: string }[]>([]);
+  const [pnls, setPnls] = useState<{ id: number; name: string ; parentId: number | null }[]>([]);
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [selectedFact, setSelectedFact] = useState<FactDTO | null>(null);
   const [isEditing, setIsEditing] = useState(false);

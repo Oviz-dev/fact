@@ -33,6 +33,9 @@ public class Fact {
     private BigDecimal cost; //стоимость+
 
     @Column(nullable = false)
+    private BigDecimal actualVAT; //НДС
+
+    @Column(nullable = false)
     private BigDecimal amount; //количество+
 
     @ManyToOne
@@ -41,7 +44,7 @@ public class Fact {
 
     @ManyToOne
     @JoinColumn(name = "object_id", nullable = false)
-    private ObjectEntity object; //объект
+    private ObjectEntity object; //объект+
 
     @ManyToOne
     @JoinColumn(name = "contract_id", nullable = false)
@@ -49,7 +52,7 @@ public class Fact {
 
     @ManyToOne
     @JoinColumn(name = "pnl_id", nullable = false)
-    private PnL pnl; //статья учёта
+    private PnL pnl; //статья учёта+
 
     private String basis; // основание
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Select } from 'antd';
+import { TreeSelect } from 'antd';
 
 interface HierarchicalOption {
   id: number;
@@ -15,29 +15,26 @@ interface HierarchicalDropdownProps {
 }
 
 const HierarchicalDropdown: React.FC<HierarchicalDropdownProps> = ({ options, placeholder, onChange, value }) => {
-  const renderOptions = (opts: HierarchicalOption[]) => {
-    return opts.map(option => (
-      <Select.Option key={option.id} value={option.id}>
-        {option.name}
-        {option.children && option.children.length > 0 && (
-          <Select.OptGroup label={option.name}>
-            {renderOptions(option.children)}
-          </Select.OptGroup>
-        )}
-      </Select.Option>
-    ));
+  // Функция для преобразования иерархических данных в формат, поддерживаемый TreeSelect
+  const convertToTreeData = (opts: HierarchicalOption[]): any[] => {
+    return opts.map(option => ({
+      title: option.name,
+      value: option.id,
+      key: option.id,
+      children: option.children ? convertToTreeData(option.children) : [],
+    }));
   };
 
   return (
-    <Select
-      showSearch
-      placeholder={placeholder}
-      onChange={onChange}
-      value={value}
+    <TreeSelect
       style={{ width: '100%' }}
-    >
-      {renderOptions(options)}
-    </Select>
+      value={value}
+      dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+      placeholder={placeholder}
+      treeDefaultExpandAll
+      treeData={convertToTreeData(options)}
+      onChange={onChange}
+    />
   );
 };
 

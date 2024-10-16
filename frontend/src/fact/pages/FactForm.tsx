@@ -8,14 +8,15 @@ import HierarchicalDropdown from '../../components/HierarchicalDropdown';
 import moment from 'moment';
 
 const { Option } = Select;
+
 interface FactFormProps {
   onSubmit: (FactData: FactDTO) => void;
   initialValues?: FactDTO | null;
   isEditing?: boolean;
-  contracts: { id: number; name: string }[];
+  contracts: { id: number; name: string; contractor?: string }[];
   units: { id: number; name: string }[];
   objects: { id: number; name: string }[];
-  pnls: { id: number; name: string }[];
+  pnls: { id: number; name: string ; parentId: number | null }[];
 }
 
 const FactForm: React.FC<FactFormProps> = ({
@@ -29,9 +30,11 @@ const FactForm: React.FC<FactFormProps> = ({
 }) => {
   const [form] = Form.useForm();
   const [selectedContractId, setSelectedContractId] = useState<number | undefined>(undefined);
+  const [selectedContractor, setSelectedContractor ] = useState<string | undefined>(undefined);
   const [selectedUnitId, setSelectedUnitId] = useState<number | undefined>(undefined);
   const [selectedObjectId, setSelectedObjectId] = useState<number | undefined>(undefined);
   const [selectedPnlId, setSelectedPnlId] = useState<number | undefined>(undefined);
+  const [contractor, setContractor] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (initialValues) {
@@ -47,10 +50,26 @@ const FactForm: React.FC<FactFormProps> = ({
       setSelectedUnitId(initialValues.unit?.id || undefined);
       setSelectedObjectId(initialValues.object?.id || undefined);
       setSelectedPnlId(initialValues.pnl?.id || undefined);
+
+
+        const initialContract = contracts.find(contract => contract.id === initialValues.contract?.id);
+        if (initialContract) {
+          setContractor(initialContract.contractor);
+        }
+
     } else {
       form.resetFields();
     }
   }, [initialValues, form]);
+
+  useEffect(() => {
+    if (selectedContractId) {
+      const selectedContract = contracts.find(contract => contract.id === selectedContractId);
+      setContractor(selectedContract?.contractor);
+    } else {
+      setContractor(undefined);
+    }
+  }, [selectedContractId, contracts]);
 
 
   // Обработчик отправки формы
@@ -61,6 +80,7 @@ const FactForm: React.FC<FactFormProps> = ({
         ...values,
         id: initialValues?.id,
         cost: values.cost ? Number(values.cost) : 0,
+        actualVAT: values.actualVAT? Number(values.actualVAT): 0,
         amount: values.amount ? Number(values.amount) : 0,
         date: values.date ? values.date.format('YYYY-MM-DD') : undefined,
         contract: contracts.find(contract => contract.id === selectedContractId) || undefined,
@@ -80,6 +100,8 @@ const FactForm: React.FC<FactFormProps> = ({
 
   const handleContractChange = (contractId: number) => {
     setSelectedContractId(contractId);
+      const selectedContract = contracts.find(contract => contract.id === contractId);
+      setSelectedContractor(selectedContract?.contractor);
   };
 
   const handleUnitChange = (unitId: number) => {
@@ -129,6 +151,19 @@ const FactForm: React.FC<FactFormProps> = ({
                 </Form.Item>
             </Col>
         </Row>
+        {contractor && (
+        <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item label="Подрядчик">
+              <Input
+                value={selectedContractor}
+                disabled
+                style={{ width: '500px' }}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        )}
         <Row gutter={16}>
             <Col span={24}>
                 <Form.Item
@@ -152,7 +187,7 @@ const FactForm: React.FC<FactFormProps> = ({
                       name="pnl"
                       rules={[{ required: true, message: 'Выберите статью' }]}
                     >
-                      <HierarchicalDropdown
+                      <DropdownWithSearch
                         options={pnls}
                         value={selectedPnlId}
                         placeholder="Выберите статью"
@@ -194,24 +229,39 @@ const FactForm: React.FC<FactFormProps> = ({
         headStyle={{ backgroundColor:'#ffe8d9', color: '#000' }}
       >
           <Row gutter={16}>
-              <Col span={24}>
+              <Col span={12}>
                 <Form.Item
-                  label="Выполнение, руб. без НДС "
+                  label="Сумма, руб. без НДС"
                   name="cost"
-                  rules={[{ required: true,  message: 'Внесите стоимость ' }]}
+                  rules={[{ required: true,  message: 'Внесите стоимость' }]}
                   style={{ float: 'right' }}
                 >
                   <InputNumber
                     min={0}
-                    style={{ width: '210px'}}
+                    style={{ width: '150px'}}
                     placeholder="Введите стоимость без НДС"
                     formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
                   />
                 </Form.Item>
               </Col>
+                <Col span={6}>
+                  <Form.Item
+                    label="НДС, руб."
+                    name="actualVAT"
+                    rules={[{ required: false}]}
+                    style={{ float: 'right' }}
+                  >
+                    <InputNumber
+                      min={0}
+                      style={{ width: '150px'}}
+                      placeholder="Введите НДС"
+                      formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                    />
+                  </Form.Item>
+                </Col>
           </Row>
           <Row gutter={16}>
-              <Col span={16}>
+              <Col span={12}>
                 <Form.Item
                   label="Объём"
                   name="amount"
@@ -226,7 +276,7 @@ const FactForm: React.FC<FactFormProps> = ({
                   />
                 </Form.Item>
               </Col>
-              <Col span={8}>
+              <Col span={9}>
                 <Form.Item
                       label=""
                       name="unit"

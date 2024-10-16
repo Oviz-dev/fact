@@ -6,6 +6,7 @@ export interface FactDTO{
   factNumber: string;
   date: string;
   cost: number;
+  actualVAT?: number;
   amount?: number;
   unit?: {
     id: number;

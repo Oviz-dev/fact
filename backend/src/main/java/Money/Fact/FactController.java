@@ -38,6 +38,7 @@ public class FactController {
                     fact.setFactNumber(updatedFact.getFactNumber());
                     fact.setDate(updatedFact.getDate());
                     fact.setCost(updatedFact.getCost());
+                    fact.setActualVAT(updatedFact.getActualVAT());
                     fact.setAmount(updatedFact.getAmount());
                     fact.setUnit(updatedFact.getUnit());
                     fact.setObject(updatedFact.getObject());

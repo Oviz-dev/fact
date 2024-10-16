@@ -93,6 +93,7 @@ public class FactService {
         existingFact.setFactNumber(factDto.getFactNumber());
         existingFact.setDate(factDto.getDate());
         existingFact.setCost(factDto.getCost());
+        existingFact.setActualVAT(factDto.getActualVAT());
 
         // Получаем объект и PnL из репозиториев
         ObjectEntity object = objectRepository.findById(factDto.getObjectId())
@@ -116,6 +117,7 @@ public class FactService {
         fact.setFactNumber(factDto.getFactNumber());
         fact.setDate(factDto.getDate());
         fact.setCost(factDto.getCost());
+        fact.setActualVAT(factDto.getActualVAT());
         fact.setAmount(factDto.getAmount());
 
         // Преобразование ID в объекты через репозитории

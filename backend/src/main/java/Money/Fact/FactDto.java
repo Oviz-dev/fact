@@ -16,6 +16,7 @@ public class FactDto {
     private String factNumber;        // номер
     private LocalDate date;           // дата
     private BigDecimal cost;          // стоимость
+    private BigDecimal actualVAT;     // Фактический НДС
     private BigDecimal amount;        // количество
     private Long unitId;              // id единицы измерения
     private Long objectId;            // id объекта
