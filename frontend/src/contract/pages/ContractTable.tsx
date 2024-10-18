@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Table, Form, message } from 'antd';
 import { fetchContracts, deleteContract, updateContract} from '../services/ContractService';
 import { ContractDTO} from '../DTO/ContractDTO';
+import {formatNumber} from '../../functions/formatNumber'
 
 interface ContractTableProps {
   contracts: ContractDTO[];
@@ -29,10 +30,6 @@ const ContractTable: React.FC<ContractTableProps> = ({
     }
   };
 
-  // Функция форматирования чисел
-   const formatNumber = (value: number | null | undefined) => {
-      return value != null ? new Intl.NumberFormat('ru-RU').format(value) : '';
-  };
 
   const columns = [
     {

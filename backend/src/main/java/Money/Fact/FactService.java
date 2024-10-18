@@ -134,6 +134,14 @@ public class FactService {
         return fact;
     }
 
+    public Fact updateAcceptance(Long id, boolean isAccepted) {
+        Fact fact = factRepository.findById(id)
+                .orElseThrow(() -> new FactNotFoundException("Fact not found with id: " + id));
+
+        fact.setAccepted(isAccepted);  // Обновляем поле isAccepted
+        return factRepository.save(fact);
+    }
+
     public void deleteFact(Long id) {
         if (!factRepository.existsById(id)) {
             throw new FactNotFoundException("Fact not found with id: " + id);

@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class FactDto {
     private Long id;
+    private boolean isAccepted;       // состояние принятия факта
     private String name;              // наименование
     private String factNumber;        // номер
     private LocalDate date;           // дата

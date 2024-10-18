@@ -21,6 +21,9 @@ public class Fact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private boolean isAccepted;
+
     private String name; //наименование+
 
     @Column(nullable = false)

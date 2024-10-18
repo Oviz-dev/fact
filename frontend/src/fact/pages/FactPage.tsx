@@ -2,7 +2,7 @@ import { Layout, Drawer , message} from 'antd';
 import React, { useState, useEffect } from 'react';
 import FactForm from './FactForm';
 import FactTable from './FactTable';
-import { fetchFacts, createFact, deleteFact, updateFact } from '../services/factService';
+import { fetchFacts, createFact, deleteFact, updateFact} from '../services/factService';
 import { FactDTO } from '../DTO/FactDTO';
 import Header from '../../components/Header';
 import ControlPanel from '../../components/ControlPanel';
@@ -18,7 +18,7 @@ const { Content } = Layout;
 
 const FactPage = () => {
   const [facts, setFacts] = useState<FactDTO[]>([]);
-  const [contracts, setContracts] = useState<{ id: number; name: string }[]>([]); // Добавлено состояние для контрактов
+  const [contracts, setContracts] = useState<{ id: number; name: string; contractor?: string }[]>([]);
   const [units, setUnits] = useState<{ id: number; name: string }[]>([]);
   const [objects, setObjects] = useState<{ id: number; name: string }[]>([]);
   const [pnls, setPnls] = useState<{ id: number; name: string ; parentId: number | null }[]>([]);

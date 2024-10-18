@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Form, message } from 'antd';
 import { fetchFacts,  deleteFact, updateFact } from '../services/factService';
-import { FactDTO } from '../DTO/FactDTO';  // Импортируем FactDto
+import { FactDTO } from '../DTO/FactDTO';
+import {formatNumber} from '../../functions/formatNumber'
 
 interface FactTableProps {
   facts: FactDTO[];
@@ -29,15 +30,11 @@ const FactTable: React.FC<FactTableProps> = ({
     }
   };
 
-  // Функция форматирования чисел
-   const formatNumber = (value: number | null | undefined) => {
-      return value != null ? new Intl.NumberFormat('ru-RU').format(value) : '';
-  };
 
   const columns = [
     {
       title: '№',
-      width: '40px',
+      width: '50px',
       dataIndex: 'factNumber',
       key: 'factNumber',
     },
@@ -54,6 +51,12 @@ const FactTable: React.FC<FactTableProps> = ({
       dataIndex: 'date',
       key: 'factDate',
       sorter: (a:FactDTO, b:FactDTO) => a.date.localeCompare(b.date),
+    },
+    {
+      title: 'Принят',
+      width: '50px',
+      dataIndex: 'accepted',
+      key: 'accepted',
     },
     {
       title: 'Статья',

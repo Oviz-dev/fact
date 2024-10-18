@@ -2,6 +2,7 @@
 
 export interface FactDTO{
   id: number;
+  accepted: boolean;
   name: string;
   factNumber: string;
   date: string;

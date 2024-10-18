@@ -12,9 +12,10 @@ interface DropdownWithSearchProps {
   placeholder?: string;
   onChange: (value: number) => void;
   value?: number;
+  disabled?: boolean;
 }
 
-const DropdownWithSearch: React.FC<DropdownWithSearchProps> = ({ options, placeholder, onChange, value }) => {
+const DropdownWithSearch: React.FC<DropdownWithSearchProps> = ({ options, placeholder, onChange, value, disabled }) => {
   return (
     <Select
       showSearch
@@ -27,6 +28,7 @@ const DropdownWithSearch: React.FC<DropdownWithSearchProps> = ({ options, placeh
       }}
       value={value}
       style={{ width: '100%' }}
+      disabled={disabled}
     >
       {options.map(option => (
         <Select.Option key={option.id} value={option.id}>

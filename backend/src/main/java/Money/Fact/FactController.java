@@ -46,11 +46,24 @@ public class FactController {
                     fact.setBasis(updatedFact.getBasis());
                     fact.setDescription(updatedFact.getDescription());
                     fact.setPnl(updatedFact.getPnl());
+                    fact.setAccepted(updatedFact.isAccepted());
                     factRepository.save(fact);
                     return ResponseEntity.ok(fact);
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @PutMapping("/{id}/accept")
+    public ResponseEntity<Object> updateAcceptance(@PathVariable Long id, @RequestBody boolean isAccepted) {
+        return factRepository.findById(id)
+                .map(fact -> {
+                    fact.setAccepted(isAccepted);
+                    factRepository.save(fact);
+                    return ResponseEntity.ok().build();
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteFact(@PathVariable Long id) {
