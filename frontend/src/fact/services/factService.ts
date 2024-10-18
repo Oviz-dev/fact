@@ -31,6 +31,11 @@ export const updateFact = async (id: number, fact: FactDTO): Promise<FactDTO> =>
     return response.data;
 };
 
+export const fetchFactsByContract = async (contractId: number): Promise<FactDTO[]> => {
+  const response = await axios.get(`${API_URL}/byContract/${contractId}`);
+  return response.data;
+};
+
 // Обновление существующего статуса приёмки
 export const updateFactAccept = async (id: number, accepted: boolean): Promise<void> => {
     await axios.put(`${API_URL}/${id}/accept`, JSON.stringify(accepted), {

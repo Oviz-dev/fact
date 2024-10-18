@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface FactRepository extends JpaRepository<Fact, Long>, JpaSpecificationExecutor<Fact> {
     // Проверка уникальности факта по нескольким полям
@@ -19,6 +20,8 @@ public interface FactRepository extends JpaRepository<Fact, Long>, JpaSpecificat
     boolean existsByPnlId(Long pnlId);
     boolean existsByUnitId(Long unitId);
     boolean existsByObjectId(Long objectId);
+
+    List<Fact> findByContractId(Long contractId);
 
 }
 

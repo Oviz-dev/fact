@@ -84,6 +84,8 @@ public class FactService {
                 .orElseThrow(() -> new ObjectNotFoundException("Объект не найден"));
     }
 
+
+
     public Fact updateFact(Long id, FactDto factDto) {
         Fact existingFact = factRepository.findById(id)
                 .orElseThrow(() -> new FactNotFoundException("Fact not found with id: " + id));

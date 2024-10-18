@@ -25,6 +25,11 @@ public class FactController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/byContract/{contractId}")
+    public List<Fact> getFactsByContractId(@PathVariable Long contractId) {
+        return factRepository.findByContractId(contractId);
+    }
+
     @PostMapping
     public Fact createFact(@RequestBody Fact fact) {
         return factRepository.save(fact);
