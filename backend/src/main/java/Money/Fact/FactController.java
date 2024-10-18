@@ -30,6 +30,7 @@ public class FactController {
         return factRepository.findByContractId(contractId);
     }
 
+
     @PostMapping
     public Fact createFact(@RequestBody Fact fact) {
         return factRepository.save(fact);

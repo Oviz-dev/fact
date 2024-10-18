@@ -31,3 +31,12 @@ export const updateContract = async (id: number, contract: ContractDTO): Promise
 export const deleteContract = async (id: number): Promise<void> => {
     await axios.delete(`${API_URL}/${id}`);
 };
+
+export const updateContractFact = async (id: number, actualCostWithoutVAT: number | string): Promise<void> => {
+    if (typeof actualCostWithoutVAT !== 'number' && typeof actualCostWithoutVAT !== 'string') {
+        console.error("Invalid actualCostWithoutVAT: ", actualCostWithoutVAT);
+        throw new Error("actualCostWithoutVAT must be a number or string");
+    }
+
+    await axios.patch(`${API_URL}/${id}/fact`, { actualCostWithoutVAT });
+};

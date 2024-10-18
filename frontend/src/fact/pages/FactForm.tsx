@@ -7,15 +7,16 @@ import HierarchicalDropdown from '../../components/HierarchicalDropdown';
 import moment from 'moment';
 import axios from 'axios';
 import {updateFactAccept} from '../services/factService';
+import { updateContractFact } from '../../contract/services/ContractService';
 
 const { Option } = Select;
-const API_URL = 'http://localhost:8080/api/facts';
+
 
 interface FactFormProps {
   onSubmit: (FactData: FactDTO) => void;
   initialValues?: FactDTO | null;
   isEditing?: boolean;
-  contracts: { id: number; name: string; contractor?: string }[];
+  contracts: { id: number; name: string; contractor?: string ; actualCostWithoutVAT?: number}[];
   units: { id: number; name: string }[];
   objects: { id: number; name: string }[];
   pnls: { id: number; name: string; parentId: number | null }[];
@@ -44,10 +45,18 @@ const FactForm: React.FC<FactFormProps> = ({
   const [contractor, setContractor] = useState<string | undefined>(undefined);
 
     const toggleAcceptance = async () => {
-      if (!initialValues) return;
+      if (!initialValues || !initialValues.contract) return;
       try {
-        await updateFactAccept(initialValues.id, !accepted);
-        setAccepted(!accepted);
+          const isAccepting = !accepted;
+          const costChange = isAccepting ? initialValues.cost : -initialValues.cost;
+          await updateFactAccept(initialValues.id, !accepted);
+          const newActualCostWithoutVAT = (initialValues.contract.actualCostWithoutVAT || 0) + costChange;
+          if (newActualCostWithoutVAT === null || newActualCostWithoutVAT === undefined) {
+              console.error("Invalid actualCostWithoutVAT: ", newActualCostWithoutVAT);
+              throw new Error("actualCostWithoutVAT must be a number or string");
+          }
+          await updateContractFact(initialValues.contract.id, newActualCostWithoutVAT);
+          setAccepted(!accepted);
       } catch (error) {
         message.error('Ошибка при обновлении состояния');
       }
@@ -59,14 +68,14 @@ const FactForm: React.FC<FactFormProps> = ({
         ...initialValues,
         accepted: initialValues.accepted,
         contract: initialValues.contract?.id || undefined,
-        //contractor: initialValues.contract?.contractor || undefined,
+        contractor: initialValues.contract?.contractor || undefined,
         unit: initialValues.unit?.id || undefined,
         object: initialValues.object?.id || undefined,
         pnl: initialValues.pnl?.id || undefined,
         date: initialValues.date ? moment(initialValues.date, 'YYYY-MM-DD') : null,
       });
       setSelectedContractId(initialValues.contract?.id || undefined);
-      //setSelectedContractor(initialValues.contract?.contractor || undefined);
+      setSelectedContractor(initialValues.contract?.contractor || undefined);
       setSelectedUnitId(initialValues.unit?.id || undefined);
       setSelectedObjectId(initialValues.object?.id || undefined);
       setSelectedPnlId(initialValues.pnl?.id || undefined);

@@ -1,12 +1,16 @@
 package Money.Contract;
 
+import Money.Fact.FactRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
+
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -17,11 +21,39 @@ import java.util.Optional;
 public class ContractController {
 
     private final ContractService contractService;
+    private final ContractRepository contractRepository;
 
     @Autowired
-    public ContractController(ContractService contractService) {
+    public ContractController(ContractService contractService, FactRepository factRepository, ContractRepository contractRepository) {
         this.contractService = contractService;
+        this.contractRepository = contractRepository;
     }
+
+    @PatchMapping("/{id}/fact")
+    public ResponseEntity<Object> updateContractFact(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        return contractRepository.findById(id)
+                .map(contract -> {
+                    if (updates.containsKey("actualCostWithoutVAT")) {
+                        // Безопасное преобразование из строки или числа в BigDecimal
+                        Object value = updates.get("actualCostWithoutVAT");
+                        BigDecimal actualCost;
+
+                        if (value instanceof String) {
+                            actualCost = new BigDecimal((String) value);
+                        } else if (value instanceof Number) {
+                            actualCost = new BigDecimal(value.toString());
+                        } else {
+                            throw new IllegalArgumentException("actualCostWithoutVAT must be a number or string");
+                        }
+
+                        contract.setActualCostWithoutVAT(actualCost);
+                    }
+                    contractRepository.save(contract);
+                    return ResponseEntity.ok().build();
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 
     // Получение всех контрактов
     @GetMapping

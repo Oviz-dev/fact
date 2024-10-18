@@ -20,6 +20,8 @@ export interface FactDTO{
   contract?: {
     id: number;
     name: string;
+    actualCostWithoutVAT?: number;
+    contractor?: string ;
   };
   pnl?: {
     id: number;
