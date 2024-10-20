@@ -4,7 +4,6 @@ import UnitForm from './UnitForm';
 import UnitTable from './UnitTable';
 import { UnitDTO } from '../DTO/UnitDTO';
 import { fetchUnits, importUnits } from '../services/unitService';
-import Header from '../../components/Header';
 import ControlPanel from '../../components/ControlPanel';
 import { exportData} from '../../functions/exportData';
 import { importFile } from '../../functions/importFile';
@@ -62,7 +61,6 @@ const UnitPage: React.FC = () => {
 
   return (
     <Layout style={{ padding: '10px' }}>
-      <Header/>
       <Content style={{ margin: '10px 10px 0' }}>
           <Row gutter={10}>
             <Col flex="60%">

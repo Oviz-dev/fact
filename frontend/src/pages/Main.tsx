@@ -5,7 +5,7 @@ const { Content } = Layout;
 
 const Main: React.FC = () => {
   return (
-    <Layout style={{ padding: '10px' }}>
+    <Layout style={{ padding: '10px',  height: '90vh' }}>
       <Header />
       <Content >
         <div style={{ background: '#fff', padding: 10, minHeight: 380 }}>

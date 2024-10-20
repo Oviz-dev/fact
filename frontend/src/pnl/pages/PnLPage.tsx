@@ -4,7 +4,6 @@ import { PnLDTO } from '../DTO/PnLDTO';
 import { fetchPnL, createPnL, deletePnL } from '../services/PnLService';
 import PnLForm from './PnLForm';
 import PnLTree from './PnLTree';
-import Header from '../../components/Header';
 import { DeleteOutlined } from '@ant-design/icons';
 import ControlPanel from '../../components/ControlPanel';
 
@@ -63,7 +62,6 @@ const PnLPage: React.FC = () => {
 
   return (
     <Layout style={{ padding: '10px' }}>
-      <Header />
       <Content style={{ margin: '10px 10px 0' }}>
         <Row gutter={10}>
           <Col >

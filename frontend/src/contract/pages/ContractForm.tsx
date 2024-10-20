@@ -78,7 +78,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
   return (
     <Form form={form} layout="horizontal" onFinish={handleSubmit}>
     <Tabs defaultActiveKey="1">
-        <TabPane tab="Общая информация" key="1">
+        <TabPane tab="Основные сведения" key="1">
           <Card
           title="Общая информация"
           style={{ marginBottom: 10}}
@@ -261,6 +261,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                         style={{ width: '150px' }}
                         placeholder="Введите стоимость без НДС"
                         formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                        disabled
                       />
                     </Form.Item>
                   </Col>
