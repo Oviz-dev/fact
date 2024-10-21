@@ -179,7 +179,7 @@ const FactPage = () => {
 
         <Drawer
           title={isEditing ? "Редактировать" : "Создать"}
-          width={'40%'}
+          width={'50%'}
           onClose={handleDrawerClose}
           visible={isDrawerVisible}
           bodyStyle={{ paddingBottom: 80 }}

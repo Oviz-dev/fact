@@ -1,18 +1,14 @@
-//ContractForm
-import { CheckOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, DatePicker, Select, InputNumber, Row, Col, Card, Tabs,  message } from 'antd';
-import FactTable from '../../fact/pages/FactContractTable';
+import { CheckOutlined } from '@ant-design/icons';
+import { Form, Input, Button, DatePicker, Select, InputNumber, Card, Tabs, message, Collapse} from 'antd';
 import { ContractDTO, ContractStatus, ContractType, Contractor } from '../DTO/ContractDTO';
 import { fetchFactsByContract } from '../../fact/services/factService';
 import { FactDTO } from '../../fact/DTO/FactDTO';
-
+import FactTable from '../../fact/pages/FactContractTable';
 import moment from 'moment';
-
 
 const { Option } = Select;
 const { TabPane } = Tabs;
-const widthValue = 150;
 
 interface ContractFormProps {
   onSubmit: (contractData: ContractDTO) => void;
@@ -30,10 +26,10 @@ const ContractForm: React.FC<ContractFormProps> = ({
   const [plannedCostWithoutVAT, setPlannedCostWithoutVAT] = useState<number>(0);
   const [plannedVAT, setPlannedVAT] = useState<number>(0);
 
-    useEffect(() => {
-      const calculatedPlannedCost = plannedCostWithoutVAT + plannedVAT;
-      form.setFieldsValue({ plannedCost: calculatedPlannedCost });
-    }, [plannedCostWithoutVAT, plannedVAT, form]);
+  useEffect(() => {
+    const calculatedPlannedCost = plannedCostWithoutVAT + plannedVAT;
+    form.setFieldsValue({ plannedCost: calculatedPlannedCost });
+  }, [plannedCostWithoutVAT, plannedVAT, form]);
 
   useEffect(() => {
     if (initialValues?.id) {
@@ -55,8 +51,6 @@ const ContractForm: React.FC<ContractFormProps> = ({
     }
   }, [initialValues, form]);
 
-
-  // Обработчик отправки формы
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
@@ -74,8 +68,8 @@ const ContractForm: React.FC<ContractFormProps> = ({
         contractDate: values.contractDate ? values.contractDate.format('YYYY-MM-DD') : undefined,
         startDate: values.startDate ? values.startDate.format('YYYY-MM-DD') : undefined,
         endDate: values.endDate ? values.endDate.format('YYYY-MM-DD') : undefined,
-    };
-    await onSubmit(contractData);
+      };
+      await onSubmit(contractData);
       if (!isEditing) {
         form.resetFields();
       }
@@ -85,263 +79,267 @@ const ContractForm: React.FC<ContractFormProps> = ({
     }
   };
 
+  // Общий стиль для всех InputNumber
+  const inputNumberStyle = { width: '100%' };
+
+  // Общий стиль для карточек
+  const cardStyle = { marginBottom: '1rem' };
+
   return (
-    <Form form={form} layout="horizontal" onFinish={handleSubmit}>
-    <Tabs defaultActiveKey="1">
-        <TabPane tab="Основные сведения" key="1">
-          <Card
-          title="Общая информация"
-          style={{ marginBottom: 10}}
-          headStyle={{ backgroundColor:'#d9ffe0', color: '#1c6900' }}
-          >
-            <Row gutter={16}>
-                <Col span={24}>
-                    <Form.Item
-                      label="Наименование"
-                      name="name"
-                      style={{ marginBottom: 10}}
-                      rules={[{ required: true, message: 'Введите наименование договора' }]}
-                    >
-                      <Input placeholder="Введите наименование договора" style={{ marginBottom: 10}}/>
-                    </Form.Item>
-                </Col>
-            </Row>
-            <Row gutter={16}>
-            <Col span={24}>
-                <Form.Item
-                  label="Подрядчик"
-                  name="contractor"
-                  style={{ marginBottom: 10}}
-                  rules={[{ required: true, message: 'Выберите подрядчика' }]}
-                >
-                  <Select placeholder="Выберите подрядчика" style={{ marginBottom: 10}}>
-                    {Object.values(Contractor).map(contractor => (
-                      <Option key={contractor} value={contractor}>
-                        {contractor}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-                </Col>
-            </Row>
-            <Row gutter={16}>
-                <Col span={12}>
-                    <Form.Item
-                      label="Номер "
-                      name="contractNumber"
-                      style={{ marginBottom: 10}}
-                      rules={[{ required: true, message: 'Введите номер' }]}
-                    >
-                      <Input placeholder="Введите номер" style={{ marginBottom: 10, width: widthValue }}/>
-                    </Form.Item>
-                </Col>
-                <Col span={12}>
-                    <Form.Item
-                      label="Дата "
-                      name="contractDate"
-                      style={{ marginBottom: 10}}
-                      rules={[{ required: true, message: 'Выберите дату ' }]}
-                    >
-                      <DatePicker format="YYYY-MM-DD" style={{ marginBottom: 10, width: widthValue}} />
-                    </Form.Item>
-                </Col>
-            </Row>
-            <Row gutter={16}>
-                <Col span={12}>
-                    <Form.Item
-                      label="Статус "
-                      name="status"
-                      style={{ marginBottom: 10}}
-                      rules={[{ required: true, message: 'Выберите статус ' }]}
-                    >
-                      <Select placeholder="Выберите статус" style={{ marginBottom: 10, width: widthValue}}>
-                        {Object.values(ContractStatus).map(status => (
-                          <Option key={status} value={status}>
-                            {status}
-                          </Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                </Col>
-                <Col span={12}>
-                    <Form.Item
-                      label="Тип"
-                      name="type"
-                      rules={[{ required: true, message: 'Выберите тип ' }]}
-                      style={{ marginBottom: 10}}
-                    >
-                      <Select placeholder="Выберите тип" style={{ marginBottom: 10, width: widthValue}}>
-                        {Object.values(ContractType).map(type => (
-                          <Option key={type} value={type}>
-                            {type}
-                          </Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                </Col>
-            </Row>
-          </Card>
-
-          <Card
-              title="Плановые показатели"
-              style={{ marginBottom: 10}}
-              headStyle={{ backgroundColor: '#ddbfdd', color: '#333752' }}
-          >
-              <Row gutter={16}>
-                  <Col span={8}>
-                    <Form.Item
-                      label="Стоимость без НДС"
-                      name="plannedCostWithoutVAT"
-                      style={{ marginBottom: 10}}
-                      rules={[{ required: true, message: 'Введите плановую стоимость без НДС' }]}
-                    >
-                      <InputNumber
-                        min={0}
-                        style={{ marginBottom: 10, width:widthValue } }
-                        placeholder="Введите плановую стоимость без НДС"
-                        formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                        onChange={value => setPlannedCostWithoutVAT(value || 0)}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col span={8}>
-                    <Form.Item
-                      label="НДС, руб."
-                      name="plannedVAT"
-                      style={{ marginBottom: 10, float: 'right'}}
-                      rules={[{ required: false}]}
-                    >
-                      <InputNumber
-                        min={0}
-                        style={{ marginBottom: 10, width: widthValue } }
-                        placeholder="Введите НДС"
-                        formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                        onChange={value => setPlannedVAT(value || 0)}
-                      />
-                    </Form.Item>
-                  </Col>
-
-                  <Col span={8}>
-                    <Form.Item
-                      label="Стоимость с НДС"
-                      name="plannedCost"
-                    >
-                      <InputNumber
-                        disabled style={{ marginBottom: 10, width: widthValue } }
-                        formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                      />
-                    </Form.Item>
-                  </Col>
-              </Row>
-              <Row gutter={16}>
-                  <Col span={8}>
-                    <Form.Item
-                      label="Гарантийный резерв, %"
-                      name="warrantyReserve"
-                      style={{ marginBottom: 10, width: '345px'}}
-                      rules={[{ required: false }]}
-                    >
-                      <InputNumber
-                        min={0}
-                        max={100}
-                        style={{ marginBottom: 10, width: widthValue, float: 'right'} }
-                        placeholder="Введите %"
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col span={8}>
-                    <Form.Item
-                      label=" Аванс, %"
-                      name="plannedAdvancePercent"
-                      rules={[{ required: false }]}
-                      style={{ marginBottom: 10, float: 'right'}}
-                    >
-                      <InputNumber
-                        min={0}
-                        max={100}
-                        style={{ marginBottom: 10, width: widthValue , float: 'right'} }
-                        placeholder="Введите %"
-                      />
-                    </Form.Item>
-                  </Col>
-                  </Row>
-          </Card>
-
-          <Card
-            title="Фактические показатели"
-            style={{ marginBottom: 10}}
-            headStyle={{ backgroundColor:'#ffe8d9', color: '#000' }}
-          >
-              <Row gutter={16}>
-                  <Col span={12}>
-
-                    <Form.Item
-                      label="Выполнение, руб. без НДС "
-                      name="actualCostWithoutVAT"
-                      rules={[{ required: false }]}
-                    >
-                      <InputNumber
-                        min={0}
-                        style={{ width: '150px' }}
-                        placeholder="Введите стоимость без НДС"
-                        formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                        disabled
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item
-                      label="НДС, руб."
-                      name="actualVAT"
-                      rules={[{ required: false }]}
-                      style={{ marginBottom: 10, float: 'right'}}
-                    >
-                      <InputNumber
-                        min={0}
-                        placeholder="Введите НДС"
-                        formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                        style={{ marginBottom: 10, width: widthValue , float: 'right'} }
-                      />
-                    </Form.Item>
-                  </Col>
-              </Row>
-                <Form.Item
-                  label="Выплаченный аванс, руб."
-                  name="actualAdvance"
-                  rules={[{ required: false }]}
-                >
-                  <InputNumber
-                    min={0}
-                    style={{ width: '150px' }}
-                    placeholder="Введите фактический аванс"
-                    formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                  />
-                </Form.Item>
-          </Card>
-        </TabPane>
-        <TabPane tab="Выполнение" key="2">
-              {initialValues?.id ? (
-                <FactTable
-                  facts={facts}
-                  refreshFacts={() => fetchFactsByContract(initialValues.id).then(setFacts)}
-                  onEdit={() => {}}
-                  SelectedFact={null}
-                />
-              ) : (
-                <p>Нет контракта</p>
-              )}
-        </TabPane>
-    </Tabs>
-      <Button
-        type="primary"
-        htmlType="submit"
-        icon={<CheckOutlined />}
-        style={{ marginTop: 20 }}
+    <div className="contract-form-container">
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
+        className="w-full"
       >
-        {isEditing ? 'Сохранить' : 'Создать'}
-      </Button>
+        <Button
+          type="primary"
+          htmlType="submit"
+          icon={<CheckOutlined />}
+          className="mt-4"
+        >
+          {isEditing ? 'Сохранить' : 'Создать'}
+        </Button>
+        <Tabs defaultActiveKey="1" className="w-full">
+          <TabPane tab="Основные сведения" key="1">
+            <div className="space-y-4">
+              <Collapse defaultActiveKey={['1','2','3']}>
+                  <Collapse.Panel
+                    header="Общая информация"
+                    key="1"
+                    style={{
+                      backgroundColor: '#d9ffe0',
+                      color: '#1c6900',
+                      cursor: 'pointer'
+                    }}
+                    className="w-full"
+                    showArrow={true}
+                    collapsible="header"
+                  >
+                      <Card
+                        className="w-full"
+                      >
+                        <Form.Item
+                          label="Наименование"
+                          name="name"
+                          rules={[{ required: true, message: 'Введите наименование договора' }]}
+                        >
+                          <Input placeholder="Введите наименование договора" />
+                        </Form.Item>
 
-    </Form>
+                        <Form.Item
+                          label="Подрядчик"
+                          name="contractor"
+                          rules={[{ required: true, message: 'Выберите подрядчика' }]}
+                        >
+                          <Select placeholder="Выберите подрядчика">
+                            {Object.values(Contractor).map(contractor => (
+                              <Option key={contractor} value={contractor}>{contractor}</Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <Form.Item
+                            label="Номер"
+                            name="contractNumber"
+                            rules={[{ required: true, message: 'Введите номер' }]}
+                          >
+                            <Input placeholder="Введите номер" />
+                          </Form.Item>
+
+                          <Form.Item
+                            label="Дата"
+                            name="contractDate"
+                            rules={[{ required: true, message: 'Выберите дату' }]}
+                          >
+                            <DatePicker className="w-full" format="YYYY-MM-DD" />
+                          </Form.Item>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <Form.Item
+                            label="Статус"
+                            name="status"
+                            rules={[{ required: true, message: 'Выберите статус' }]}
+                          >
+                            <Select placeholder="Выберите статус">
+                              {Object.values(ContractStatus).map(status => (
+                                <Option key={status} value={status}>{status}</Option>
+                              ))}
+                            </Select>
+                          </Form.Item>
+
+                          <Form.Item
+                            label="Тип"
+                            name="type"
+                            rules={[{ required: true, message: 'Выберите тип' }]}
+                          >
+                            <Select placeholder="Выберите тип">
+                              {Object.values(ContractType).map(type => (
+                                <Option key={type} value={type}>{type}</Option>
+                              ))}
+                            </Select>
+                          </Form.Item>
+                        </div>
+                      </Card>
+                  </Collapse.Panel>
+                  <Collapse.Panel
+                    header="Плановые показатели"
+                    key="2"
+                    style={{
+                      backgroundColor: '#ddbfdd',
+                      color: '#333752',
+                      cursor: 'pointer'
+                    }}
+                    className="w-full"
+                    showArrow={true}
+                    collapsible="header"
+                  >
+                      <Card
+                        className="w-full"
+                      >
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <Form.Item
+                            label="Стоимость без НДС"
+                            name="plannedCostWithoutVAT"
+                            rules={[{ required: true, message: 'Введите плановую стоимость без НДС' }]}
+                          >
+                            <InputNumber
+                              style={inputNumberStyle}
+                              min={0}
+                              placeholder="Введите стоимость"
+                              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                              onChange={value => setPlannedCostWithoutVAT(value || 0)}
+                            />
+                          </Form.Item>
+
+                          <Form.Item
+                            label="НДС, руб."
+                            name="plannedVAT"
+                          >
+                            <InputNumber
+                              style={inputNumberStyle}
+                              min={0}
+                              placeholder="Введите НДС"
+                              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                              onChange={value => setPlannedVAT(value || 0)}
+                            />
+                          </Form.Item>
+
+                          <Form.Item
+                            label="Стоимость с НДС"
+                            name="plannedCost"
+                          >
+                            <InputNumber
+                              style={inputNumberStyle}
+                              disabled
+                              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                            />
+                          </Form.Item>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <Form.Item
+                            label="Гарантийный резерв, %"
+                            name="warrantyReserve"
+                          >
+                            <InputNumber
+                              style={inputNumberStyle}
+                              min={0}
+                              max={100}
+                              placeholder="Введите %"
+                            />
+                          </Form.Item>
+
+                          <Form.Item
+                            label="Аванс, %"
+                            name="plannedAdvancePercent"
+                          >
+                            <InputNumber
+                              style={inputNumberStyle}
+                              min={0}
+                              max={100}
+                              placeholder="Введите %"
+                            />
+                          </Form.Item>
+                        </div>
+                      </Card>
+                  </Collapse.Panel>
+                  <Collapse.Panel
+                    header="Фактические показатели"
+                    key="3"
+                    style={{
+                      backgroundColor: '#ffe8d9',
+                      color: '#000',
+                      cursor: 'pointer'
+                    }}
+                    className="w-full"
+                    showArrow={true}
+                    collapsible="header"
+                  >
+                      {/* Фактические показатели */}
+                      <Card className="w-full">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <Form.Item
+                            label="Выполнение, руб. без НДС"
+                            name="actualCostWithoutVAT"
+                          >
+                            <InputNumber
+                              style={inputNumberStyle}
+                              min={0}
+                              disabled
+                              placeholder="Введите стоимость без НДС"
+                              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                            />
+                          </Form.Item>
+
+                          <Form.Item
+                            label="НДС, руб."
+                            name="actualVAT"
+                          >
+                            <InputNumber
+                              style={inputNumberStyle}
+                              min={0}
+                              placeholder="Введите НДС"
+                              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                            />
+                          </Form.Item>
+                        </div>
+
+                        <Form.Item
+                          label="Выплаченный аванс, руб."
+                          name="actualAdvance"
+                        >
+                          <InputNumber
+                            style={inputNumberStyle}
+                            min={0}
+                            placeholder="Введите фактический аванс"
+                            formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                          />
+                        </Form.Item>
+                      </Card>
+                  </Collapse.Panel>
+              </Collapse>
+            </div>
+          </TabPane>
+
+          <TabPane tab="Выполнение" key="2">
+            {initialValues?.id ? (
+              <FactTable
+                facts={facts}
+                refreshFacts={() => fetchFactsByContract(initialValues.id).then(setFacts)}
+                onEdit={() => {}}
+                SelectedFact={null}
+              />
+            ) : (
+              <p>Нет контракта</p>
+            )}
+          </TabPane>
+        </Tabs>
+      </Form>
+    </div>
   );
 };
 

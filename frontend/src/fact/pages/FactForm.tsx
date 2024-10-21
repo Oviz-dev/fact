@@ -1,6 +1,6 @@
 import { CheckOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, DatePicker, Select, InputNumber, Row, Col, Card, message } from 'antd';
+import { Form, Input, Button, DatePicker, Select, InputNumber, Row, Col, Card, message, Collapse } from 'antd';
 import { FactDTO } from '../DTO/FactDTO';
 import DropdownWithSearch from '../../components/DropdownWithSearch';
 import HierarchicalDropdown from '../../components/HierarchicalDropdown';
@@ -147,242 +147,228 @@ const FactForm: React.FC<FactFormProps> = ({
   const isFieldDisabled = () => accepted;
   const isEditingForm=() => isEditing;
 
+  // Общий стиль для всех InputNumber
+  const inputNumberStyle = { width: '100%' };
+
+  // Общий стиль для карточек
+  const cardStyle = { marginBottom: '1rem' };
+
   return (
-    <Form form={form} layout="horizontal" onFinish={handleSubmit}>
-      <Card
-        title="Общая информация"
-        style={{ marginBottom: 10 }}
-        headStyle={{ backgroundColor: '#d9ffe0', color: '#1c6900' }}
-      >
-        <Row gutter={16}>
-          <Col span={24}>
-            <Form.Item
-              label="Наименование"
-              name="name"
-              style={{ marginBottom: 10 }}
-              labelCol={{ span: 6 }}
-              wrapperCol={{ span: 18 }}
-              rules={[{ required: true, message: 'Введите наименование' }]}
-            >
-              <Input
-                placeholder="Введите наименование"
-                style={{ marginBottom: 10 }}
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmit}
+          className="w-full"
+        >
+            <Button
+                type="primary"
+                htmlType="submit"
+                icon={<CheckOutlined />}
+                style={{ margin: 10 }}
                 disabled={isFieldDisabled()}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
+            >
+                {isEditing ? 'Сохранить' : 'Создать'}
+            </Button>
 
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              label="Договор"
-              name="contract"
-              labelCol={{ span: 12 }}
-              wrapperCol={{ span: 12 }}
-              rules={[{ required: true, message: 'Выберите договор' }]}
+            <Button
+                type="default"
+                onClick={toggleAcceptance}
+                style={{ margin: 10}}
+                disabled={!isEditingForm()}
             >
-              <DropdownWithSearch
-                options={contracts}
-                value={selectedContractId}
-                placeholder="Выберите договор"
-                onChange={handleContractChange}
-                disabled={isFieldDisabled()}
-              />
-            </Form.Item>
-          </Col>
-        {contractor && (
-            <Col span={12}>
-              <Form.Item
-              label="Подрядчик"
-              labelCol={{ span: 12 }}
-              wrapperCol={{ span: 12 }}
-              >
-                <Input
-                  value={selectedContractor}
-                  disabled
-                  style={{ marginBottom: 10, width: widthValue }}
-                />
-              </Form.Item>
-            </Col>
-        )}
-        </Row>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              label="Объект"
-              name="object"
-              rules={[{ required: true, message: 'Выберите объект' }]}
-              labelCol={{ span: 12 }}
-              wrapperCol={{ span: 12 }}
-            >
-              <DropdownWithSearch
-                options={objects}
-                value={selectedObjectId}
-                placeholder="Выберите объект"
-                onChange={handleObjectChange}
-                disabled={isFieldDisabled()}
-              />
-            </Form.Item>
-          </Col>
+                {accepted ? 'Отменить' : 'Принять'}
+            </Button>
+                <Collapse defaultActiveKey={['1','2']}>
+                    <Collapse.Panel
+                        header="Общая информация"
+                        key="1"
+                        style={{
+                        backgroundColor: '#d9ffe0',
+                        color: '#1c6900',
+                        cursor: 'pointer'
+                        }}
+                        className="w-full"
+                        showArrow={true}
+                        collapsible="header"
+                    >
+                        <Card >
 
-          <Col span={12}>
-            <Form.Item
-              label="Статья учёта"
-              name="pnl"
-              rules={[{ required: true, message: 'Выберите статью' }]}
-              labelCol={{ span: 12 }}
-              wrapperCol={{ span: 12 }}
-            >
-              <DropdownWithSearch
-                options={pnls}
-                value={selectedPnlId}
-                placeholder="Выберите статью"
+                            <Form.Item
+                                label="Наименование"
+                                name="name"
+                                rules={[{ required: true, message: 'Введите наименование' }]}
+                            >
+                                <Input
+                                    placeholder="Введите наименование"
+                                    disabled={isFieldDisabled()}
+                                />
+                            </Form.Item>
 
-                onChange={handlePnlChange}
-                disabled={isFieldDisabled()}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              label="№"
-              name="factNumber"
-              style={{ marginBottom: 10}}
-              rules={[{ required: true, message: 'Введите номер' }]}
-              labelCol={{ span: 12 }}
-              wrapperCol={{ span: 12 }}
-            >
-              <Input
-                placeholder="Введите номер"
-                style={{ marginBottom: 10, width: widthValue }}
-                disabled={isFieldDisabled()}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="Дата "
-              name="date"
-              style={{ marginBottom: 10}}
-              rules={[{ required: true, message: 'Выберите дату ' }]}
-              labelCol={{ span: 12 }}
-              wrapperCol={{ span: 12}}
-            >
-              <DatePicker
-                format="YYYY-MM-DD"
-                value={initialValues?.date ? moment(initialValues.date, 'YYYY-MM-DD') : null}
-                style={{ marginBottom: 10, width: widthValue }}
-                disabled={isFieldDisabled()}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-      </Card>
-      <Card
-        title="Фактические показатели"
-        style={{ marginBottom: 10 }}
-        headStyle={{ backgroundColor: '#ffe8d9', color: '#000' }}
-      >
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              label="Сумма без НДС"
-              name="cost"
-              rules={[{ required: true, message: 'Внесите стоимость' }]}
-              style={{ marginBottom: 10}}
-              labelCol={{ span: 12}}
-              wrapperCol={{ span: 12}}
-            >
-              <InputNumber
-                min={0}
-                style={{marginBottom: 10, width: widthValue }}
-                placeholder="Введите стоимость без НДС"
-                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                disabled={isFieldDisabled()}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label="НДС, руб."
-              name="actualVAT"
-              rules={[{ required: false }]}
-              style={{marginBottom: 10}}
-              labelCol={{ span: 12 }}
-              wrapperCol={{ span: 12}}
-            >
-              <InputNumber
-                min={0}
-                style={{ marginBottom: 10, width: widthValue }}
-                placeholder="Введите НДС"
-                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                disabled={isFieldDisabled()}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              label="Объём"
-              name="amount"
-              rules={[{ required: false }]}
-              style={{ marginBottom: 10}}
-              labelCol={{ span:12 }}
-              wrapperCol={{ span: 12}}
-            >
-              <InputNumber
-                min={0}
-                style={{marginBottom: 10, width: widthValue}}
-                placeholder="Введите количество"
-                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                disabled={isFieldDisabled()}
-              />
-            </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item
-              label="Единицы"
-              name="unit"
-              rules={[{ required: false, message: 'Выберите единицу' }]}
-              labelCol={{ span: 12}}
-              wrapperCol={{ span:12}}
-              style={{marginBottom: 10}}
-            >
-              <DropdownWithSearch
-                options={units}
-                placeholder="Выберите единицу"
-                onChange={handleUnitChange}
-                disabled={isFieldDisabled()}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-      </Card>
-
-      <Button
-        type="primary"
-        htmlType="submit"
-        icon={<CheckOutlined />}
-        style={{ marginTop: 20 }}
-        disabled={isFieldDisabled()}
-      >
-        {isEditing ? 'Сохранить' : 'Создать'}
-      </Button>
-
-      <Button
-        type="default"
-        onClick={toggleAcceptance}
-        style={{ marginTop: 20, marginLeft: 10 }}
-        disabled={!isEditingForm()}
-      >
-        {accepted ? 'Отменить' : 'Принять'}
-      </Button>
-    </Form>
+                            <Row gutter={[16, 16]}>
+                              <Col xs={24} md={12}>
+                                <Form.Item
+                                    label="Договор"
+                                    name="contract"
+                                    rules={[{ required: true, message: 'Выберите договор' }]}
+                                >
+                                    <DropdownWithSearch
+                                        options={contracts}
+                                        value={selectedContractId}
+                                        placeholder="Выберите договор"
+                                        onChange={handleContractChange}
+                                        disabled={isFieldDisabled()}
+                                    />
+                                </Form.Item>
+                              </Col>
+                              <Col xs={24} md={12}>
+                                {contractor && (
+                                <Form.Item label="Подрядчик">
+                                    <Input
+                                        value={selectedContractor}
+                                        disabled
+                                    />
+                                </Form.Item>
+                                )}
+                              </Col>
+                            </Row>
+                            <Row gutter={[16, 16]}>
+                              <Col xs={24} md={12}>
+                                <Form.Item
+                                    label="Объект"
+                                    name="object"
+                                    rules={[{ required: true, message: 'Выберите объект' }]}
+                                >
+                                    <DropdownWithSearch
+                                        options={objects}
+                                        value={selectedObjectId}
+                                        placeholder="Выберите объект"
+                                        onChange={handleObjectChange}
+                                        disabled={isFieldDisabled()}
+                                    />
+                                </Form.Item>
+                              </Col>
+                              <Col xs={24} md={12}>
+                                <Form.Item
+                                    label="Статья учёта"
+                                    name="pnl"
+                                    rules={[{ required: true, message: 'Выберите статью' }]}
+                                >
+                                    <DropdownWithSearch
+                                        options={pnls}
+                                        value={selectedPnlId}
+                                        placeholder="Выберите статью"
+                                        onChange={handlePnlChange}
+                                        disabled={isFieldDisabled()}
+                                    />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                            <Row gutter={[16, 16]}>
+                              <Col xs={24} md={12}>
+                                <Form.Item
+                                    label="№"
+                                    name="factNumber"
+                                    rules={[{ required: true, message: 'Введите номер' }]}
+                                >
+                                    <Input
+                                        placeholder="Введите номер"
+                                        disabled={isFieldDisabled()}
+                                    />
+                                </Form.Item>
+                              </Col>
+                              <Col xs={24} md={12}>
+                                <Form.Item
+                                    label="Дата "
+                                    name="date"
+                                    rules={[{ required: true, message: 'Выберите дату ' }]}
+                                >
+                                    <DatePicker
+                                        format="YYYY-MM-DD"
+                                        value={initialValues?.date ? moment(initialValues.date, 'YYYY-MM-DD') : null}
+                                        disabled={isFieldDisabled()}
+                                    />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                        </Card>
+                    </Collapse.Panel>
+                    <Collapse.Panel
+                        header="Фактические показатели"
+                        key="2"
+                        style={{
+                        backgroundColor: '#ffe8d9',
+                        color: '#000',
+                        cursor: 'pointer'
+                        }}
+                        className="w-full"
+                        showArrow={true}
+                        collapsible="header"
+                    >
+                        <Card>
+                            <Row gutter={[16, 16]}>
+                              <Col xs={24} md={12}>
+                                <Form.Item
+                                    label="Сумма без НДС"
+                                    name="cost"
+                                    rules={[{ required: true, message: 'Внесите стоимость' }]}
+                                >
+                                    <InputNumber
+                                        placeholder="Введите стоимость без НДС"
+                                        formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                                        style={inputNumberStyle}
+                                        disabled={isFieldDisabled()}
+                                    />
+                                </Form.Item>
+                              </Col>
+                              <Col xs={24} md={12}>
+                                <Form.Item
+                                    label="НДС, руб."
+                                    name="actualVAT"
+                                    rules={[{ required: false }]}
+                                >
+                                    <InputNumber
+                                        placeholder="Введите НДС"
+                                        formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                                        style={inputNumberStyle}
+                                        disabled={isFieldDisabled()}
+                                    />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                            <Row gutter={[16, 16]}>
+                              <Col xs={24} md={12}>
+                                <Form.Item
+                                    label="Объём"
+                                    name="amount"
+                                    rules={[{ required: false }]}
+                                >
+                                    <InputNumber
+                                        placeholder="Введите количество"
+                                        formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                                        style={inputNumberStyle}
+                                        disabled={isFieldDisabled()}
+                                    />
+                                </Form.Item>
+                              </Col>
+                              <Col xs={24} md={12}>
+                                <Form.Item
+                                    label="Единицы"
+                                    name="unit"
+                                    rules={[{ required: false, message: 'Выберите единицу' }]}
+                                >
+                                    <DropdownWithSearch
+                                        options={units}
+                                        placeholder="Выберите единицу"
+                                        onChange={handleUnitChange}
+                                        disabled={isFieldDisabled()}
+                                    />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                        </Card>
+                    </Collapse.Panel>
+                </Collapse>
+        </Form>
   );
 };
 

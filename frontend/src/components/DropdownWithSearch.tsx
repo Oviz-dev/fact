@@ -27,7 +27,7 @@ const DropdownWithSearch: React.FC<DropdownWithSearchProps> = ({ options, placeh
         return children?.toLowerCase().includes(input.toLowerCase());
       }}
       value={value}
-      style={{ width: '200px' }}
+      style={{ width: '100%' }}
       disabled={disabled}
     >
       {options.map(option => (
