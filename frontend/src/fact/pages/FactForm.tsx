@@ -87,6 +87,7 @@ const FactForm: React.FC<FactFormProps> = ({
       }
     } else {
       form.resetFields();
+      setAccepted(false);
     }
   }, [initialValues, form]);
 
@@ -144,6 +145,8 @@ const FactForm: React.FC<FactFormProps> = ({
 
   const isFieldDisabled = () => accepted;
 
+  const widthValue = 150;
+
   return (
     <Form form={form} layout="horizontal" onFinish={handleSubmit}>
       <Card
@@ -156,22 +159,27 @@ const FactForm: React.FC<FactFormProps> = ({
             <Form.Item
               label="Наименование"
               name="name"
-              style={{ marginBottom: 10, width: '625px' }}
-              rules={[{ required: true, message: 'Введите наименование ' }]}
+              style={{ marginBottom: 10 }}
+              labelCol={{ span: 6 }}
+              wrapperCol={{ span: 18 }}
+              rules={[{ required: true, message: 'Введите наименование' }]}
             >
               <Input
                 placeholder="Введите наименование"
-                style={{ marginBottom: 10, width: '500px' }}
+                style={{ marginBottom: 10 }}
                 disabled={isFieldDisabled()}
               />
             </Form.Item>
           </Col>
         </Row>
+
         <Row gutter={16}>
-          <Col span={24}>
+          <Col span={12}>
             <Form.Item
               label="Договор"
               name="contract"
+              labelCol={{ span: 12 }}
+              wrapperCol={{ span: 12 }}
               rules={[{ required: true, message: 'Выберите договор' }]}
             >
               <DropdownWithSearch
@@ -183,26 +191,30 @@ const FactForm: React.FC<FactFormProps> = ({
               />
             </Form.Item>
           </Col>
-        </Row>
         {contractor && (
-          <Row gutter={16}>
-            <Col span={24}>
-              <Form.Item label="Подрядчик">
+            <Col span={12}>
+              <Form.Item
+              label="Подрядчик"
+              labelCol={{ span: 12 }}
+              wrapperCol={{ span: 12 }}
+              >
                 <Input
                   value={selectedContractor}
                   disabled
-                  style={{ width: '500px' }}
+                  style={{ marginBottom: 10, width: widthValue }}
                 />
               </Form.Item>
             </Col>
-          </Row>
         )}
+        </Row>
         <Row gutter={16}>
-          <Col span={24}>
+          <Col span={12}>
             <Form.Item
               label="Объект"
               name="object"
               rules={[{ required: true, message: 'Выберите объект' }]}
+              labelCol={{ span: 12 }}
+              wrapperCol={{ span: 12 }}
             >
               <DropdownWithSearch
                 options={objects}
@@ -213,18 +225,20 @@ const FactForm: React.FC<FactFormProps> = ({
               />
             </Form.Item>
           </Col>
-        </Row>
-        <Row gutter={16}>
-          <Col span={24}>
+
+          <Col span={12}>
             <Form.Item
               label="Статья учёта"
               name="pnl"
               rules={[{ required: true, message: 'Выберите статью' }]}
+              labelCol={{ span: 12 }}
+              wrapperCol={{ span: 12 }}
             >
               <DropdownWithSearch
                 options={pnls}
                 value={selectedPnlId}
                 placeholder="Выберите статью"
+
                 onChange={handlePnlChange}
                 disabled={isFieldDisabled()}
               />
@@ -236,12 +250,14 @@ const FactForm: React.FC<FactFormProps> = ({
             <Form.Item
               label="№"
               name="factNumber"
-              style={{ marginBottom: 10, width: '245px' }}
+              style={{ marginBottom: 10}}
               rules={[{ required: true, message: 'Введите номер' }]}
+              labelCol={{ span: 12 }}
+              wrapperCol={{ span: 12 }}
             >
               <Input
                 placeholder="Введите номер"
-                style={{ marginBottom: 10, width: '150px' }}
+                style={{ marginBottom: 10, width: widthValue }}
                 disabled={isFieldDisabled()}
               />
             </Form.Item>
@@ -250,13 +266,15 @@ const FactForm: React.FC<FactFormProps> = ({
             <Form.Item
               label="Дата "
               name="date"
-              style={{ marginBottom: 10, float: 'right' }}
+              style={{ marginBottom: 10}}
               rules={[{ required: true, message: 'Выберите дату ' }]}
+              labelCol={{ span: 12 }}
+              wrapperCol={{ span: 12}}
             >
               <DatePicker
                 format="YYYY-MM-DD"
                 value={initialValues?.date ? moment(initialValues.date, 'YYYY-MM-DD') : null}
-                style={{ marginBottom: 10, width: '150px', float: 'right' }}
+                style={{ marginBottom: 10, width: widthValue }}
                 disabled={isFieldDisabled()}
               />
             </Form.Item>
@@ -274,27 +292,31 @@ const FactForm: React.FC<FactFormProps> = ({
               label="Сумма, руб. без НДС"
               name="cost"
               rules={[{ required: true, message: 'Внесите стоимость' }]}
-              style={{ float: 'right' }}
+              style={{ marginBottom: 10}}
+              labelCol={{ span: 12}}
+              wrapperCol={{ span: 12}}
             >
               <InputNumber
                 min={0}
-                style={{ width: '150px' }}
+                style={{marginBottom: 10, width: widthValue }}
                 placeholder="Введите стоимость без НДС"
                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
                 disabled={isFieldDisabled()}
               />
             </Form.Item>
           </Col>
-          <Col span={6}>
+          <Col span={12}>
             <Form.Item
               label="НДС, руб."
               name="actualVAT"
               rules={[{ required: false }]}
-              style={{ float: 'right' }}
+              style={{marginBottom: 10}}
+              labelCol={{ span: 12 }}
+              wrapperCol={{ span: 12}}
             >
               <InputNumber
                 min={0}
-                style={{ width: '150px' }}
+                style={{ marginBottom: 10, width: widthValue }}
                 placeholder="Введите НДС"
                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
                 disabled={isFieldDisabled()}
@@ -308,22 +330,28 @@ const FactForm: React.FC<FactFormProps> = ({
               label="Объём"
               name="amount"
               rules={[{ required: false }]}
-              style={{ float: 'right' }}
+              style={{ marginBottom: 10}}
+              labelCol={{ span:12 }}
+              wrapperCol={{ span: 12}}
             >
               <InputNumber
                 min={0}
-                style={{ width: '150px' }}
+                style={{marginBottom: 10, width: widthValue}}
                 placeholder="Введите количество"
                 formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
                 disabled={isFieldDisabled()}
               />
             </Form.Item>
           </Col>
-          <Col span={9}>
+
+          <Col span={12}>
             <Form.Item
-              label=""
+              label="Единицы"
               name="unit"
               rules={[{ required: true, message: 'Выберите единицу' }]}
+              labelCol={{ span: 12}}
+              wrapperCol={{ span:12}}
+              style={{marginBottom: 10}}
             >
               <DropdownWithSearch
                 options={units}

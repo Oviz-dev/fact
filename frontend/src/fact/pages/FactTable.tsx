@@ -53,12 +53,6 @@ const FactTable: React.FC<FactTableProps> = ({
       sorter: (a:FactDTO, b:FactDTO) => a.date.localeCompare(b.date),
     },
     {
-      title: 'Принят',
-      width: '50px',
-      dataIndex: 'accepted',
-      key: 'accepted',
-    },
-    {
       title: 'Статья',
       width: '150px',
       dataIndex: 'pnl',

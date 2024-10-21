@@ -126,7 +126,7 @@ const ContractPage = () => {
 
         <Drawer
           title={isEditing ? "Редактировать контракт" : "Создать контракт"}
-          width={'750px'}
+          width={'40%'}
           onClose={handleDrawerClose}
           visible={isDrawerVisible}
           bodyStyle={{ paddingBottom: 80 }}

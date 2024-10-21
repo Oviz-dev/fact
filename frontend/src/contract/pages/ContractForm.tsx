@@ -12,6 +12,7 @@ import moment from 'moment';
 
 const { Option } = Select;
 const { TabPane } = Tabs;
+const widthValue = 150;
 
 interface ContractFormProps {
   onSubmit: (contractData: ContractDTO) => void;
@@ -122,7 +123,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                       style={{ marginBottom: 10, width: '245px', float: 'right' }}
                       rules={[{ required: true, message: 'Введите номер' }]}
                     >
-                      <Input placeholder="Введите номер" style={{ marginBottom: 10, width: '150px' }}/>
+                      <Input placeholder="Введите номер" style={{ marginBottom: 10, width: widthValue }}/>
                     </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -132,7 +133,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                       style={{ marginBottom: 10, float: 'right'}}
                       rules={[{ required: true, message: 'Выберите дату ' }]}
                     >
-                      <DatePicker format="YYYY-MM-DD" style={{ marginBottom: 10, width: '150px', float: 'right'}} />
+                      <DatePicker format="YYYY-MM-DD" style={{ marginBottom: 10, width: widthValue, float: 'right'}} />
                     </Form.Item>
                 </Col>
             </Row>
@@ -144,7 +145,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                       style={{ marginBottom: 20, width: '245px', float: 'right' }}
                       rules={[{ required: true, message: 'Выберите статус ' }]}
                     >
-                      <Select placeholder="Выберите статус" style={{ marginBottom: 10, width: '150px' }}>
+                      <Select placeholder="Выберите статус" style={{ marginBottom: 10, width: widthValue}}>
                         {Object.values(ContractStatus).map(status => (
                           <Option key={status} value={status}>
                             {status}
@@ -160,7 +161,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                       rules={[{ required: true, message: 'Выберите тип ' }]}
                       style={{ marginBottom: 10, float: 'right'}}
                     >
-                      <Select placeholder="Выберите тип" style={{ marginBottom: 10, width: '150px', float: 'right'}}>
+                      <Select placeholder="Выберите тип" style={{ marginBottom: 10, width: widthValue, float: 'right'}}>
                         {Object.values(ContractType).map(type => (
                           <Option key={type} value={type}>
                             {type}
@@ -187,7 +188,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                     >
                       <InputNumber
                         min={0}
-                        style={{ marginBottom: 10, width: '150px' } }
+                        style={{ marginBottom: 10, width:widthValue } }
                         placeholder="Введите плановую стоимость без НДС"
                         formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
                       />
@@ -202,7 +203,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                     >
                       <InputNumber
                         min={0}
-                        style={{ marginBottom: 10, width: '150px' , float: 'right'} }
+                        style={{ marginBottom: 10, width: widthValue , float: 'right'} }
                         placeholder="Введите НДС"
                         formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
                       />
@@ -220,7 +221,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                       <InputNumber
                         min={0}
                         max={100}
-                        style={{ marginBottom: 10, width: '150px' , float: 'right'} }
+                        style={{ marginBottom: 10, width: widthValue, float: 'right'} }
                         placeholder="Введите %"
                       />
                     </Form.Item>
@@ -235,7 +236,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                       <InputNumber
                         min={0}
                         max={100}
-                        style={{ marginBottom: 10, width: '150px' , float: 'right'} }
+                        style={{ marginBottom: 10, width: widthValue , float: 'right'} }
                         placeholder="Введите %"
                       />
                     </Form.Item>
@@ -276,7 +277,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                         min={0}
                         placeholder="Введите НДС"
                         formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                        style={{ marginBottom: 10, width: '150px' , float: 'right'} }
+                        style={{ marginBottom: 10, width: widthValue , float: 'right'} }
                       />
                     </Form.Item>
                   </Col>
