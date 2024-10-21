@@ -21,7 +21,7 @@ const Header: React.FC = () => {
   return (
     <AntHeader>
       <Menu
-        //theme="dark"
+        theme="light"
         mode="horizontal"
         selectedKeys={[selectedKey]} // Устанавливаем текущий выбранный элемент
         onClick={handleMenuClick}

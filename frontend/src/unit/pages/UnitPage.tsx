@@ -60,7 +60,7 @@ const UnitPage: React.FC = () => {
   }, []);
 
   return (
-    <Layout style={{ padding: '10px' }}>
+    <Layout style={{ height: '85vh'}}>
       <Content style={{ margin: '10px 10px 0' }}>
           <Row gutter={10}>
             <Col flex="60%">

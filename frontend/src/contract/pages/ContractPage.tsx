@@ -113,7 +113,7 @@ const ContractPage = () => {
   }, []);
 
   return (
-    <Layout style={{ padding: '10px' }}>
+    <Layout style={{height: '100vh' }}>
       <Header />
       <Content style={{ margin: '10px 10px 0' }}>
         <ControlPanel buttons={controlButtons} />

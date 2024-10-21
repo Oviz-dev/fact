@@ -19,7 +19,7 @@ interface ControlPanelProps {
 
 const ControlPanel: React.FC<ControlPanelProps> = ({ buttons }) => {
   return (
-    <Space style={{ margin: '5px 0' }}>
+    <Space style={{ margin: '0 10px 10px'  }}>
       {buttons.map((button, index) => (
         <React.Fragment key={index}>
           {button.upload ? (

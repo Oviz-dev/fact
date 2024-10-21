@@ -18,9 +18,9 @@ const Main: React.FC = () => {
   };
 
   return (
-    <Layout style={{ height: '90vh' }}>
+    <Layout style={{ height: '100vh' }}>
       <Header />
-      <Layout>
+      <Layout style={{ padding: '0 10px 10px', height: '90vh' , overflow: 'auto'}}>
         <Sider
         width={200}
         className="site-layout-background"
@@ -37,7 +37,7 @@ const Main: React.FC = () => {
             ))}
           </Menu>
         </Sider>
-        <Layout style={{ padding: '0 24px 24px', height: '90vh' }}>
+        <Layout style={{ padding: '0 10px 10px', height: '90vh' , overflow: 'auto'}}>
           <Content style={{ padding: 10, background: '#fff', height: '90%', overflow: 'auto' }}>
             {selectedReference === 'pnl' ? (
               <PnLPage />

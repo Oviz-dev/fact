@@ -66,7 +66,7 @@ const FactForm: React.FC<FactFormProps> = ({
     if (initialValues) {
       form.setFieldsValue({
         ...initialValues,
-        accepted: initialValues.accepted,
+        accepted: initialValues?.accepted || false,
         contract: initialValues.contract?.id || undefined,
         contractor: initialValues.contract?.contractor || undefined,
         unit: initialValues.unit?.id || undefined,
