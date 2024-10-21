@@ -5,7 +5,7 @@ import UnitTable from './UnitTable';
 import { UnitDTO } from '../DTO/UnitDTO';
 import { fetchUnits, importUnits } from '../services/unitService';
 import ControlPanel from '../../components/ControlPanel';
-import { exportData} from '../../functions/exportData';
+import { exportFile } from '../../functions/exportFile';
 import { importFile } from '../../functions/importFile';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 
@@ -24,24 +24,17 @@ const UnitPage: React.FC = () => {
     }
   };
 
-  // Функция для выгрузки данных
-    const handleExport = () => {
-      const headers = ['ID', 'Name'];
-      const data = units.map(unit => [unit.id, unit.name]); // Преобразуем юниты в массив массивов
-      exportData(data, 'units', headers);
-    };
+    const handleExport = () => exportFile(units, 'units_file');
 
-  // Функция для импорта данных
     const handleImport = (file: File) => {
-      importFile(file, 'unit', refreshUnits); // Вызываем универсальную функцию импорта
-      //refreshUnits();
+      importFile(file, 'unit', refreshUnits);
     };
 
   // Список кнопок для панели управления
     const controlButtons = [
           {
             //label: 'Выгрузить',
-            onClick: handleExport, // onClick присутствует
+            onClick: handleExport,
             icon: <DownloadOutlined />,
             tooltip: 'Выгрузить',
           },
@@ -50,11 +43,10 @@ const UnitPage: React.FC = () => {
             icon: <UploadOutlined />,
             tooltip: 'Загрузить',
             upload: true, // Флаг для загрузки файлов
-            importHandler: handleImport, // Используем importHandler вместо onClick
+            importHandler: handleImport,
           },
     ];
 
-  // Загружаем при первом рендере
   useEffect(() => {
     refreshUnits();
   }, []);

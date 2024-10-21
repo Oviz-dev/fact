@@ -19,7 +19,7 @@ const UnitForm: React.FC<UnitFormProps> = ({ onUnitCreated }) => {
       await createUnit(newUnit);
       message.success('Добавлена новая единица измерения');
       form.resetFields();
-      onUnitCreated(); // Обновляем таблицу после добавления объекта
+      onUnitCreated();
     } catch (error) {
       message.error('Ошибка добавления единицы измерения');
     }

@@ -8,7 +8,7 @@ import type { TreeDataNode, TreeProps } from 'antd';
 interface PnLTreeProps {
   pnlList: PnLDTO[];
   refreshPnLs: () => void;
-    setSelectedNodeKey: (key: string | null) => void; // Новый пропс для установки выделенного узла
+    setSelectedNodeKey: (key: string | null) => void; // пропс для установки выделенного узла
 
 }
 

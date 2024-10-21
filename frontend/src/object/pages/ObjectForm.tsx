@@ -19,7 +19,7 @@ const ObjectForm: React.FC<ObjectFormProps> = ({ onObjectCreated }) => {
       await createObject(newObject);
       message.success('Объект добавлен');
       form.resetFields();
-      onObjectCreated(); // Обновляем таблицу после добавления объекта
+      onObjectCreated();
     } catch (error) {
       message.error('Ошибка добавления объекта');
     }

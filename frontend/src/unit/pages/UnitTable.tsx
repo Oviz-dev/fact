@@ -28,9 +28,9 @@ const UnitTable: React.FC<UnitProps> = ({ units, refreshUnits }) => {
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteUnit(id); // Удаляем
+      await deleteUnit(id);
       message.success('Единица измерения удалена');
-      refreshUnits(); // Обновляем таблицу после удаления
+      refreshUnits();
     } catch (error) {
       message.error('Ошибка при удалении');
     }
@@ -41,7 +41,7 @@ const UnitTable: React.FC<UnitProps> = ({ units, refreshUnits }) => {
       const row = await form.validateFields();
       await updateUnit(id, row);
       setEditingId(null);
-      refreshUnits(); // Обновляем таблицу после обновления
+      refreshUnits();
     } catch (error) {
       console.error('Ошибка обновления:', error);
     }

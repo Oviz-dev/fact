@@ -3,7 +3,7 @@ import {  message } from 'antd';
 
 export const importFile = async (file: File, entityType: string, refreshList?: () => void) => {
   const formData = new FormData();
-  formData.append('file', file); // Добавляем файл
+  formData.append('file', file);
   try {
     const response = await axios.post(`/api/import/${entityType}`, formData, {
       headers: {
@@ -13,7 +13,7 @@ export const importFile = async (file: File, entityType: string, refreshList?: (
     console.log('Импорт успешно завершен:', response.data);
     message.success('Импорт успешно завершен');
      if (refreshList) {
-         refreshList(); // Обновляем список, если функция передана
+         refreshList();
      }
   } catch (error:any) {
     console.error('Ошибка импорта:', error.response?.data || error.message);

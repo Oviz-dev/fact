@@ -45,3 +45,4 @@ export const updateFactAccept = async (id: number, accepted: boolean): Promise<v
     });
 };
 
+

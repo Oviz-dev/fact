@@ -19,11 +19,11 @@ const PnLForm: React.FC<PnLFormProps> = ({ onSubmit, refreshPnLs, pnlList }) => 
 const handleFinish = async (values: PnLDTO) => {
   await onSubmit({
     ...values,
-    parentId: parentId ?? null // Если parentId undefined, присваиваем null
+    parentId: parentId ?? null
   });
-  await refreshPnLs(); // Обновляем данные после отправки формы
-  setName('');  // Сбрасываем форму
-  setParentId(undefined);  // Сбрасываем выбранного родителя
+  await refreshPnLs();
+  setName('');
+  setParentId(undefined);
 };
 
   // функция для преобразования данных в формат для TreeSelect
@@ -46,17 +46,16 @@ const handleFinish = async (values: PnLDTO) => {
       </Form.Item>
 
       <Form.Item label="Корневая статья" name="parent" rules={[{ required: false }]}>
-        {/* Используем TreeSelect для отображения дерева в выпадающем списке */}
         <TreeSelect
           style={{ width: '100%' }}
           value={parentId}
           dropdownStyle={{ maxHeight: 400, overflow: 'auto', width: '50%' }}
-          treeData={convertToTreeSelectData(pnlList)} // Передаём данные в TreeSelect
+          treeData={convertToTreeSelectData(pnlList)}
           placeholder="Выберите родительскую статью"
           treeDefaultExpandAll
           showSearch
           filterTreeNode={(searchValue, treeNode) => treeNode.name}
-          onChange={(value) => setParentId(value)} // Обработчик выбора родительской статьи
+          onChange={(value) => setParentId(value)}
         />
       </Form.Item>
 

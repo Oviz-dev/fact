@@ -19,7 +19,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <AntHeader>
+    <AntHeader style={{ backgroundColor: '#fff' }}>
       <Menu
         theme="light"
         mode="horizontal"

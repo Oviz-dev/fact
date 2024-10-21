@@ -6,8 +6,8 @@ import { ObjectEntityDTO } from '../DTO/ObjectEntityDTO';
 import { fetchObjects, importObjects } from '../services/objectService';
 import Header from '../../components/Header';
 import ControlPanel from '../../components/ControlPanel';
-import { exportData } from '../../functions/exportData';
 import { importFile } from '../../functions/importFile';
+import { exportFile } from '../../functions/exportFile';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 
 const { Content } = Layout;
@@ -25,16 +25,10 @@ const ObjectPage: React.FC = () => {
     }
   };
   // Функция для выгрузки данных
-    const handleExport = () => {
-      const headers = ['ID', 'Name'];
-      const data = objects.map(obj => [obj.id, obj.name]); // Преобразуем объекты в массив массивов
-      exportData(data, 'objects', headers);
-    };
-
+    const handleExport = () =>exportFile(objects,'objects_file');
   // Функция для импорта данных
     const handleImport = (file: File) => {
       importFile(file, 'object', refreshObjects); // Вызываем универсальную функцию импорта
-      //refreshUnits();
     };
 
   // Кнопки для панели управления

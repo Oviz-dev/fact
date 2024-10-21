@@ -10,7 +10,7 @@ import {updateFactAccept} from '../services/factService';
 import { updateContractFact } from '../../contract/services/ContractService';
 
 const { Option } = Select;
-
+const widthValue = 200;
 
 interface FactFormProps {
   onSubmit: (FactData: FactDTO) => void;
@@ -88,6 +88,7 @@ const FactForm: React.FC<FactFormProps> = ({
     } else {
       form.resetFields();
       setAccepted(false);
+      setContractor(undefined);
     }
   }, [initialValues, form]);
 
@@ -144,8 +145,7 @@ const FactForm: React.FC<FactFormProps> = ({
   };
 
   const isFieldDisabled = () => accepted;
-
-  const widthValue = 150;
+  const isEditingForm=() => isEditing;
 
   return (
     <Form form={form} layout="horizontal" onFinish={handleSubmit}>
@@ -378,6 +378,7 @@ const FactForm: React.FC<FactFormProps> = ({
         type="default"
         onClick={toggleAcceptance}
         style={{ marginTop: 20, marginLeft: 10 }}
+        disabled={!isEditingForm()}
       >
         {accepted ? 'Отменить' : 'Принять'}
       </Button>

@@ -6,13 +6,15 @@ import { fetchFacts, createFact, deleteFact, updateFact} from '../services/factS
 import { FactDTO } from '../DTO/FactDTO';
 import Header from '../../components/Header';
 import ControlPanel from '../../components/ControlPanel';
-import { ShortTableButtons } from '../../components/Buttons';
-import { exportData } from '../../functions/exportData';
-import { importFile } from '../../functions/importFile';
+import { FullTableButtons } from '../../components/Buttons';
+
 import { fetchContracts } from '../../contract/services/ContractService';
 import { fetchUnits } from '../../unit/services/unitService';
 import { fetchObjects } from '../../object/services/objectService';
 import { fetchPnL } from '../../pnl/services/PnLService';
+
+import { exportFile } from '../../functions/exportFile';
+import { importFile } from '../../functions/importFile';
 
 const { Content } = Layout;
 
@@ -80,11 +82,7 @@ const FactPage = () => {
     };
 
   // Функция для выгрузки данных
-  const handleExport = () => {
-    const headers = ['ID', 'Name'];
-    const data = facts.map(obj => [obj.id, obj.name]);
-    exportData(data, 'facts', headers);
-  };
+  const handleExport = () => exportFile(facts,'facts_file');
 
   // Функция для импорта данных
   const handleImport = (file: File) => {
@@ -152,9 +150,11 @@ const FactPage = () => {
   };
 
   // Кнопки для панели управления
-  const controlButtons = ShortTableButtons({
+  const controlButtons = FullTableButtons({
     onCreate: handleCreate,
     onDelete: handleDelete,
+    onExport: handleExport,
+    onImport: handleImport
   });
 
   useEffect(() => {

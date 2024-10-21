@@ -6,8 +6,9 @@ import { fetchContracts, createContract, deleteContract, updateContract } from '
 import { ContractDTO } from '../DTO/ContractDTO';
 import Header from '../../components/Header';
 import ControlPanel from '../../components/ControlPanel';
-import { ShortTableButtons } from '../../components/Buttons';
-import { exportData } from '../../functions/exportData';
+import { FullTableButtons } from '../../components/Buttons';
+
+import { exportFile } from '../../functions/exportFile';
 import { importFile } from '../../functions/importFile';
 
 const { Content } = Layout;
@@ -29,11 +30,8 @@ const ContractPage = () => {
   };
 
   // Функция для выгрузки данных
-  const handleExport = () => {
-    const headers = ['ID', 'Name'];
-    const data = contracts.map(obj => [obj.id, obj.name]);
-    exportData(data, 'contracts', headers);
-  };
+  const handleExport = () => exportFile(contracts,'contracts_file');
+
 
   // Функция для импорта данных
   const handleImport = (file: File) => {
@@ -103,9 +101,11 @@ const ContractPage = () => {
     }
   };
   // Кнопки для панели управления
-  const controlButtons = ShortTableButtons({
+  const controlButtons = FullTableButtons({
     onCreate: handleCreate,
     onDelete: handleDelete,
+    onExport: handleExport,
+    onImport: handleImport
   });
 
   useEffect(() => {

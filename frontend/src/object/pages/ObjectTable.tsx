@@ -28,9 +28,9 @@ const ObjectTable: React.FC<ObjectTableProps> = ({ objects, refreshObjects }) =>
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteObject(id); // Удаляем объект
+      await deleteObject(id);
       message.success('Объект удален');
-      refreshObjects(); // Обновляем таблицу после удаления
+      refreshObjects();
     } catch (error) {
       message.error('Ошибка при удалении объекта');
     }
@@ -41,7 +41,7 @@ const ObjectTable: React.FC<ObjectTableProps> = ({ objects, refreshObjects }) =>
       const row = await form.validateFields();
       await updateObject(id, row);
       setEditingId(null);
-      refreshObjects(); // Обновляем таблицу после обновления
+      refreshObjects();
     } catch (error) {
       console.error('Ошибка обновления:', error);
     }
