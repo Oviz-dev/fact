@@ -27,6 +27,13 @@ const ContractForm: React.FC<ContractFormProps> = ({
 }) => {
   const [form] = Form.useForm();
   const [facts, setFacts] = useState<FactDTO[]>([]);
+  const [plannedCostWithoutVAT, setPlannedCostWithoutVAT] = useState<number>(0);
+  const [plannedVAT, setPlannedVAT] = useState<number>(0);
+
+    useEffect(() => {
+      const calculatedPlannedCost = plannedCostWithoutVAT + plannedVAT;
+      form.setFieldsValue({ plannedCost: calculatedPlannedCost });
+    }, [plannedCostWithoutVAT, plannedVAT, form]);
 
   useEffect(() => {
     if (initialValues?.id) {
@@ -41,6 +48,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
         contractDate: initialValues.contractDate ? moment(initialValues.contractDate) : undefined,
         startDate: initialValues.startDate ? moment(initialValues.startDate) : undefined,
         endDate: initialValues.endDate ? moment(initialValues.endDate) : undefined,
+        plannedCost: initialValues.plannedCostWithoutVAT + initialValues.plannedVAT,
       });
     } else {
       form.resetFields();
@@ -57,6 +65,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
         id: initialValues?.id,
         plannedCostWithoutVAT: values.plannedCostWithoutVAT ? Number(values.plannedCostWithoutVAT) : 0,
         plannedVAT: values.plannedVAT ? Number(values.plannedVAT) : 0,
+        plannedCost: plannedCostWithoutVAT + plannedVAT,
         actualCostWithoutVAT: values.actualCostWithoutVAT ? Number(values.actualCostWithoutVAT) : 0,
         actualVAT: values.actualVAT ? Number(values.actualVAT) : 0,
         warrantyReserve: values.warrantyReserve ? Number(values.warrantyReserve) : undefined,
@@ -90,10 +99,10 @@ const ContractForm: React.FC<ContractFormProps> = ({
                     <Form.Item
                       label="Наименование"
                       name="name"
-                      style={{ marginBottom: 10, width: '625px' , float: 'right' }}
+                      style={{ marginBottom: 10}}
                       rules={[{ required: true, message: 'Введите наименование договора' }]}
                     >
-                      <Input placeholder="Введите наименование договора" style={{ marginBottom: 10, width: '500px' }}/>
+                      <Input placeholder="Введите наименование договора" style={{ marginBottom: 10}}/>
                     </Form.Item>
                 </Col>
             </Row>
@@ -102,10 +111,10 @@ const ContractForm: React.FC<ContractFormProps> = ({
                 <Form.Item
                   label="Подрядчик"
                   name="contractor"
-                  style={{ marginBottom: 10, width: '600px' , float: 'right' }}
+                  style={{ marginBottom: 10}}
                   rules={[{ required: true, message: 'Выберите подрядчика' }]}
                 >
-                  <Select placeholder="Выберите подрядчика" style={{ marginBottom: 10, width: '500px' }}>
+                  <Select placeholder="Выберите подрядчика" style={{ marginBottom: 10}}>
                     {Object.values(Contractor).map(contractor => (
                       <Option key={contractor} value={contractor}>
                         {contractor}
@@ -120,7 +129,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                     <Form.Item
                       label="Номер "
                       name="contractNumber"
-                      style={{ marginBottom: 10, width: '245px', float: 'right' }}
+                      style={{ marginBottom: 10}}
                       rules={[{ required: true, message: 'Введите номер' }]}
                     >
                       <Input placeholder="Введите номер" style={{ marginBottom: 10, width: widthValue }}/>
@@ -130,10 +139,10 @@ const ContractForm: React.FC<ContractFormProps> = ({
                     <Form.Item
                       label="Дата "
                       name="contractDate"
-                      style={{ marginBottom: 10, float: 'right'}}
+                      style={{ marginBottom: 10}}
                       rules={[{ required: true, message: 'Выберите дату ' }]}
                     >
-                      <DatePicker format="YYYY-MM-DD" style={{ marginBottom: 10, width: widthValue, float: 'right'}} />
+                      <DatePicker format="YYYY-MM-DD" style={{ marginBottom: 10, width: widthValue}} />
                     </Form.Item>
                 </Col>
             </Row>
@@ -142,7 +151,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                     <Form.Item
                       label="Статус "
                       name="status"
-                      style={{ marginBottom: 20, width: '245px', float: 'right' }}
+                      style={{ marginBottom: 10}}
                       rules={[{ required: true, message: 'Выберите статус ' }]}
                     >
                       <Select placeholder="Выберите статус" style={{ marginBottom: 10, width: widthValue}}>
@@ -159,9 +168,9 @@ const ContractForm: React.FC<ContractFormProps> = ({
                       label="Тип"
                       name="type"
                       rules={[{ required: true, message: 'Выберите тип ' }]}
-                      style={{ marginBottom: 10, float: 'right'}}
+                      style={{ marginBottom: 10}}
                     >
-                      <Select placeholder="Выберите тип" style={{ marginBottom: 10, width: widthValue, float: 'right'}}>
+                      <Select placeholder="Выберите тип" style={{ marginBottom: 10, width: widthValue}}>
                         {Object.values(ContractType).map(type => (
                           <Option key={type} value={type}>
                             {type}
@@ -179,9 +188,9 @@ const ContractForm: React.FC<ContractFormProps> = ({
               headStyle={{ backgroundColor: '#ddbfdd', color: '#333752' }}
           >
               <Row gutter={16}>
-                  <Col span={12}>
+                  <Col span={8}>
                     <Form.Item
-                      label="Стоимость, руб. без НДС"
+                      label="Стоимость без НДС"
                       name="plannedCostWithoutVAT"
                       style={{ marginBottom: 10}}
                       rules={[{ required: true, message: 'Введите плановую стоимость без НДС' }]}
@@ -191,10 +200,11 @@ const ContractForm: React.FC<ContractFormProps> = ({
                         style={{ marginBottom: 10, width:widthValue } }
                         placeholder="Введите плановую стоимость без НДС"
                         formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                        onChange={value => setPlannedCostWithoutVAT(value || 0)}
                       />
                     </Form.Item>
                   </Col>
-                  <Col span={12}>
+                  <Col span={8}>
                     <Form.Item
                       label="НДС, руб."
                       name="plannedVAT"
@@ -203,15 +213,28 @@ const ContractForm: React.FC<ContractFormProps> = ({
                     >
                       <InputNumber
                         min={0}
-                        style={{ marginBottom: 10, width: widthValue , float: 'right'} }
+                        style={{ marginBottom: 10, width: widthValue } }
                         placeholder="Введите НДС"
+                        formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                        onChange={value => setPlannedVAT(value || 0)}
+                      />
+                    </Form.Item>
+                  </Col>
+
+                  <Col span={8}>
+                    <Form.Item
+                      label="Стоимость с НДС"
+                      name="plannedCost"
+                    >
+                      <InputNumber
+                        disabled style={{ marginBottom: 10, width: widthValue } }
                         formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
                       />
                     </Form.Item>
                   </Col>
               </Row>
               <Row gutter={16}>
-                  <Col span={12}>
+                  <Col span={8}>
                     <Form.Item
                       label="Гарантийный резерв, %"
                       name="warrantyReserve"
@@ -226,7 +249,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                       />
                     </Form.Item>
                   </Col>
-                  <Col span={12}>
+                  <Col span={8}>
                     <Form.Item
                       label=" Аванс, %"
                       name="plannedAdvancePercent"

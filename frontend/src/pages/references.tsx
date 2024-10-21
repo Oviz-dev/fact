@@ -10,7 +10,7 @@ const Main: React.FC = () => {
 
   const references = [
     { key: 'units', label: 'Единицы измерения' },
-    { key: 'pnl', label: 'Статьи PNL' },
+    { key: 'pnl', label: 'Статьи учёта' },
   ];
 
   const handleMenuClick = (key: string) => {
