@@ -34,7 +34,6 @@ public class ContractController {
         return contractRepository.findById(id)
                 .map(contract -> {
                     if (updates.containsKey("actualCostWithoutVAT")) {
-                        // Безопасное преобразование из строки или числа в BigDecimal
                         Object value = updates.get("actualCostWithoutVAT");
                         BigDecimal actualCost;
 

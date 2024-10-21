@@ -16,7 +16,7 @@ interface FactFormProps {
   onSubmit: (FactData: FactDTO) => void;
   initialValues?: FactDTO | null;
   isEditing?: boolean;
-  contracts: { id: number; name: string; contractor?: string ; actualCostWithoutVAT?: number}[];
+  contracts: { id: number; name: string; contractor?: string ; actualCostWithoutVAT?: number, actualVAT?: number}[];
   units: { id: number; name: string }[];
   objects: { id: number; name: string }[];
   pnls: { id: number; name: string; parentId: number | null }[];
@@ -289,7 +289,7 @@ const FactForm: React.FC<FactFormProps> = ({
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label="Сумма, руб. без НДС"
+              label="Сумма без НДС"
               name="cost"
               rules={[{ required: true, message: 'Внесите стоимость' }]}
               style={{ marginBottom: 10}}
@@ -348,7 +348,7 @@ const FactForm: React.FC<FactFormProps> = ({
             <Form.Item
               label="Единицы"
               name="unit"
-              rules={[{ required: true, message: 'Выберите единицу' }]}
+              rules={[{ required: false, message: 'Выберите единицу' }]}
               labelCol={{ span: 12}}
               wrapperCol={{ span:12}}
               style={{marginBottom: 10}}

@@ -54,7 +54,6 @@ const ObjectPage: React.FC = () => {
       },
     ];
 
-  // Загружаем объекты при первом рендере
   useEffect(() => {
     refreshObjects();
   }, []);
