@@ -25,23 +25,34 @@ const ContractForm: React.FC<ContractFormProps> = ({
   const [facts, setFacts] = useState<FactDTO[]>([]);
   const [plannedCostWithoutVAT, setPlannedCostWithoutVAT] = useState<number>(0);
   const [plannedVAT, setPlannedVAT] = useState<number>(0);
+  const [actualCostWithoutVAT, setActualCostWithoutVAT] = useState<number>(0);
+  const [actualVAT, setActualVAT] = useState<number>(0);
 
     // Функция для расчета общей стоимости
     const calculateTotalCost = (withoutVAT: number | null, vat: number | null) => {
      return (withoutVAT || 0) + (vat || 0);
     };
 
-    // Общие обработчики изменения полей
-    const handleFieldChange = (fieldName: string, value: number | null) => {
-     const currentFormValues = form.getFieldsValue();
-     const withoutVAT = fieldName === 'plannedCostWithoutVAT' ? value : currentFormValues.plannedCostWithoutVAT;
-     const vat = fieldName === 'plannedVAT' ? value : currentFormValues.plannedVAT;
+const handleFieldChange = (fieldName: string, value: number | null) => {
+  const currentFormValues = form.getFieldsValue();
+  if (fieldName.startsWith('planned')) {
+    const withoutVAT = fieldName === 'plannedCostWithoutVAT' ? value : currentFormValues.plannedCostWithoutVAT;
+    const vat = fieldName === 'plannedVAT' ? value : currentFormValues.plannedVAT;
 
-     form.setFieldsValue({
-       [fieldName]: value,
-       plannedCost: calculateTotalCost(withoutVAT, vat)
-     });
-    };
+    form.setFieldsValue({
+      [fieldName]: value,
+      plannedCost: calculateTotalCost(withoutVAT, vat),
+    });
+  } else if (fieldName.startsWith('actual')) {
+    const withoutVAT = fieldName === 'actualCostWithoutVAT' ? value : currentFormValues.actualCostWithoutVAT;
+    const vat = fieldName === 'actualVAT' ? value : currentFormValues.actualVAT;
+
+    form.setFieldsValue({
+      [fieldName]: value,
+      actualCost: calculateTotalCost(withoutVAT, vat),
+    });
+  }
+};
 
   useEffect(() => {
     if (initialValues?.id) {
@@ -57,6 +68,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
         startDate: initialValues.startDate ? moment(initialValues.startDate) : undefined,
         endDate: initialValues.endDate ? moment(initialValues.endDate) : undefined,
         plannedCost: (initialValues.plannedCostWithoutVAT || 0) + (initialValues.plannedVAT || 0),
+        actualCost: (initialValues.actualCostWithoutVAT || 0) + (initialValues.actualVAT || 0),
       });
     } else {
       form.resetFields();
@@ -74,6 +86,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
         plannedCost: (plannedCostWithoutVAT||0) + (plannedVAT||0),
         actualCostWithoutVAT: values.actualCostWithoutVAT ? Number(values.actualCostWithoutVAT) : 0,
         actualVAT: values.actualVAT ? Number(values.actualVAT) : 0,
+        actualCost: (actualCostWithoutVAT||0) + (actualVAT||0),
         warrantyReserve: values.warrantyReserve ? Number(values.warrantyReserve) : undefined,
         plannedAdvancePercent: values.plannedAdvancePercent ? Number(values.plannedAdvancePercent) : 0,
         actualAdvance: values.actualAdvance ? Number(values.actualAdvance) : 0,
@@ -98,11 +111,11 @@ const ContractForm: React.FC<ContractFormProps> = ({
   const cardStyle = { marginBottom: '1rem' };
 
   return (
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={handleSubmit}
-      >
+        <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSubmit}
+        >
         <Button
           type="primary"
           htmlType="submit"
@@ -302,7 +315,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                                   style={inputNumberStyle}
                                   min={0}
                                   disabled
-                                  placeholder="Введите стоимость без НДС"
+                                  onChange={value => handleFieldChange('actualCostWithoutVAT', value)}
                                   formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
                                 />
                               </Form.Item>
@@ -316,6 +329,20 @@ const ContractForm: React.FC<ContractFormProps> = ({
                                   style={inputNumberStyle}
                                   min={0}
                                   placeholder="Введите НДС"
+                                  onChange={value => handleFieldChange('actualVAT', value)}
+                                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                                />
+                              </Form.Item>
+                            </Col>
+                            <Col md={24} lg={8}>
+                              <Form.Item
+                                label="Стоимость с НДС"
+                                name="actualCost"
+                              >
+                                <InputNumber
+                                  style={inputNumberStyle}
+                                  min={0}
+                                  disabled
                                   formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
                                 />
                               </Form.Item>

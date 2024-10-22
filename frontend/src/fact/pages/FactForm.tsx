@@ -1,16 +1,11 @@
-import { CheckOutlined } from '@ant-design/icons';
+import { CheckOutlined , SyncOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, DatePicker, Select, InputNumber, Row, Col, Card, message, Collapse } from 'antd';
 import { FactDTO } from '../DTO/FactDTO';
 import DropdownWithSearch from '../../components/DropdownWithSearch';
-import HierarchicalDropdown from '../../components/HierarchicalDropdown';
 import moment from 'moment';
-import axios from 'axios';
 import {updateFactAccept} from '../services/factService';
 import { updateContractFact } from '../../contract/services/ContractService';
-
-const { Option } = Select;
-const widthValue = 200;
 
 interface FactFormProps {
   onSubmit: (FactData: FactDTO) => void;
@@ -173,6 +168,7 @@ const FactForm: React.FC<FactFormProps> = ({
                 type="default"
                 onClick={toggleAcceptance}
                 style={{ margin: 10}}
+                icon={<SyncOutlined />}
                 disabled={!isEditingForm()}
             >
                 {accepted ? 'Отменить' : 'Принять'}
