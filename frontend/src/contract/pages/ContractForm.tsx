@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { CheckOutlined } from '@ant-design/icons';
-import { Form, Input, Button, DatePicker, Select, InputNumber, Card, Tabs, message, Collapse} from 'antd';
+import { Form, Input, Button, DatePicker, Select, InputNumber, Card, Tabs, message, Collapse, Row, Col} from 'antd';
 import { ContractDTO, ContractStatus, ContractType, Contractor } from '../DTO/ContractDTO';
 import { fetchFactsByContract } from '../../fact/services/factService';
 import { FactDTO } from '../../fact/DTO/FactDTO';
@@ -86,24 +86,20 @@ const ContractForm: React.FC<ContractFormProps> = ({
   const cardStyle = { marginBottom: '1rem' };
 
   return (
-    <div className="contract-form-container">
       <Form
         form={form}
         layout="vertical"
         onFinish={handleSubmit}
-        className="w-full"
       >
         <Button
           type="primary"
           htmlType="submit"
           icon={<CheckOutlined />}
-          className="mt-4"
         >
           {isEditing ? 'Сохранить' : 'Создать'}
         </Button>
-        <Tabs defaultActiveKey="1" className="w-full">
+        <Tabs defaultActiveKey="1">
           <TabPane tab="Основные сведения" key="1">
-            <div className="space-y-4">
               <Collapse defaultActiveKey={['1','2','3']}>
                   <Collapse.Panel
                     header="Общая информация"
@@ -113,12 +109,10 @@ const ContractForm: React.FC<ContractFormProps> = ({
                       color: '#1c6900',
                       cursor: 'pointer'
                     }}
-                    className="w-full"
                     showArrow={true}
                     collapsible="header"
                   >
                       <Card
-                        className="w-full"
                       >
                         <Form.Item
                           label="Наименование"
@@ -140,49 +134,52 @@ const ContractForm: React.FC<ContractFormProps> = ({
                           </Select>
                         </Form.Item>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <Form.Item
-                            label="Номер"
-                            name="contractNumber"
-                            rules={[{ required: true, message: 'Введите номер' }]}
-                          >
-                            <Input placeholder="Введите номер" />
-                          </Form.Item>
-
-                          <Form.Item
-                            label="Дата"
-                            name="contractDate"
-                            rules={[{ required: true, message: 'Выберите дату' }]}
-                          >
-                            <DatePicker className="w-full" format="YYYY-MM-DD" />
-                          </Form.Item>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <Form.Item
-                            label="Статус"
-                            name="status"
-                            rules={[{ required: true, message: 'Выберите статус' }]}
-                          >
-                            <Select placeholder="Выберите статус">
-                              {Object.values(ContractStatus).map(status => (
-                                <Option key={status} value={status}>{status}</Option>
-                              ))}
-                            </Select>
-                          </Form.Item>
-
-                          <Form.Item
-                            label="Тип"
-                            name="type"
-                            rules={[{ required: true, message: 'Выберите тип' }]}
-                          >
-                            <Select placeholder="Выберите тип">
-                              {Object.values(ContractType).map(type => (
-                                <Option key={type} value={type}>{type}</Option>
-                              ))}
-                            </Select>
-                          </Form.Item>
-                        </div>
+                        <Row gutter={[16, 8]}>
+                            <Col xs={24} md={12} lg={6}>
+                              <Form.Item
+                                label="Номер"
+                                name="contractNumber"
+                                rules={[{ required: true, message: 'Введите номер' }]}
+                              >
+                                <Input placeholder="Введите номер" />
+                              </Form.Item>
+                            </Col>
+                            <Col xs={24} md={12} lg={6}>
+                              <Form.Item
+                                label="Дата"
+                                name="contractDate"
+                                rules={[{ required: true, message: 'Выберите дату' }]}
+                              >
+                                <DatePicker format="YYYY-MM-DD" />
+                              </Form.Item>
+                            </Col>
+                            <Col xs={24} md={12} lg={6}>
+                              <Form.Item
+                                label="Статус"
+                                name="status"
+                                rules={[{ required: true, message: 'Выберите статус' }]}
+                              >
+                                <Select placeholder="Выберите статус">
+                                  {Object.values(ContractStatus).map(status => (
+                                    <Option key={status} value={status}>{status}</Option>
+                                  ))}
+                                </Select>
+                              </Form.Item>
+                            </Col>
+                            <Col xs={24} md={12} lg={6}>
+                              <Form.Item
+                                label="Тип"
+                                name="type"
+                                rules={[{ required: true, message: 'Выберите тип' }]}
+                              >
+                                <Select placeholder="Выберите тип">
+                                  {Object.values(ContractType).map(type => (
+                                    <Option key={type} value={type}>{type}</Option>
+                                  ))}
+                                </Select>
+                              </Form.Item>
+                            </Col>
+                        </Row>
                       </Card>
                   </Collapse.Panel>
                   <Collapse.Panel
@@ -193,78 +190,81 @@ const ContractForm: React.FC<ContractFormProps> = ({
                       color: '#333752',
                       cursor: 'pointer'
                     }}
-                    className="w-full"
                     showArrow={true}
                     collapsible="header"
                   >
-                      <Card
-                        className="w-full"
-                      >
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <Form.Item
-                            label="Стоимость без НДС"
-                            name="plannedCostWithoutVAT"
-                            rules={[{ required: true, message: 'Введите плановую стоимость без НДС' }]}
-                          >
-                            <InputNumber
-                              style={inputNumberStyle}
-                              min={0}
-                              placeholder="Введите стоимость"
-                              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                              onChange={value => setPlannedCostWithoutVAT(value || 0)}
-                            />
-                          </Form.Item>
-
-                          <Form.Item
-                            label="НДС, руб."
-                            name="plannedVAT"
-                          >
-                            <InputNumber
-                              style={inputNumberStyle}
-                              min={0}
-                              placeholder="Введите НДС"
-                              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                              onChange={value => setPlannedVAT(value || 0)}
-                            />
-                          </Form.Item>
-
-                          <Form.Item
-                            label="Стоимость с НДС"
-                            name="plannedCost"
-                          >
-                            <InputNumber
-                              style={inputNumberStyle}
-                              disabled
-                              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                            />
-                          </Form.Item>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <Form.Item
-                            label="Гарантийный резерв, %"
-                            name="warrantyReserve"
-                          >
-                            <InputNumber
-                              style={inputNumberStyle}
-                              min={0}
-                              max={100}
-                              placeholder="Введите %"
-                            />
-                          </Form.Item>
-
-                          <Form.Item
-                            label="Аванс, %"
-                            name="plannedAdvancePercent"
-                          >
-                            <InputNumber
-                              style={inputNumberStyle}
-                              min={0}
-                              max={100}
-                              placeholder="Введите %"
-                            />
-                          </Form.Item>
-                        </div>
+                      <Card>
+                        <Row gutter={[16, 8]}>
+                            <Col md={24} lg={8}>
+                                <Form.Item
+                                    label="Стоимость без НДС"
+                                    name="plannedCostWithoutVAT"
+                                    rules={[{ required: true, message: 'Введите плановую стоимость без НДС' }]}
+                                >
+                                    <InputNumber
+                                        style={inputNumberStyle}
+                                        min={0}
+                                        placeholder="Введите стоимость"
+                                        formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                                        onChange={value => setPlannedCostWithoutVAT(value || 0)}
+                                    />
+                                </Form.Item>
+                            </Col>
+                            <Col md={24} lg={8}>
+                                <Form.Item
+                                    label="Сумма НДС"
+                                    name="plannedVAT"
+                                >
+                                    <InputNumber
+                                        style={inputNumberStyle}
+                                        min={0}
+                                        placeholder="Введите НДС"
+                                        formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                                        onChange={value => setPlannedVAT(value || 0)}
+                                    />
+                                </Form.Item>
+                            </Col>
+                            <Col md={24} lg={8}>
+                                <Form.Item
+                                    label="Стоимость с НДС"
+                                    name="plannedCost"
+                                >
+                                    <InputNumber
+                                        style={inputNumberStyle}
+                                        disabled
+                                        formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                                    />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row gutter={[16, 8]}>
+                            <Col md={24} lg={12}>
+                              <Form.Item
+                                label="Гарантийный резерв, %"
+                                name="warrantyReserve"
+                              >
+                                <InputNumber
+                                  style={inputNumberStyle}
+                                  min={0}
+                                  max={100}
+                                  placeholder="Введите %"
+                                />
+                              </Form.Item>
+                            </Col>
+                            <Col md={24} lg={12}>
+                              <Form.Item
+                                label="Аванс, %"
+                                name="plannedAdvancePercent"
+                              >
+                                <InputNumber
+                                  style={inputNumberStyle}
+                                  min={0}
+                                  max={100}
+                                  placeholder="Введите %"
+                                />
+                              </Form.Item>
+                            </Col>
+                        </Row>
                       </Card>
                   </Collapse.Panel>
                   <Collapse.Panel
@@ -275,41 +275,43 @@ const ContractForm: React.FC<ContractFormProps> = ({
                       color: '#000',
                       cursor: 'pointer'
                     }}
-                    className="w-full"
                     showArrow={true}
                     collapsible="header"
                   >
                       {/* Фактические показатели */}
-                      <Card className="w-full">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <Form.Item
-                            label="Выполнение, руб. без НДС"
-                            name="actualCostWithoutVAT"
-                          >
-                            <InputNumber
-                              style={inputNumberStyle}
-                              min={0}
-                              disabled
-                              placeholder="Введите стоимость без НДС"
-                              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                            />
-                          </Form.Item>
-
-                          <Form.Item
-                            label="НДС, руб."
-                            name="actualVAT"
-                          >
-                            <InputNumber
-                              style={inputNumberStyle}
-                              min={0}
-                              placeholder="Введите НДС"
-                              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                            />
-                          </Form.Item>
-                        </div>
+                      <Card>
+                        <Row gutter={[16, 8]}>
+                            <Col md={24} lg={8}>
+                              <Form.Item
+                                label="Выполнение без НДС"
+                                name="actualCostWithoutVAT"
+                              >
+                                <InputNumber
+                                  style={inputNumberStyle}
+                                  min={0}
+                                  disabled
+                                  placeholder="Введите стоимость без НДС"
+                                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                                />
+                              </Form.Item>
+                            </Col>
+                            <Col md={24} lg={8}>
+                              <Form.Item
+                                label="Сумма НДС"
+                                name="actualVAT"
+                              >
+                                <InputNumber
+                                  style={inputNumberStyle}
+                                  min={0}
+                                  placeholder="Введите НДС"
+                                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                                />
+                              </Form.Item>
+                            </Col>
+                        </Row>
 
                         <Form.Item
-                          label="Выплаченный аванс, руб."
+                          label="Выплаченный аванс"
                           name="actualAdvance"
                         >
                           <InputNumber
@@ -322,7 +324,6 @@ const ContractForm: React.FC<ContractFormProps> = ({
                       </Card>
                   </Collapse.Panel>
               </Collapse>
-            </div>
           </TabPane>
 
           <TabPane tab="Выполнение" key="2">
@@ -339,7 +340,6 @@ const ContractForm: React.FC<ContractFormProps> = ({
           </TabPane>
         </Tabs>
       </Form>
-    </div>
   );
 };
 

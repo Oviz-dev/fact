@@ -148,7 +148,7 @@ const FactForm: React.FC<FactFormProps> = ({
   const isEditingForm=() => isEditing;
 
   // Общий стиль для всех InputNumber
-  const inputNumberStyle = { width: '100%' };
+  const inputNumberStyle = {width: '100%'};
 
   // Общий стиль для карточек
   const cardStyle = { marginBottom: '1rem' };
@@ -158,7 +158,6 @@ const FactForm: React.FC<FactFormProps> = ({
           form={form}
           layout="vertical"
           onFinish={handleSubmit}
-          className="w-full"
         >
             <Button
                 type="primary"
@@ -187,25 +186,52 @@ const FactForm: React.FC<FactFormProps> = ({
                         color: '#1c6900',
                         cursor: 'pointer'
                         }}
-                        className="w-full"
                         showArrow={true}
                         collapsible="header"
                     >
-                        <Card >
-
-                            <Form.Item
-                                label="Наименование"
-                                name="name"
-                                rules={[{ required: true, message: 'Введите наименование' }]}
-                            >
-                                <Input
-                                    placeholder="Введите наименование"
-                                    disabled={isFieldDisabled()}
-                                />
-                            </Form.Item>
-
+                        <Card style={cardStyle}>
                             <Row gutter={[16, 16]}>
-                              <Col xs={24} md={12}>
+                              <Col md={24} lg={12} xl={6}>
+                                <Form.Item
+                                    label="№"
+                                    name="factNumber"
+                                    rules={[{ required: true, message: 'Введите номер' }]}
+                                >
+                                    <Input
+                                        placeholder="Введите номер"
+                                        disabled={isFieldDisabled()}
+                                        style={inputNumberStyle}
+                                    />
+                                </Form.Item>
+                              </Col>
+                              <Col md={24} lg={12} xl={6}>
+                                <Form.Item
+                                    label="Дата "
+                                    name="date"
+                                    rules={[{ required: true, message: 'Выберите дату ' }]}
+                                >
+                                    <DatePicker
+                                        format="YYYY-MM-DD"
+                                        value={initialValues?.date ? moment(initialValues.date, 'YYYY-MM-DD') : null}
+                                        disabled={isFieldDisabled()}
+                                    />
+                                </Form.Item>
+                              </Col>
+                              <Col md={24} lg={24} xl={12}>
+                                <Form.Item
+                                    label="Наименование"
+                                    name="name"
+                                    rules={[{ required: true, message: 'Введите наименование' }]}
+                                >
+                                    <Input
+                                        placeholder="Введите наименование"
+                                        disabled={isFieldDisabled()}
+                                    />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                            <Row gutter={[16, 16]}>
+                              <Col md={24} lg={12} xl={6}>
                                 <Form.Item
                                     label="Договор"
                                     name="contract"
@@ -220,9 +246,11 @@ const FactForm: React.FC<FactFormProps> = ({
                                     />
                                 </Form.Item>
                               </Col>
-                              <Col xs={24} md={12}>
+                              <Col md={24} lg={12} xl={6}>
                                 {contractor && (
-                                <Form.Item label="Подрядчик">
+                                <Form.Item
+                                    label="Подрядчик"
+                                >
                                     <Input
                                         value={selectedContractor}
                                         disabled
@@ -230,9 +258,7 @@ const FactForm: React.FC<FactFormProps> = ({
                                 </Form.Item>
                                 )}
                               </Col>
-                            </Row>
-                            <Row gutter={[16, 16]}>
-                              <Col xs={24} md={12}>
+                              <Col md={24} lg={12} xl={6}>
                                 <Form.Item
                                     label="Объект"
                                     name="object"
@@ -247,7 +273,7 @@ const FactForm: React.FC<FactFormProps> = ({
                                     />
                                 </Form.Item>
                               </Col>
-                              <Col xs={24} md={12}>
+                              <Col md={24} lg={12} xl={6}>
                                 <Form.Item
                                     label="Статья учёта"
                                     name="pnl"
@@ -263,33 +289,6 @@ const FactForm: React.FC<FactFormProps> = ({
                                 </Form.Item>
                               </Col>
                             </Row>
-                            <Row gutter={[16, 16]}>
-                              <Col xs={24} md={12}>
-                                <Form.Item
-                                    label="№"
-                                    name="factNumber"
-                                    rules={[{ required: true, message: 'Введите номер' }]}
-                                >
-                                    <Input
-                                        placeholder="Введите номер"
-                                        disabled={isFieldDisabled()}
-                                    />
-                                </Form.Item>
-                              </Col>
-                              <Col xs={24} md={12}>
-                                <Form.Item
-                                    label="Дата "
-                                    name="date"
-                                    rules={[{ required: true, message: 'Выберите дату ' }]}
-                                >
-                                    <DatePicker
-                                        format="YYYY-MM-DD"
-                                        value={initialValues?.date ? moment(initialValues.date, 'YYYY-MM-DD') : null}
-                                        disabled={isFieldDisabled()}
-                                    />
-                                </Form.Item>
-                              </Col>
-                            </Row>
                         </Card>
                     </Collapse.Panel>
                     <Collapse.Panel
@@ -300,13 +299,12 @@ const FactForm: React.FC<FactFormProps> = ({
                         color: '#000',
                         cursor: 'pointer'
                         }}
-                        className="w-full"
                         showArrow={true}
                         collapsible="header"
                     >
-                        <Card>
+                        <Card style={cardStyle}>
                             <Row gutter={[16, 16]}>
-                              <Col xs={24} md={12}>
+                              <Col md={24} lg={12}> {/*добавить сумму с ндс и ещё одну колонку*/}
                                 <Form.Item
                                     label="Сумма без НДС"
                                     name="cost"
@@ -320,9 +318,9 @@ const FactForm: React.FC<FactFormProps> = ({
                                     />
                                 </Form.Item>
                               </Col>
-                              <Col xs={24} md={12}>
+                              <Col md={24} lg={12}>
                                 <Form.Item
-                                    label="НДС, руб."
+                                    label="НДС"
                                     name="actualVAT"
                                     rules={[{ required: false }]}
                                 >
@@ -336,7 +334,7 @@ const FactForm: React.FC<FactFormProps> = ({
                               </Col>
                             </Row>
                             <Row gutter={[16, 16]}>
-                              <Col xs={24} md={12}>
+                              <Col md={24} lg={12}>
                                 <Form.Item
                                     label="Объём"
                                     name="amount"
@@ -350,7 +348,7 @@ const FactForm: React.FC<FactFormProps> = ({
                                     />
                                 </Form.Item>
                               </Col>
-                              <Col xs={24} md={12}>
+                              <Col md={24} lg={12}>
                                 <Form.Item
                                     label="Единицы"
                                     name="unit"
