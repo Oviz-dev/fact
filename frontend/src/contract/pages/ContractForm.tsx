@@ -26,10 +26,22 @@ const ContractForm: React.FC<ContractFormProps> = ({
   const [plannedCostWithoutVAT, setPlannedCostWithoutVAT] = useState<number>(0);
   const [plannedVAT, setPlannedVAT] = useState<number>(0);
 
-  useEffect(() => {
-    const calculatedPlannedCost = plannedCostWithoutVAT + plannedVAT;
-    form.setFieldsValue({ plannedCost: calculatedPlannedCost });
-  }, [plannedCostWithoutVAT, plannedVAT, form]);
+    // Функция для расчета общей стоимости
+    const calculateTotalCost = (withoutVAT: number | null, vat: number | null) => {
+     return (withoutVAT || 0) + (vat || 0);
+    };
+
+    // Общие обработчики изменения полей
+    const handleFieldChange = (fieldName: string, value: number | null) => {
+     const currentFormValues = form.getFieldsValue();
+     const withoutVAT = fieldName === 'plannedCostWithoutVAT' ? value : currentFormValues.plannedCostWithoutVAT;
+     const vat = fieldName === 'plannedVAT' ? value : currentFormValues.plannedVAT;
+
+     form.setFieldsValue({
+       [fieldName]: value,
+       plannedCost: calculateTotalCost(withoutVAT, vat)
+     });
+    };
 
   useEffect(() => {
     if (initialValues?.id) {
@@ -44,7 +56,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
         contractDate: initialValues.contractDate ? moment(initialValues.contractDate) : undefined,
         startDate: initialValues.startDate ? moment(initialValues.startDate) : undefined,
         endDate: initialValues.endDate ? moment(initialValues.endDate) : undefined,
-        plannedCost: initialValues.plannedCostWithoutVAT + initialValues.plannedVAT,
+        plannedCost: (initialValues.plannedCostWithoutVAT || 0) + (initialValues.plannedVAT || 0),
       });
     } else {
       form.resetFields();
@@ -59,7 +71,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
         id: initialValues?.id,
         plannedCostWithoutVAT: values.plannedCostWithoutVAT ? Number(values.plannedCostWithoutVAT) : 0,
         plannedVAT: values.plannedVAT ? Number(values.plannedVAT) : 0,
-        plannedCost: plannedCostWithoutVAT + plannedVAT,
+        plannedCost: (plannedCostWithoutVAT||0) + (plannedVAT||0),
         actualCostWithoutVAT: values.actualCostWithoutVAT ? Number(values.actualCostWithoutVAT) : 0,
         actualVAT: values.actualVAT ? Number(values.actualVAT) : 0,
         warrantyReserve: values.warrantyReserve ? Number(values.warrantyReserve) : undefined,
@@ -206,7 +218,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                                         min={0}
                                         placeholder="Введите стоимость"
                                         formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                                        onChange={value => setPlannedCostWithoutVAT(value || 0)}
+                                        onChange={value => handleFieldChange('plannedCostWithoutVAT', value)}
                                     />
                                 </Form.Item>
                             </Col>
@@ -220,7 +232,7 @@ const ContractForm: React.FC<ContractFormProps> = ({
                                         min={0}
                                         placeholder="Введите НДС"
                                         formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
-                                        onChange={value => setPlannedVAT(value || 0)}
+                                        onChange={value => handleFieldChange('plannedVAT', value)}
                                     />
                                 </Form.Item>
                             </Col>
