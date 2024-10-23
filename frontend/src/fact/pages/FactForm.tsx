@@ -39,24 +39,41 @@ const FactForm: React.FC<FactFormProps> = ({
   const [selectedPnlId, setSelectedPnlId] = useState<number | undefined>(undefined);
   const [contractor, setContractor] = useState<string | undefined>(undefined);
 
-    const toggleAcceptance = async () => {
-      if (!initialValues || !initialValues.contract) return;
-      try {
-          const isAccepting = !accepted;
-          const costChange = isAccepting ? initialValues.cost : -initialValues.cost;
-          await updateFactAccept(initialValues.id, !accepted);
-          const newActualCostWithoutVAT = (initialValues.contract.actualCostWithoutVAT || 0) + costChange;
-          if (newActualCostWithoutVAT === null || newActualCostWithoutVAT === undefined) {
-              console.error("Invalid actualCostWithoutVAT: ", newActualCostWithoutVAT);
-              throw new Error("actualCostWithoutVAT must be a number or string");
-          }
-          await updateContractFact(initialValues.contract.id, newActualCostWithoutVAT);
-          setAccepted(!accepted);
-      } catch (error) {
-        message.error('Ошибка при обновлении состояния');
-      }
-    };
+const toggleAcceptance = async () => {
+  if (!initialValues || !initialValues.contract) return;
+  try {
+    // Определяем, принимаем ли факт (isAccepting = true) или отменяем (isAccepting = false)
+    const isAccepting = !accepted;
+    const currentCost = initialValues.cost || 0; // Если фактическая стоимость не задана, используем 0
 
+    // Рассчитываем изменение стоимости в зависимости от принятия или отмены факта
+    const costChange = isAccepting ? currentCost : -currentCost;
+
+    // Обновляем статус факта в базе данных
+    await updateFactAccept(initialValues.id, isAccepting);
+
+    // Получаем текущую фактическую стоимость без НДС для контракта
+    const newActualCostWithoutVAT = (initialValues.contract.actualCostWithoutVAT || 0) + costChange;
+
+    // Проверяем на корректность новое значение
+    if (newActualCostWithoutVAT === null || newActualCostWithoutVAT === undefined || isNaN(newActualCostWithoutVAT)) {
+      console.error("Некорректная стоимость без НДС: ", newActualCostWithoutVAT);
+      throw new Error("Стоимость должна быть числом");
+    }
+
+    // Обновляем фактическую стоимость в контракте
+    await updateContractFact(initialValues.contract.id, newActualCostWithoutVAT);
+
+    // Обновляем состояние локально
+    setAccepted(isAccepting);
+
+    // Отображаем сообщение об успешной операции
+    message.success(isAccepting ? 'Факт принят' : 'Факт отменён');
+  } catch (error) {
+    console.error(error);
+    message.error('Ошибка при обновлении состояния');
+  }
+};
   useEffect(() => {
     if (initialValues) {
       form.setFieldsValue({
@@ -142,10 +159,7 @@ const FactForm: React.FC<FactFormProps> = ({
   const isFieldDisabled = () => accepted;
   const isEditingForm=() => isEditing;
 
-  // Общий стиль для всех InputNumber
   const inputNumberStyle = {width: '100%'};
-
-  // Общий стиль для карточек
   const cardStyle = { marginBottom: '1rem' };
 
   return (
@@ -300,9 +314,9 @@ const FactForm: React.FC<FactFormProps> = ({
                     >
                         <Card style={cardStyle}>
                             <Row gutter={[16, 16]}>
-                              <Col md={24} lg={12}> {/*добавить сумму с ндс и ещё одну колонку*/}
+                              <Col md={24} lg={8}> {/*добавить сумму с ндс и ещё одну колонку*/}
                                 <Form.Item
-                                    label="Сумма без НДС"
+                                    label="Стоимость без НДС"
                                     name="cost"
                                     rules={[{ required: true, message: 'Внесите стоимость' }]}
                                 >
@@ -314,7 +328,7 @@ const FactForm: React.FC<FactFormProps> = ({
                                     />
                                 </Form.Item>
                               </Col>
-                              <Col md={24} lg={12}>
+                              <Col md={24} lg={8}>
                                 <Form.Item
                                     label="НДС"
                                     name="actualVAT"
