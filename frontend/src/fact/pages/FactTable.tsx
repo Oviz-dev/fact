@@ -61,7 +61,7 @@ const FactTable: React.FC<FactTableProps> = ({
       render: (pnl: FactDTO['pnl']) => pnl?.name || '—',
     },
     {
-      title: 'Сумма, руб. без НДС',
+      title: 'Сумма без НДС',
       width: '100px',
       dataIndex: 'cost',
       key: 'cost',

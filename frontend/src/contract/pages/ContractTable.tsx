@@ -73,7 +73,7 @@ const ContractTable: React.FC<ContractTableProps> = ({
       sorter: (a:ContractDTO, b:ContractDTO) => a.contractor.localeCompare(b.contractor),
     },
     {
-      title: 'Стоимость, руб. без НДС',
+      title: 'Стоимость без НДС',
       width: '200px',
       dataIndex: 'plannedCostWithoutVAT',
       key: 'plannedCostWithoutVAT',
@@ -88,7 +88,7 @@ const ContractTable: React.FC<ContractTableProps> = ({
       key: 'plannedAdvancePercent',
     },
     {
-      title: 'Выполнение, руб. без НДС',
+      title: 'Выполнение без НДС',
       width: '200px',
       dataIndex: 'actualCostWithoutVAT',
       key: 'actualCostWithoutVAT',

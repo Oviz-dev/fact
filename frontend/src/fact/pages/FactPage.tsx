@@ -1,7 +1,10 @@
-import { Layout, Drawer , message} from 'antd';
+import { Layout, Drawer , message, Button} from 'antd';
 import React, { useState, useEffect } from 'react';
 import FactForm from './FactForm';
 import FactTable from './FactTable';
+
+import FactSummary from './FactSummary';
+
 import { fetchFacts, createFact, deleteFact, updateFact} from '../services/factService';
 import { FactDTO } from '../DTO/FactDTO';
 import Header from '../../components/Header';
@@ -27,6 +30,7 @@ const FactPage = () => {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [selectedFact, setSelectedFact] = useState<FactDTO | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isSummaryVisible, setIsSummaryVisible] = useState(false);
 
   // Функция обновления реестра
   const refreshFacts = async () => {
@@ -149,6 +153,17 @@ const FactPage = () => {
     }
   };
 
+    // Функция для открытия окна FactSummary
+    const handleOpenSummary = () => {
+      setIsSummaryVisible(true);
+    };
+
+    const handleSummaryClose = () => {
+      setIsSummaryVisible(false);
+    };
+
+
+
   // Кнопки для панели управления
   const controlButtons = FullTableButtons({
     onCreate: handleCreate,
@@ -170,6 +185,11 @@ const FactPage = () => {
       <Header />
       <Content style={{ margin: '10px 10px 0' }}>
         <ControlPanel buttons={controlButtons} />
+
+        <Button type="default" onClick={handleOpenSummary}>
+          Свод по статьям
+        </Button>
+
         <FactTable
           facts={facts}
           refreshFacts={refreshFacts}
@@ -197,6 +217,16 @@ const FactPage = () => {
             pnls={pnls}
           />
         </Drawer>
+
+                <Drawer
+                  title="Свод по статьям"
+                  width={'100%'}
+                  onClose={handleSummaryClose}
+                  visible={isSummaryVisible}
+                >
+                  <FactSummary facts={facts} pnls={pnls} />
+                </Drawer>
+
       </Content>
     </Layout>
   );
