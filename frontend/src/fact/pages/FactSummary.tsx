@@ -4,19 +4,19 @@ import moment from 'moment';
 import { FactDTO } from '../DTO/FactDTO';
 import { fetchFacts } from '../services/factService';
 import { PnLDTO } from '../../pnl/DTO/PnLDTO';
-import {formatNumber} from '../../functions/formatNumber';
+import { formatNumber } from '../../functions/formatNumber';
 
 const { Title } = Typography;
 
 interface FactSummaryProps {
   facts: FactDTO[];
-  pnls: { id: number; name: string; parentId: number | null }[];
+  pnls: PnLDTO[];
 }
 
 const FactSummary: React.FC<FactSummaryProps> = ({ pnls }) => {
   const [facts, setFacts] = useState<FactDTO[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [monthsRange, setMonthsRange] = useState<string[]>([]); // Массив для хранения всех месяцев в формате YYYY-MM
+  const [monthsRange, setMonthsRange] = useState<string[]>([]);
 
   // Функция для получения минимального и максимального месяца
   const getMonthsRange = (facts: FactDTO[]) => {
@@ -35,11 +35,8 @@ const FactSummary: React.FC<FactSummaryProps> = ({ pnls }) => {
     return months;
   };
 
-
-
-//переделать на иерархию
+  // Рекурсивная функция для расчёта сумм с учётом иерархии
   const calculatePnLSums = (facts: FactDTO[], pnl: PnLDTO, months: string[]) => {
-    // Суммируем cost для текущей статьи PnL
     let pnlSums = months.reduce((acc, month) => {
       acc[month] = facts
         .filter(fact => fact.pnl?.id === pnl.id && moment(fact.date).format('YYYY-MM') === month)
@@ -47,12 +44,12 @@ const FactSummary: React.FC<FactSummaryProps> = ({ pnls }) => {
       return acc;
     }, {} as Record<string, number>);
 
-    // Если есть дочерние PnL статьи, рекурсивно добавляем их значения
+    // Добавляем суммы дочерних статей
     if (pnl.subPnL && pnl.subPnL.length > 0) {
       pnl.subPnL.forEach(subPnl => {
         const subPnLSums = calculatePnLSums(facts, subPnl, months);
         months.forEach(month => {
-          pnlSums[month] += subPnLSums[month];  // Добавляем суммы дочерних статей
+          pnlSums[month] += subPnLSums[month];
         });
       });
     }
@@ -60,43 +57,31 @@ const FactSummary: React.FC<FactSummaryProps> = ({ pnls }) => {
     return pnlSums;
   };
 
-const generateTableData = (facts: FactDTO[], pnls: PnLDTO[], months: string[]) => {
-  return pnls.map(pnl => {
-    const pnlSums = calculatePnLSums(facts, pnl, months);
-
-    return {
-      key: pnl.id,
-      name: pnl.name,
-      ...pnlSums // добавляем данные по месяцам
-    };
-  });
+const generateTableData = (
+  facts: FactDTO[],
+  pnls: PnLDTO[],
+  months: string[],
+  parentId: number | null = null
+): Array<{ key: number; name: string; [month: string]: number | string }> =>{
+  return pnls
+    .filter(pnl => pnl.parentId === parentId)
+    .map(pnl => {
+      const pnlSums = calculatePnLSums(facts, pnl, months);
+      const row = {
+        key: pnl.id,
+        name: pnl.name,
+        ...pnlSums,
+      };
+      const subRows = generateTableData(facts, pnls, months, pnl.id);
+      return [row, ...subRows];
+    })
+    .flat();
 };
 
-//переделать на иерархию
-
-
-
-
-  // Сгруппировать факты по статьям и месяцам
-  const groupFactsByPnlAndMonth = (facts: FactDTO[], months: string[]) => {
-    const data: any[] = pnls.map(pnl => ({
-      pnl: pnl.name,
-      ...months.reduce((acc, month) => {
-        acc[month] = facts
-          .filter(fact => fact.pnl?.id === pnl.id && moment(fact.date).format('YYYY-MM') === month)
-          .reduce((sum, fact) => sum + fact.cost, 0);
-        return acc;
-      }, {} as Record<string, number>),
-    }));
-
-    return data;
-  };
-
-  // Загрузка всех фактов
   const loadFacts = async () => {
     setLoading(true);
     try {
-      const data = await fetchFacts(); // Получение всех фактов
+      const data = await fetchFacts();
       setFacts(data);
       const months = getMonthsRange(data);
       setMonthsRange(months);
@@ -115,19 +100,19 @@ const generateTableData = (facts: FactDTO[], pnls: PnLDTO[], months: string[]) =
   const columns = [
     {
       title: 'Статья учёта',
-      dataIndex: 'pnl',
-      key: 'pnl',
+      dataIndex: 'name',
+      key: 'name',
     },
     ...monthsRange.map(month => ({
       title: moment(month, 'YYYY-MM').format('MMMM YYYY'),
       dataIndex: month,
       key: month,
-      render: (value: number) => value.toLocaleString('ru-RU', { style: 'currency', currency: 'RUB' }),
+      render: (value: number) => formatNumber(value),
     })),
   ];
 
-  // Данные для таблицы
-  const tableData = groupFactsByPnlAndMonth(facts, monthsRange);
+  // Данные для таблицы с учётом иерархии
+  const tableData = generateTableData(facts, pnls, monthsRange);
 
   return (
     <div>
@@ -136,11 +121,11 @@ const generateTableData = (facts: FactDTO[], pnls: PnLDTO[], months: string[]) =
         columns={columns}
         dataSource={tableData}
         loading={loading}
-        rowKey="pnl"
+        rowKey="key"
         pagination={false}
-        summary={(pageData) => {
+        summary={pageData => {
           const totalByMonth = monthsRange.reduce((acc, month) => {
-            acc[month] = pageData.reduce((sum, row) => sum + (row[month] || 0), 0);
+            acc[month] = pageData.reduce((sum, row) => sum + (Number(row[month as keyof typeof row]) || 0), 0);
             return acc;
           }, {} as Record<string, number>);
 
@@ -150,7 +135,7 @@ const generateTableData = (facts: FactDTO[], pnls: PnLDTO[], months: string[]) =
               {monthsRange.map((month, index) => (
                 <Table.Summary.Cell key={month} index={index + 1}>
                   <Typography.Text>
-                    {totalByMonth[month]?.toLocaleString('ru-RU', { style: 'currency', currency: 'RUB' }) || '0,00 ₽'}
+                    {formatNumber(totalByMonth[month])}
                   </Typography.Text>
                 </Table.Summary.Cell>
               ))}

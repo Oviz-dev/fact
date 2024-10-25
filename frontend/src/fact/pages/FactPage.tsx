@@ -26,7 +26,7 @@ const FactPage = () => {
   const [contracts, setContracts] = useState<{ id: number; name: string; contractor?: string }[]>([]);
   const [units, setUnits] = useState<{ id: number; name: string }[]>([]);
   const [objects, setObjects] = useState<{ id: number; name: string }[]>([]);
-  const [pnls, setPnls] = useState<{ id: number; name: string ; parentId: number | null }[]>([]);
+  const [pnls, setPnls] = useState<{ id: number; name: string ; parentId: number | null ; direction: string}[]>([]);
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [selectedFact, setSelectedFact] = useState<FactDTO | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -116,16 +116,19 @@ const FactPage = () => {
       message.warning('Выберите строку для удаления');
       return;
     }
-
-    try {
-      await deleteFact(selectedFact.id);
-      message.success('Факт успешно удалён');
-      setIsDrawerVisible(false);
-      setSelectedFact(null);
-      await refreshFacts();
-    } catch (error) {
-      message.error('Ошибка при удалении');
-    }
+    if (!selectedFact.accepted) {
+        try {
+          await deleteFact(selectedFact.id);
+          message.success('Факт успешно удалён');
+          setIsDrawerVisible(false);
+          setSelectedFact(null);
+          await refreshFacts();
+        } catch (error) {
+          message.error('Ошибка при удалении');
+        }
+    }else {
+             message.error('Для удаления факта отмените разноску');
+           }
   };
 
   const handleDrawerClose = () => {
@@ -155,6 +158,7 @@ const FactPage = () => {
 
     // Функция для открытия окна FactSummary
     const handleOpenSummary = () => {
+      refreshFacts();
       setIsSummaryVisible(true);
     };
 
