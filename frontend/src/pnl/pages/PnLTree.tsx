@@ -17,30 +17,20 @@ const PnLTree: React.FC<PnLTreeProps> = ({ pnlList, refreshPnLs, setSelectedNode
 
   // Функция для создания дерева, исключая дочерние элементы на верхнем уровне
 const convertToTreeData = (data: PnLDTO[], parentId: number | null): TreeDataNode[] => {
-  console.log('Processing data for parentId:', parentId);
-
   const filteredPnL = data.filter(pnl => pnl.parentId === parentId);
-  console.log('Filtered PnL for parentId:', parentId, filteredPnL);
-
   const treeNodes = filteredPnL.map(pnl => ({
     title: pnl.name,
     key: pnl.id.toString(),
     children: convertToTreeData(data, pnl.id) // Рекурсивно строим дерево для детей
   }));
-
-  console.log('Tree nodes for parentId:', parentId, treeNodes);
   return treeNodes;
 };
 
-
 useEffect(() => {
-  console.log('Received pnlList:', pnlList);
 
   const buildTree = (data: PnLDTO[], parentId: number | null): TreeDataNode[] => {
     // Фильтрация элементов, проверяем на null или undefined
     const filteredPnL = data.filter(pnl => (pnl.parentId === parentId) || (parentId === null && pnl.parentId == null));
-    console.log(`Filtered PnL for parentId: ${parentId}`, filteredPnL);
-
     return filteredPnL.map(pnl => ({
       title: pnl.name,
       key: pnl.id.toString(),
@@ -49,10 +39,8 @@ useEffect(() => {
   };
 
   const treeData = buildTree(pnlList, null);
-  console.log('Converted treeData:', treeData);
   setGData(treeData);
 }, [pnlList]);
-
 
   // Логика при перетаскивании
   const onDrop: TreeProps['onDrop'] = async (info) => {

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import FactForm from './FactForm';
 import FactTable from './FactTable';
 
-import FactSummary from './FactSummary';
+import FactSummary from './FactSummary-1';
 
 import { fetchFacts, createFact, deleteFact, updateFact} from '../services/factService';
 import { FactDTO } from '../DTO/FactDTO';
@@ -127,7 +127,7 @@ const FactPage = () => {
           message.error('Ошибка при удалении');
         }
     }else {
-             message.error('Для удаления факта отмените разноску');
+             message.error('Для удаления отмените разноску');
            }
   };
 

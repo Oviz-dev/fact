@@ -27,6 +27,9 @@ export interface FactDTO{
   pnl?: {
     id: number;
     name: string;
+    parentId: number | null;
+    direction: string;
+    subPnL?:any;
   };
   basis?: string;
   description?: string;
