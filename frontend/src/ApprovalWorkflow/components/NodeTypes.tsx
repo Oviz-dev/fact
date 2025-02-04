@@ -9,22 +9,24 @@ const { Option } = Select;
 interface NodeContentProps {
   data: ApprovalStepData;
   isSelected: boolean;
-  onDataChange: (newData: Partial<ApprovalStepData>) => void;
+  nodeId: string; // Добавляем nodeId
 }
 
-const NodeContent: React.FC<NodeContentProps> = ({ data, isSelected, onDataChange }) => {
+const NodeContent: React.FC<NodeContentProps> = ({ data, isSelected, nodeId }) => {
+  const { updateNodeData } = useUpdateNode(nodeId); // Используем хук здесь
+
   return (
     <div className="node-content">
       <Input
         value={data.title}
-        onChange={(e) => onDataChange({ title: e.target.value })}
+        onChange={(e) => updateNodeData({ title: e.target.value })}
         placeholder="Название шага"
         style={{ marginBottom: 8 }}
       />
 
       <Select
         value={data.responsible}
-        onChange={(value) => onDataChange({ responsible: value })}
+        onChange={(value) => updateNodeData({ responsible: value })}
         placeholder="Выберите ответственного"
         style={{ width: '100%' }}
       >
@@ -38,15 +40,13 @@ const NodeContent: React.FC<NodeContentProps> = ({ data, isSelected, onDataChang
   );
 };
 
-const SequentialNode: React.FC<NodeProps<ApprovalStepData>> = ({ data, selected, id }) => {
-  const { updateNodeData } = useUpdateNode(id);
-
-  return (
+const nodeTypes = {
+  sequential: ({ data, selected, id }: NodeProps<ApprovalStepData>) => (
     <div className={`node sequential-node ${selected ? 'selected' : ''}`}>
       <NodeContent
         data={data}
         isSelected={selected}
-        onDataChange={updateNodeData}
+        nodeId={id} // Передаём nodeId
       />
       <Handle
         type="target"
@@ -59,18 +59,14 @@ const SequentialNode: React.FC<NodeProps<ApprovalStepData>> = ({ data, selected,
         style={{ top: '50%', transform: 'translateY(-50%)' }}
       />
     </div>
-  );
-};
+  ),
 
-const ParallelNode: React.FC<NodeProps<ApprovalStepData>> = ({ data, selected, id }) => {
-  const { updateNodeData } = useUpdateNode(id);
-
-  return (
+  parallel: ({ data, selected, id }: NodeProps<ApprovalStepData>) => (
     <div className={`node parallel-node ${selected ? 'selected' : ''}`}>
       <NodeContent
         data={data}
         isSelected={selected}
-        onDataChange={updateNodeData}
+        nodeId={id} // Передаём nodeId
       />
       <Handle
         type="target"
@@ -93,13 +89,7 @@ const ParallelNode: React.FC<NodeProps<ApprovalStepData>> = ({ data, selected, i
         }}
       />
     </div>
-  );
+  )
 };
-
-const nodeTypes = {
-  sequential: SequentialNode,
-  parallel: ParallelNode,
-};
-
 
 export default nodeTypes;
