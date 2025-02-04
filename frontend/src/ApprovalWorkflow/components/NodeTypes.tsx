@@ -12,33 +12,32 @@ interface NodeContentProps {
   nodeId: string; // Добавляем nodeId
 }
 
-const NodeContent: React.FC<NodeContentProps> = ({ data, isSelected, nodeId }) => {
-  const { updateNodeData } = useUpdateNode(nodeId); // Используем хук здесь
+const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId }) => {
+  const { updateNodeData } = useUpdateNode(nodeId);
 
   return (
     <div className="node-content">
       <Input
-        value={data.title}
+        value={data.title || ''}
         onChange={(e) => updateNodeData({ title: e.target.value })}
         placeholder="Название шага"
-        style={{ marginBottom: 8 }}
       />
-
       <Select
-        value={data.responsible}
+        value={data.responsible || undefined}
         onChange={(value) => updateNodeData({ responsible: value })}
         placeholder="Выберите ответственного"
         style={{ width: '100%' }}
       >
         {data.users?.map(user => (
-          <Option key={user.id} value={user.id}>
+          <Select.Option key={user.id} value={user.id}>
             {user.name}
-          </Option>
+          </Select.Option>
         ))}
       </Select>
     </div>
   );
 };
+
 
 const nodeTypes = {
   sequential: ({ data, selected, id }: NodeProps<ApprovalStepData>) => (
