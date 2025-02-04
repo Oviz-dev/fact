@@ -1,0 +1,97 @@
+.workflow-editor {
+  height: 600px;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.editor-toolbar {
+  padding: 12px;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  gap: 8px;
+}
+
+.node {
+  padding: 16px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+}
+
+.node.selected {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.2);
+}
+
+
+.sequential-node {
+  border-left: 6px solid #52c41a;
+}
+
+.parallel-node {
+  border-left: 6px solid #faad14;
+}
+
+.node-content {
+  min-width: 200px;
+}
+
+.node-content .ant-input,
+.node-content .ant-select {
+  width: 100%;
+}
+
+.react-flow__handle {
+  background: #1890ff;
+  border: 2px solid white;
+  width: 8px;
+  height: 8px;
+}
+
+.react-flow__handle:hover {
+  background: #40a900;
+}
+
+.node-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.react-flow__edges {
+  stroke-width: 2px;
+}
+
+.react-flow__handle-left {
+  left: -8px;
+  border-radius: 2px 50% 50% 2px;
+}
+
+.react-flow__handle-right {
+  right: -8px;
+  border-radius: 50% 2px 2px 50%;
+}
+
+.parallel-node .react-flow__handle-left {
+  top: 30% !important;
+}
+
+.parallel-node .react-flow__handle-right {
+  top: 70% !important;
+}
+
+.react-flow__edge-path {
+  transition: stroke 0.3s;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #1890ff;
+}
+
+.node-label {
+  font-weight: 500;
+  margin-bottom: 8px;
+}
