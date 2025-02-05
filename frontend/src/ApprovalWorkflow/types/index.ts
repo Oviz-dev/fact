@@ -12,6 +12,7 @@ export interface ApprovalStepData {
   label: string;
   responsible?: string;
   users?: User[]; // Добавляем пользователей в данные узла
+  duration: number; // Длительность шага
 }
 
 export type ApprovalStep = Node<ApprovalStepData> & {

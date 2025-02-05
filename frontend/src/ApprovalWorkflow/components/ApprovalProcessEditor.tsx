@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import ReactFlow, {
   Controls,
   Background,
@@ -8,6 +8,9 @@ import ReactFlow, {
   BackgroundVariant,
   Node,
 } from 'react-flow-renderer';
+
+import { useNodes, useEdges, useReactFlow } from 'react-flow-renderer';
+
 import { Button, message } from 'antd';
 import dagre from 'dagre';
 import { ApprovalStep, ApprovalConnection, ApprovalStepType } from '../types';
@@ -110,6 +113,7 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
       data: {
         title: `Шаг ${prevNodes.length + 1}`,
         label: type === 'sequential' ? 'Последовательный' : 'Параллельный',
+        duration: 1,
         responsible: users[0]?.id,
         users
       },
@@ -136,8 +140,6 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
     return updatedNodes;
   });
 }, [edges, users]);
-
-
 
   // Функция для обработки соединений
   const handleConnect = useCallback((params: Connection) => {
