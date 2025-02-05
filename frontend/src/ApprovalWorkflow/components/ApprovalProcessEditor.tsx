@@ -65,6 +65,14 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const { users } = useUserContext();
 
+
+  const selectedNode = selectedNodeId ? nodes.find(node => node.id === selectedNodeId) : null;
+    const hasOutgoingEdges = useMemo(() => {
+      if (!selectedNodeId) return false;
+      return edges.some(edge => edge.source === selectedNodeId);
+    }, [selectedNodeId, edges]);
+
+
   // Мемоизация списка пользователей для узлов
   const nodesWithUsers = useMemo(() => nodes.map(node => ({
     ...node,
@@ -103,43 +111,64 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
   }, [entityId, edges]);
 
   // Функция для добавления нового узла
-  const addNode = useCallback((type: ApprovalStepType) => {
-    setNodes((prevNodes) => {
-    const lastNode = prevNodes.length > 0 ? prevNodes[prevNodes.length - 1] : null;
+    const addNode = useCallback((type: ApprovalStepType) => {
+      setNodes((prevNodes) => {
+        const lastNode = prevNodes.length > 0 ? prevNodes[prevNodes.length - 1] : null;
+        const selectedNode = selectedNodeId ? prevNodes.find(node => node.id === selectedNodeId) : null;
 
-    const newNode: ApprovalStep = {
-      id: `node-${Date.now()}`,
-      type,
-      data: {
-        title: `Шаг ${prevNodes.length + 1}`,
-        label: type === 'sequential' ? 'Последовательный' : 'Параллельный',
-        duration: 1,
-        responsible: users[0]?.id,
-        users
-      },
-      position: lastNode
-        ? { x: lastNode.position.x + nodeWidth + 100, y: lastNode.position.y } // Смещаем вправо
-        : { x: 0, y: 0 } // Первый узел в (0,0)
-    };
+        // Определяем родительский узел
+        let parentNode = selectedNode || lastNode;
+        let parentIncomingEdge = selectedNodeId ? edges.find(edge => edge.target === selectedNodeId) : null;
 
-    const updatedNodes = [...prevNodes, newNode];
+        // Если у выделенного узла есть потомки, не добавляем шаг
+        if (type === 'sequential' && hasOutgoingEdges) {
+          message.warning('Нельзя добавить шаг: у выделенного узла уже есть потомок.');
+          return prevNodes;
+        }
 
-    setEdges((prevEdges) => {
-      if (!lastNode) return prevEdges;
+        // Создаем новый узел
+        const newNode: ApprovalStep = {
+          id: `node-${Date.now()}`,
+          type,
+          data: {
+            title: `Шаг ${prevNodes.length + 1}`,
+            label: type === 'sequential' ? 'Последовательный' : 'Параллельный',
+            duration: 1,
+            responsible: users[0]?.id,
+            users,
+          },
+          position: parentNode
+            ? { x: parentNode.position.x + nodeWidth + 100, y: parentNode.position.y }
+            : { x: 0, y: 0 }, // Первый узел в (0,0)
+        };
 
-      return [
-        ...prevEdges,
-        {
-          id: `${lastNode.id}-${newNode.id}`,
-          source: lastNode.id,
-          target: newNode.id
-        } as ApprovalConnection
-      ];
-    });
+        const updatedNodes = [...prevNodes, newNode];
 
-    return updatedNodes;
-  });
-}, [edges, users]);
+        setEdges((prevEdges) => {
+          let newEdges = [...prevEdges];
+
+          if (type === 'sequential' && parentNode) {
+            newEdges.push({
+              id: `${parentNode.id}-${newNode.id}`,
+              source: parentNode.id,
+              target: newNode.id,
+            } as ApprovalConnection);
+          }
+
+          if (type === 'parallel' && parentIncomingEdge) {
+            newEdges.push({
+              id: `${parentIncomingEdge.source}-${newNode.id}`,
+              source: parentIncomingEdge.source,
+              target: newNode.id,
+            } as ApprovalConnection);
+          }
+
+          return newEdges;
+        });
+
+        return updatedNodes;
+      });
+    }, [edges, users, selectedNodeId, hasOutgoingEdges]);
 
   // Функция для обработки соединений
   const handleConnect = useCallback((params: Connection) => {
@@ -159,7 +188,7 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
   return (
     <div className="workflow-editor">
       <div className="editor-toolbar">
-        <Button onClick={() => addNode('sequential')}>
+        <Button onClick={() => addNode('sequential')} disabled={hasOutgoingEdges}>
           Добавить шаг
         </Button>
         <Button onClick={() => addNode('parallel')}>
@@ -180,6 +209,7 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
         onEdgesChange={onEdgesChange}
         onConnect={handleConnect}
         onNodeClick={(_, node) => setSelectedNodeId(node.id)}
+        onPaneClick={() => setSelectedNodeId(null)}
         nodeTypes={nodeTypes}
         snapToGrid={true}
         fitView
