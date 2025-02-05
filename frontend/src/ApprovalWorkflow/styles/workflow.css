@@ -1,8 +1,25 @@
+@keyframes glowing-border {
+  0% {
+    border-color: #1890ff;
+    box-shadow: 0 0 6px rgba(24, 144, 255, 0.4);
+  }
+  50% {
+    border-color: #40a9ff;
+    box-shadow: 0 0 12px rgba(24, 144, 255, 0.6);
+  }
+  100% {
+    border-color: #1890ff;
+    box-shadow: 0 0 6px rgba(24, 144, 255, 0.4);
+  }
+}
+
 .workflow-editor {
-  height: 600px;
+  height: calc(100vh - 300px);
   border: 1px solid #f0f0f0;
   border-radius: 8px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .editor-toolbar {
@@ -23,10 +40,10 @@
 }
 
 .node.selected {
-  border-color: #1890ff;
+  animation: glowing-border 1.5s infinite alternate;
+  border-width: 3px;
   box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.2);
 }
-
 
 .sequential-node {
   border-left: 6px solid #52c41a;
@@ -61,8 +78,6 @@
   font-size: 14px;
   margin-bottom: 8px;
 }
-
-
 
 .react-flow__edges {
   stroke-width: 3px  !important;

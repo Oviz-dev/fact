@@ -72,7 +72,6 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
       return edges.some(edge => edge.source === selectedNodeId);
     }, [selectedNodeId, edges]);
 
-
   // Мемоизация списка пользователей для узлов
   const nodesWithUsers = useMemo(() => nodes.map(node => ({
     ...node,
@@ -137,9 +136,12 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
             responsible: users[0]?.id,
             users,
           },
-          position: parentNode
-            ? { x: parentNode.position.x + nodeWidth + 100, y: parentNode.position.y }
-            : { x: 0, y: 0 }, // Первый узел в (0,0)
+            position: parentNode
+              ? type === 'parallel'
+                ? { x: parentNode.position.x, y: parentNode.position.y + nodeHeight + 50 } // Добавляем ветку вниз
+                : { x: parentNode.position.x + nodeWidth + 100, y: parentNode.position.y } // Последовательный узел справа
+              : { x: 0, y: 0 }, // Первый узел в (0,0)
+
         };
 
         const updatedNodes = [...prevNodes, newNode];
