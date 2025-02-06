@@ -120,81 +120,81 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
   }, [entityId, edges]);
 
   // Функция для добавления нового узла
-const addNode = useCallback((type: ApprovalStepType) => {
-  setNodes((prevNodes) => {
-    const lastNode = prevNodes.length > 0 ? prevNodes[prevNodes.length - 1] : null;
-    const selectedNode = selectedNodeId ? prevNodes.find(node => node.id === selectedNodeId) : null;
+    const addNode = useCallback((type: ApprovalStepType) => {
+      setNodes((prevNodes) => {
+        const lastNode = prevNodes.length > 0 ? prevNodes[prevNodes.length - 1] : null;
+        const selectedNode = selectedNodeId ? prevNodes.find(node => node.id === selectedNodeId) : null;
 
-    // 1. Копируем предыдущие узлы
-    let updatedNodes = [...prevNodes];
-    let parentNode = selectedNode || lastNode;
+        // 1. Копируем предыдущие узлы
+        let updatedNodes = [...prevNodes];
+        let parentNode = selectedNode || lastNode;
 
-    // 2. Преобразование родителя ДО создания нового узла
-    if (type === 'parallel' && parentNode?.type === 'sequential') {
-      updatedNodes = updatedNodes.map(node =>
-        node.id === parentNode!.id
-          ? {
-              ...node,
-              type: 'parallel',
-              data: { ...node.data, label: 'Параллельный' }
-            }
-          : node
-      );
+        // 2. Преобразование родителя ДО создания нового узла
+        if (type === 'parallel' && parentNode?.type === 'sequential') {
+          updatedNodes = updatedNodes.map(node =>
+            node.id === parentNode!.id
+              ? {
+                  ...node,
+                  type: 'parallel',
+                  data: { ...node.data, label: 'Параллельный' }
+                }
+              : node
+          );
 
-      // 3. Обновляем ссылку на родителя после изменения
-      parentNode = updatedNodes.find(node => node.id === parentNode!.id)!;
-    }
-
-    // 4. Создаем новый узел с учетом обновленного parentNode
-    const newNode: ApprovalStep = {
-      id: `node-${Date.now()}`,
-      type,
-      data: {
-        title: `Шаг ${updatedNodes.length + 1}`,
-        label: type === 'sequential' ? 'Последовательный' : 'Параллельный',
-        duration: 1,
-        responsible: users[0]?.id,
-        users,
-      },
-      position: parentNode
-        ? type === 'parallel'
-          ? { x: parentNode.position.x, y: parentNode.position.y + nodeHeight + 50 }
-          : { x: parentNode.position.x + (parentNode.style?.width ? parseInt(parentNode.style.width as string, 10) : nodeWidthStart)  + 100, y: parentNode.position.y }
-        : { x: 0, y: 0 },
-    };
-
-    // 5. Добавляем новый узел в ОБНОВЛЕННЫЙ список узлов
-    updatedNodes = [...updatedNodes, newNode];
-
-    // 6. Обновляем соединения
-    setEdges((prevEdges) => {
-      let newEdges = [...prevEdges];
-
-      if (parentNode) {
-        if (type === 'sequential') {
-          newEdges.push({
-            id: `${parentNode.id}-${newNode.id}-${Date.now()}`,
-            source: parentNode.id,
-            target: newNode.id,
-          });
-        } else {
-          const sourceId = edges.find(edge => edge.target === parentNode!.id)?.source;
-          if (sourceId) {
-            newEdges.push({
-              id: `${sourceId}-${newNode.id}-${Date.now()}`,
-              source: sourceId,
-              target: newNode.id,
-            });
-          }
+          // 3. Обновляем ссылку на родителя после изменения
+          parentNode = updatedNodes.find(node => node.id === parentNode!.id)!;
         }
-      }
 
-      return newEdges;
-    });
+        // 4. Создаем новый узел с учетом обновленного parentNode
+        const newNode: ApprovalStep = {
+          id: `node-${Date.now()}`,
+          type,
+          data: {
+            title: `Шаг ${updatedNodes.length + 1}`,
+            label: type === 'sequential' ? 'Последовательный' : 'Параллельный',
+            duration: 1,
+            responsible: users[0]?.id,
+            users,
+          },
+          position: parentNode
+            ? type === 'parallel'
+              ? { x: parentNode.position.x, y: parentNode.position.y + nodeHeight + 50 }
+              : { x: parentNode.position.x + (parentNode.style?.width ? parseInt(parentNode.style.width as string, 10) : nodeWidthStart)  + 100, y: parentNode.position.y }
+            : { x: 0, y: 0 },
+        };
 
-    return updatedNodes; // Возвращаем ОБНОВЛЕННЫЕ узлы
-  });
-}, [edges, users, selectedNodeId, hasOutgoingEdges]);
+        // 5. Добавляем новый узел в обновлённый список узлов
+        updatedNodes = [...updatedNodes, newNode];
+
+        // 6. Обновляем соединения
+        setEdges((prevEdges) => {
+          let newEdges = [...prevEdges];
+
+          if (parentNode) {
+            if (type === 'sequential') {
+              newEdges.push({
+                id: `${parentNode.id}-${newNode.id}-${Date.now()}`,
+                source: parentNode.id,
+                target: newNode.id,
+              });
+            } else {
+              const sourceId = edges.find(edge => edge.target === parentNode!.id)?.source;
+              if (sourceId) {
+                newEdges.push({
+                  id: `${sourceId}-${newNode.id}-${Date.now()}`,
+                  source: sourceId,
+                  target: newNode.id,
+                });
+              }
+            }
+          }
+
+          return newEdges;
+        });
+
+        return updatedNodes; // Возвращаем обновленные узлы
+      });
+    }, [edges, users, selectedNodeId, hasOutgoingEdges]);
 
   // Функция для обработки соединений
   const handleConnect = useCallback((params: Connection) => {
