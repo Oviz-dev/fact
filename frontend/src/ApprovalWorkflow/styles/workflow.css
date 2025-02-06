@@ -46,11 +46,11 @@
 }
 
 .sequential-node {
-  border-left: 6px solid #52c41a;
+  border-left: 3px solid #52c41a;
 }
 
 .parallel-node {
-  border-left: 6px solid #faad14;
+  border-left: 3px solid #faad14;
 }
 
 .node-content {
@@ -111,4 +111,18 @@
 .node-label {
   font-weight: 500;
   margin-bottom: 8px;
+}
+
+/* Подсветка границы узла при наведении */
+.node:hover {
+  border-width: 3px;
+  border-color: #1890ff !important;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Подсветка линии при наведении */
+.react-flow__edge-path:hover {
+  stroke: #1890ff !important;
+  stroke-width: 3px !important;
+  cursor: pointer;
 }

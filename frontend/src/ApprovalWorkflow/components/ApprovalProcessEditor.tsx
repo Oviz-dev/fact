@@ -2,16 +2,20 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import ReactFlow, {
   Controls,
   Background,
+  Edge,
   Connection,
   useNodesState,
   useEdgesState,
   BackgroundVariant,
   Node,
+  updateEdge,
+  ConnectionMode,
 } from 'react-flow-renderer';
 
 import { useNodes, useEdges, useReactFlow } from 'react-flow-renderer';
 
 import { Button, message } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import dagre from 'dagre';
 import { ApprovalStep, ApprovalConnection, ApprovalStepType } from '../types';
 import { useUserContext } from '../context/UserContext';
@@ -65,6 +69,9 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const { users } = useUserContext();
 
+  const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) => {
+      setEdges((prevEdges) => updateEdge(oldEdge, newConnection, prevEdges));
+  };
 
   const selectedNode = selectedNodeId ? nodes.find(node => node.id === selectedNodeId) : null;
     const hasOutgoingEdges = useMemo(() => {
@@ -190,12 +197,29 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
   return (
     <div className="workflow-editor">
       <div className="editor-toolbar">
-        <Button onClick={() => addNode('sequential')} disabled={hasOutgoingEdges}>
-          Добавить шаг
+        <Button
+          onClick={() => addNode('sequential')}
+          disabled={hasOutgoingEdges}
+          style={{
+            border: '2px solid #52c41a', // Зеленая граница для последовательного шага
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#52c41a'}
+          onMouseLeave={(e) => e.currentTarget.style.color = 'black'}
+        >
+          <PlusOutlined /> Шаг
         </Button>
-        <Button onClick={() => addNode('parallel')}>
-          Добавить ветку
+
+        <Button
+          onClick={() => addNode('parallel')}
+          style={{
+            border: '2px solid #faad14', // Оранжевая граница для параллельного шага
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#faad14'}
+          onMouseLeave={(e) => e.currentTarget.style.color = 'black'}
+        >
+          <PlusOutlined /> Ветка
         </Button>
+
         <Button onClick={arrangeLayout}>
           Выровнять схему
         </Button>
@@ -204,11 +228,13 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
         </Button>
       </div>
 
-      <ReactFlow
+     <ReactFlow
         nodes={nodesWithUsers}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onEdgeUpdate={onEdgeUpdate}  // Позволяет перетаскивать соединения
+        connectionMode={ConnectionMode.Loose}  // Позволяет соединять с любыми точками
         onConnect={handleConnect}
         onNodeClick={(_, node) => setSelectedNodeId(node.id)}
         onPaneClick={() => setSelectedNodeId(null)}

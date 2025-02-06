@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Card, Collapse, Layout, Typography } from 'antd';
+import { ReactFlowProvider } from 'react-flow-renderer';
 import { UserProvider } from '../context/UserContext';
 import ApprovalWorkflow from '../components/ApprovalProcessEditor';
 import Header from '../../components/Header';
@@ -45,11 +46,13 @@ const EntityApprovalPage: React.FC = () => {
               style={{ background: '#fafafa' }}
             >
               <UserProvider>
-                <ApprovalWorkflow
-                  entityId={Entity.id}
-                  initialNodes={[]}
-                  initialEdges={[]}
-                />
+                <ReactFlowProvider>
+                    <ApprovalWorkflow
+                      entityId={Entity.id}
+                      initialNodes={[]}
+                      initialEdges={[]}
+                    />
+                </ReactFlowProvider>
               </UserProvider>
             </Panel>
           </Collapse>
