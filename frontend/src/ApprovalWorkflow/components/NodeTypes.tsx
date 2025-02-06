@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Handle, Position, NodeProps } from 'react-flow-renderer';
 import { Input, Select, InputNumber } from 'antd';
 import { ApprovalStepData } from '../types';
@@ -14,9 +14,11 @@ interface NodeContentProps {
 
 const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId }) => {
   const { updateNodeData } = useUpdateNode(nodeId);
+    const textRef = useRef<HTMLDivElement>(null);
+    const [width, setWidth] = useState(200); // Минимальная ширина узла
 
   return (
-    <div className="node-content">
+    <div ref={textRef} style={{ width: `${width}px` }} className="node-content">
       <Input
         value={data.title || ''}
         onChange={(e) => updateNodeData({ title: e.target.value })}

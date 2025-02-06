@@ -27,7 +27,7 @@ import '../styles/workflow.css';
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-const nodeWidth = 240;
+const nodeWidthStart = 240;// ширина узла по умолчанию
 const nodeHeight = 120;
 
 const layoutElements = (nodes: ApprovalStep[], edges: ApprovalConnection[]): ApprovalStep[] => {
@@ -38,6 +38,7 @@ const layoutElements = (nodes: ApprovalStep[], edges: ApprovalConnection[]): App
   });
 
   nodes.forEach(node => {
+    const nodeWidth = node.style?.width ? parseInt(node.style.width as string, 10) : nodeWidthStart;
     dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
   });
 
@@ -49,6 +50,8 @@ const layoutElements = (nodes: ApprovalStep[], edges: ApprovalConnection[]): App
 
   return nodes.map(node => {
     const { x, y } = dagreGraph.node(node.id);
+    const nodeWidth = node.style?.width ? parseInt(node.style.width as string, 10) : nodeWidthStart;
+
     return {
       ...node,
       position: { x: x - nodeWidth / 2, y: y - nodeHeight / 2 },
@@ -132,6 +135,22 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
           return prevNodes;
         }
 
+        //обновление типа родительского узла на параллельный при добавлении параллельного (НЕ РАБОТАЕТ НАДО ПОПРАВИТЬ)
+        let updatedNodes = prevNodes.map(node => {
+          if (parentNode && node.id === parentNode.id && node.type === 'sequential' && type === 'parallel') {
+            return {
+              ...node,
+              type: 'parallel',
+              data: {
+                ...node.data,
+                label: 'Параллельный',
+              }
+            };
+          }
+          return node;
+        });
+
+
         // Создаем новый узел
         const newNode: ApprovalStep = {
           id: `node-${Date.now()}`,
@@ -143,33 +162,35 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
             responsible: users[0]?.id,
             users,
           },
-            position: parentNode
+          position: parentNode
               ? type === 'parallel'
                 ? { x: parentNode.position.x, y: parentNode.position.y + nodeHeight + 50 } // Добавляем ветку вниз
-                : { x: parentNode.position.x + nodeWidth + 100, y: parentNode.position.y } // Последовательный узел справа
-              : { x: 0, y: 0 }, // Первый узел в (0,0)
-
+                : { x: parentNode.position.x + (parentNode.style?.width ? parseInt(parentNode.style.width as string, 10) : nodeWidthStart) + 100, y: parentNode.position.y } // Последовательный узел справа
+              : { x: 0, y: 0 },
         };
 
-        const updatedNodes = [...prevNodes, newNode];
+        updatedNodes = [...prevNodes, newNode];
 
         setEdges((prevEdges) => {
           let newEdges = [...prevEdges];
 
           if (type === 'sequential' && parentNode) {
             newEdges.push({
-              id: `${parentNode.id}-${newNode.id}`,
+              id: `${parentNode.id}-${newNode.id}-${Date.now()}`,
               source: parentNode.id,
               target: newNode.id,
             } as ApprovalConnection);
           }
 
-          if (type === 'parallel' && parentIncomingEdge) {
-            newEdges.push({
-              id: `${parentIncomingEdge.source}-${newNode.id}`,
-              source: parentIncomingEdge.source,
-              target: newNode.id,
-            } as ApprovalConnection);
+          if (type === 'parallel') {
+            const sourceId = parentIncomingEdge ? parentIncomingEdge.source : lastNode && edges.find(edge => edge.target === lastNode.id)?.source;
+            if (sourceId) {
+              newEdges.push({
+                id: `${sourceId}-${newNode.id}-${Date.now()}`,
+                source: sourceId,
+                target: newNode.id,
+              } as ApprovalConnection);
+            }
           }
 
           return newEdges;

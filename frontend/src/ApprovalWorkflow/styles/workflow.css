@@ -54,12 +54,16 @@
 }
 
 .node-content {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   min-width: 200px;
+  max-width: 100%;
 }
 
 .node-content .ant-input,
 .node-content .ant-select {
-  width: 100%;
+  width: auto;
 }
 
 .react-flow__handle {
