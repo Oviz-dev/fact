@@ -120,85 +120,81 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
   }, [entityId, edges]);
 
   // Функция для добавления нового узла
-    const addNode = useCallback((type: ApprovalStepType) => {
-      setNodes((prevNodes) => {
-        const lastNode = prevNodes.length > 0 ? prevNodes[prevNodes.length - 1] : null;
-        const selectedNode = selectedNodeId ? prevNodes.find(node => node.id === selectedNodeId) : null;
+const addNode = useCallback((type: ApprovalStepType) => {
+  setNodes((prevNodes) => {
+    const lastNode = prevNodes.length > 0 ? prevNodes[prevNodes.length - 1] : null;
+    const selectedNode = selectedNodeId ? prevNodes.find(node => node.id === selectedNodeId) : null;
 
-        // Определяем родительский узел
-        let parentNode = selectedNode || lastNode;
-        let parentIncomingEdge = selectedNodeId ? edges.find(edge => edge.target === selectedNodeId) : null;
+    // 1. Копируем предыдущие узлы
+    let updatedNodes = [...prevNodes];
+    let parentNode = selectedNode || lastNode;
 
-        // Если у выделенного узла есть потомки, не добавляем шаг
-        if (type === 'sequential' && hasOutgoingEdges) {
-          message.warning('Нельзя добавить шаг: у выделенного узла уже есть потомок.');
-          return prevNodes;
-        }
-
-        //обновление типа родительского узла на параллельный при добавлении параллельного (НЕ РАБОТАЕТ НАДО ПОПРАВИТЬ)
-        let updatedNodes = prevNodes.map(node => {
-          if (parentNode && node.id === parentNode.id && node.type === 'sequential' && type === 'parallel') {
-            return {
+    // 2. Преобразование родителя ДО создания нового узла
+    if (type === 'parallel' && parentNode?.type === 'sequential') {
+      updatedNodes = updatedNodes.map(node =>
+        node.id === parentNode!.id
+          ? {
               ...node,
               type: 'parallel',
-              data: {
-                ...node.data,
-                label: 'Параллельный',
-              }
-            };
-          }
-          return node;
-        });
-
-
-        // Создаем новый узел
-        const newNode: ApprovalStep = {
-          id: `node-${Date.now()}`,
-          type,
-          data: {
-            title: `Шаг ${prevNodes.length + 1}`,
-            label: type === 'sequential' ? 'Последовательный' : 'Параллельный',
-            duration: 1,
-            responsible: users[0]?.id,
-            users,
-          },
-          position: parentNode
-              ? type === 'parallel'
-                ? { x: parentNode.position.x, y: parentNode.position.y + nodeHeight + 50 } // Добавляем ветку вниз
-                : { x: parentNode.position.x + (parentNode.style?.width ? parseInt(parentNode.style.width as string, 10) : nodeWidthStart) + 100, y: parentNode.position.y } // Последовательный узел справа
-              : { x: 0, y: 0 },
-        };
-
-        updatedNodes = [...prevNodes, newNode];
-
-        setEdges((prevEdges) => {
-          let newEdges = [...prevEdges];
-
-          if (type === 'sequential' && parentNode) {
-            newEdges.push({
-              id: `${parentNode.id}-${newNode.id}-${Date.now()}`,
-              source: parentNode.id,
-              target: newNode.id,
-            } as ApprovalConnection);
-          }
-
-          if (type === 'parallel') {
-            const sourceId = parentIncomingEdge ? parentIncomingEdge.source : lastNode && edges.find(edge => edge.target === lastNode.id)?.source;
-            if (sourceId) {
-              newEdges.push({
-                id: `${sourceId}-${newNode.id}-${Date.now()}`,
-                source: sourceId,
-                target: newNode.id,
-              } as ApprovalConnection);
+              data: { ...node.data, label: 'Параллельный' }
             }
+          : node
+      );
+
+      // 3. Обновляем ссылку на родителя после изменения
+      parentNode = updatedNodes.find(node => node.id === parentNode!.id)!;
+    }
+
+    // 4. Создаем новый узел с учетом обновленного parentNode
+    const newNode: ApprovalStep = {
+      id: `node-${Date.now()}`,
+      type,
+      data: {
+        title: `Шаг ${updatedNodes.length + 1}`,
+        label: type === 'sequential' ? 'Последовательный' : 'Параллельный',
+        duration: 1,
+        responsible: users[0]?.id,
+        users,
+      },
+      position: parentNode
+        ? type === 'parallel'
+          ? { x: parentNode.position.x, y: parentNode.position.y + nodeHeight + 50 }
+          : { x: parentNode.position.x + (parentNode.style?.width ? parseInt(parentNode.style.width as string, 10) : nodeWidthStart)  + 100, y: parentNode.position.y }
+        : { x: 0, y: 0 },
+    };
+
+    // 5. Добавляем новый узел в ОБНОВЛЕННЫЙ список узлов
+    updatedNodes = [...updatedNodes, newNode];
+
+    // 6. Обновляем соединения
+    setEdges((prevEdges) => {
+      let newEdges = [...prevEdges];
+
+      if (parentNode) {
+        if (type === 'sequential') {
+          newEdges.push({
+            id: `${parentNode.id}-${newNode.id}-${Date.now()}`,
+            source: parentNode.id,
+            target: newNode.id,
+          });
+        } else {
+          const sourceId = edges.find(edge => edge.target === parentNode!.id)?.source;
+          if (sourceId) {
+            newEdges.push({
+              id: `${sourceId}-${newNode.id}-${Date.now()}`,
+              source: sourceId,
+              target: newNode.id,
+            });
           }
+        }
+      }
 
-          return newEdges;
-        });
+      return newEdges;
+    });
 
-        return updatedNodes;
-      });
-    }, [edges, users, selectedNodeId, hasOutgoingEdges]);
+    return updatedNodes; // Возвращаем ОБНОВЛЕННЫЕ узлы
+  });
+}, [edges, users, selectedNodeId, hasOutgoingEdges]);
 
   // Функция для обработки соединений
   const handleConnect = useCallback((params: Connection) => {
@@ -244,9 +240,11 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
         <Button onClick={arrangeLayout}>
           Выровнять схему
         </Button>
+
         <Button type="primary" onClick={handleSave}>
           Сохранить
         </Button>
+
       </div>
 
      <ReactFlow
@@ -256,7 +254,7 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
         onEdgesChange={onEdgesChange}
         onEdgeUpdate={onEdgeUpdate}  // Позволяет перетаскивать соединения
         connectionMode={ConnectionMode.Loose}  // Позволяет соединять с любыми точками
-        onConnect={handleConnect}
+        onConnect={handleConnect} // Позволяет добавлять соединения вручную
         onNodeClick={(_, node) => setSelectedNodeId(node.id)}
         onPaneClick={() => setSelectedNodeId(null)}
         nodeTypes={nodeTypes}
