@@ -11,16 +11,14 @@ import ReactFlow, {
   updateEdge,
   ConnectionMode,
 } from 'react-flow-renderer';
-
 import { useNodes, useEdges, useReactFlow } from 'react-flow-renderer';
-
 import { Button, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import dagre from 'dagre';
-import { ApprovalStep, ApprovalConnection, ApprovalStepType } from '../types';
+import { ApprovalStep, ApprovalConnection, ApprovalStepType, ProcessMode } from '../types';
 import { useUserContext } from '../context/UserContext';
 import { validateFlow } from '../utils/validation';
-import { saveApprovalFlow } from '../utils/api';
+import { saveApprovalInstance , saveApprovalTemplate} from '../utils/api';
 import nodeTypes from './NodeTypes';
 import '../styles/workflow.css';
 
@@ -60,13 +58,21 @@ const layoutElements = (nodes: ApprovalStep[], edges: ApprovalConnection[]): App
   });
 };
 
-interface Props {
-  entityId: string;
+interface ApprovalProcessEditorProps {
+  entityId?: string;
+  mode: ProcessMode;
+  templateData?: {
+    id: string;
+    name: string;
+    description: string;
+    templateType: string;
+    entityType: string;
+  };
   initialNodes: ApprovalStep[];
   initialEdges: ApprovalConnection[];
 }
 
-const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initialEdges }) => {
+const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({ entityId, initialNodes, initialEdges,templateData, mode }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<ApprovalStep['data']>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState<ApprovalConnection>(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
@@ -87,7 +93,7 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
     ...node,
     data: {
       ...node.data,
-      users
+      users,
     }
   })), [nodes, users]);
 
@@ -108,16 +114,34 @@ const ApprovalProcessEditor: React.FC<Props> = ({ entityId, initialNodes, initia
           return prevNodes;
         }
 
-        saveApprovalFlow(entityId, { nodes: arrangedNodes, edges })
-          .then(() => message.success('Процесс успешно сохранен'))
-          .catch(() => message.error('Ошибка сохранения процесса'));
+        if (mode === ProcessMode.TEMPLATE) {
+            if (!templateData) {
+              message.error('Отсутствуют данные шаблона');
+              return prevNodes;
+            }
+            saveApprovalTemplate({
+              id: templateData.id,
+              name: templateData.name,
+              description: templateData.description,
+              templateType: templateData.templateType,
+              entityType: templateData.entityType,
+              nodes: arrangedNodes,
+              edges,
+            })
+            .then(() => message.success('Шаблон успешно сохранен'))
+            .catch(() => message.error('Ошибка сохранения шаблона'));
+        } else {
+            saveApprovalInstance( {entityId, nodes: arrangedNodes, edges })
+            .then(() => message.success('Процесс успешно сохранен'))
+            .catch(() => message.error('Ошибка сохранения процесса'));
+        }
 
         return arrangedNodes;
       });
     } catch {
       message.error('Ошибка сохранения процесса');
     }
-  }, [entityId, edges]);
+  }, [entityId, edges, mode, templateData]);
 
   // Функция для добавления нового узла
     const addNode = useCallback((type: ApprovalStepType) => {

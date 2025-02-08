@@ -1,30 +1,33 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Handle, Position, NodeProps } from 'react-flow-renderer';
-import { Input, Select, InputNumber } from 'antd';
-import { ApprovalStepData } from '../types';
-import useUpdateNode from '../hooks/useUpdateNode'; // Импортируем хук
+import { Input, Select, InputNumber, Tag } from 'antd';
+import { ApprovalStepData,  ProcessMode} from '../types';
+import useUpdateNode from '../hooks/useUpdateNode';
 
 const { Option } = Select;
 
 interface NodeContentProps {
   data: ApprovalStepData;
   isSelected: boolean;
-  nodeId: string; // Добавляем nodeId
+  nodeId: string;
 }
 
-const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId }) => {
+const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId }) => { //mode
   const { updateNodeData } = useUpdateNode(nodeId);
-    const textRef = useRef<HTMLDivElement>(null);
-    const [width, setWidth] = useState(200); // Минимальная ширина узла
+  const textRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(200); // Минимальная ширина узла
 
   return (
     <div ref={textRef} style={{ width: `${width}px` }} className="node-content">
+      {/* Поле названия шага */}
       <Input
         value={data.title || ''}
         onChange={(e) => updateNodeData({ title: e.target.value })}
         placeholder="Название шага"
         style={{ marginBottom: '12px' }}
       />
+
+      {/* Поле выбора ответственного */}
       <Select
         value={data.responsible || undefined}
         onChange={(value) => updateNodeData({ responsible: value })}
@@ -37,6 +40,8 @@ const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId }) => {
           </Select.Option>
         ))}
       </Select>
+
+      {/* Поле длительности */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         <InputNumber
           min={1}
@@ -60,7 +65,7 @@ const nodeTypes = {
       <NodeContent
         data={data}
         isSelected={selected}
-        nodeId={id} // Передаём nodeId
+        nodeId={id}
       />
       <Handle
         type="target"
@@ -93,7 +98,7 @@ const nodeTypes = {
       <NodeContent
         data={data}
         isSelected={selected}
-        nodeId={id} // Передаём nodeId
+        nodeId={id}
       />
       <Handle
         type="target"
