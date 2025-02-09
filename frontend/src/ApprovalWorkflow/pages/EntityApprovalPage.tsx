@@ -53,7 +53,7 @@ const EntityApprovalPage: React.FC = () => {
                 <Form
                   layout="horizontal"
                   initialValues={templateData}
-                  onValuesChange={(_, values) => setTemplateData(values)}
+                  //onValuesChange={(_, values) => setTemplateData(values)}
                 >
 
                     <Row gutter={[16, 16]}>
@@ -86,7 +86,7 @@ const EntityApprovalPage: React.FC = () => {
                 <Form
                   layout="vertical"
                   initialValues={templateData}
-                  //onValuesChange={(_, values) => setTemplateData(values)}
+                  onValuesChange={(_, values) => setTemplateData(values)}
                 >
                     <Row gutter={[16, 16]}>
                       <Col md={24} lg={12} xl={6}>
