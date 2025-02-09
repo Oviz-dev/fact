@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Collapse, Layout, Typography, Radio, Input, Form,Select } from 'antd';
+import { Card, Collapse, Layout, Typography, Radio, Input, Form,Select, Row, Col} from 'antd';
 import { ReactFlowProvider } from 'react-flow-renderer';
 import { UserProvider } from '../context/UserContext';
 import ApprovalProcessEditor from '../components/ApprovalProcessEditor';
@@ -13,9 +13,9 @@ const { Text } = Typography;
 // Моковые данные сущности
 const Entity = {
   id: Date.now(),
-  templatename: 'шаблон №1', // в будущем вытаскивать по id шаблона название
-  entityid: '123',
-  name: 'Договор № ПИР 2025-01',
+  templatename: 'Процесс согласования договоров', // в будущем вытаскивать по id шаблона название
+  entityid: '123', //
+  name: 'Договор № ПИР 2025-01', // делать выбор экземпляра либо подставлять сущность из карточки
   status: ProcessStatus.DRAFT,
 };
 
@@ -51,22 +51,33 @@ const EntityApprovalPage: React.FC = () => {
               {/* Форма для экземпляра */}
               {mode === ProcessMode.INSTANCE && (
                 <Form
-                  layout="vertical"
+                  layout="horizontal"
                   initialValues={templateData}
                   onValuesChange={(_, values) => setTemplateData(values)}
                 >
-                    <Form.Item label="ID процесса" >
-                      <Text>ID: {Entity.id}</Text>
-                    </Form.Item>
-                    <Form.Item label="Экземпляр сущности">
-                      <Text>ID {Entity.entityid}, {Entity.name}</Text>
-                    </Form.Item>
-                    <Form.Item label="Название шаблона">
-                      <Text>{Entity.templatename}</Text>
-                    </Form.Item>
-                    <Form.Item label="Статус процесса">
-                      <Text>{Entity.status}</Text>
-                    </Form.Item>
+
+                    <Row gutter={[16, 16]}>
+                      <Col md={24} lg={12} xl={6}>
+                        <Form.Item label="ID процесса">
+                            <Text>{Entity.id}</Text>
+                        </Form.Item>
+                      </Col>
+                      <Col md={24} lg={12} xl={6}>
+                        <Form.Item label="Экземпляр сущности:">
+                            <Text> {Entity.name}</Text>
+                        </Form.Item>
+                      </Col>
+                      <Col md={24} lg={12} xl={6}>
+                        <Form.Item label="Шаблон:">
+                            <Text>{Entity.templatename}</Text>
+                        </Form.Item>
+                      </Col>
+                      <Col md={24} lg={12} xl={6}>
+                        <Form.Item label="Статус процесса">
+                          <Text>{Entity.status}</Text>
+                        </Form.Item>
+                      </Col>
+                    </Row>
                 </Form>
               )}
 
@@ -75,38 +86,47 @@ const EntityApprovalPage: React.FC = () => {
                 <Form
                   layout="vertical"
                   initialValues={templateData}
-                  onValuesChange={(_, values) => setTemplateData(values)}
+                  //onValuesChange={(_, values) => setTemplateData(values)}
                 >
-                    <Form.Item label="ID шаблона">
-                      <Text>{Date.now()}</Text>
-                    </Form.Item>
-                    <Form.Item label="Название шаблона" name="name">
-                      <Input placeholder="Введите название шаблона" />
-                    </Form.Item>
+                    <Row gutter={[16, 16]}>
+                      <Col md={24} lg={12} xl={6}>
+                        <Form.Item label="Название шаблона" name="name">
+                          <Input placeholder="Введите название шаблона" />
+                        </Form.Item>
 
-                    <Form.Item label="Описание шаблона" name="description">
-                      <Input.TextArea placeholder="Введите описание" />
-                    </Form.Item>
+                        <Form.Item label="Тип согласования" name="templateType">
+                          <Select placeholder="Выберите тип согласования">
+                            {Object.values(TemplateType).map(type => (
+                              <Select.Option key={type} value={type}>
+                                {type}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
 
-                    <Form.Item label="Тип согласования" name="templateType">
-                      <Select placeholder="Выберите тип согласования">
-                        {Object.values(TemplateType).map(type => (
-                          <Select.Option key={type} value={type}>
-                            {type}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
+                        <Form.Item label="Тип сущности" name="entityType">
+                          <Select placeholder="Выберите тип сущности">
+                            {Object.values(EntityType).map(type => (
+                              <Select.Option key={type} value={type}>
+                                {type}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
 
-                    <Form.Item label="Тип сущности" name="entityType">
-                      <Select placeholder="Выберите тип сущности">
-                        {Object.values(EntityType).map(type => (
-                          <Select.Option key={type} value={type}>
-                            {type}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
+                      </Col>
+                      <Col md={24} lg={12} xl={6}>
+                          <Form.Item label="Описание шаблона" name="description">
+                            <Input.TextArea placeholder="Введите описание" />
+                          </Form.Item>
+
+                        </Col>
+                        <Col md={24} lg={12} xl={6}>
+                            <Form.Item label="ID шаблона">
+                              <Text>{Date.now()}</Text>
+                            </Form.Item>
+                        </Col>
+                    </Row>
                 </Form>
               )}
             </Panel>
