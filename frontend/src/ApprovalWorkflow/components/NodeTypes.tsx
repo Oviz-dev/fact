@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Handle, Position, NodeProps } from 'react-flow-renderer';
-import { Input, Select, InputNumber, Tag } from 'antd';
+import { Input, Select, InputNumber, Button, Tag } from 'antd';
 import { ApprovalStepData,  ProcessMode} from '../types';
 import useUpdateNode from '../hooks/useUpdateNode';
 
@@ -10,12 +10,18 @@ interface NodeContentProps {
   data: ApprovalStepData;
   isSelected: boolean;
   nodeId: string;
+  onCompleteStep?: (nodeId: string) => void;
 }
 
-const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId }) => { //mode
+const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep }) => { //mode?
   const { updateNodeData } = useUpdateNode(nodeId);
   const textRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(200); // Минимальная ширина узла
+
+  const handleCompleteStep = () => {
+    updateNodeData({ status: 'completed' });
+    onCompleteStep?.(nodeId); // Вызываем колбэк завершения шага
+  };
 
   return (
     <div ref={textRef} style={{ width: `${width}px` }} className="node-content">
@@ -51,10 +57,34 @@ const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId }) => { //mode
         />
         <span>дней</span>
       </div>
+
+      {data.status && (
+        <div className="step-status">
+          <Tag color={
+            data.status === 'pending' ? 'default' :
+            data.status === 'in-progress' ? 'blue' :
+            'green'
+          }>
+            {data.status === 'pending' && 'Ожидает'}
+            {data.status === 'in-progress' && 'В работе'}
+            {data.status === 'completed' && 'Завершено'}
+          </Tag>
+          {data.status === 'in-progress' && (
+            <Button
+              size="small"
+              onClick={handleCompleteStep}
+              style={{ marginLeft: 8 }}
+            >
+              Завершить
+            </Button>
+          )}
+        </div>
+      )}
+
+
     </div>
   );
 };
-
 
 const nodeTypes = {
   sequential: ({ data, selected, id }: NodeProps<ApprovalStepData>) => (
@@ -66,6 +96,7 @@ const nodeTypes = {
         data={data}
         isSelected={selected}
         nodeId={id}
+        //onCompleteStep // разобраться не работает
       />
       <Handle
         type="target"
@@ -99,6 +130,7 @@ const nodeTypes = {
         data={data}
         isSelected={selected}
         nodeId={id}
+        //onCompleteStep // разобраться не работает
       />
       <Handle
         type="target"

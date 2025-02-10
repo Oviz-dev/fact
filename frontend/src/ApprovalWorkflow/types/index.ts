@@ -1,23 +1,24 @@
 import { Node, Edge } from 'react-flow-renderer';
 
+// типы узлов
 export type ApprovalStepType = 'sequential' | 'parallel';
+export type ApprovalStep = Node<ApprovalStepData> & {
+  type: ApprovalStepType;
+};
+
+export interface ApprovalStepData {
+  title: string;
+  label: string;
+  responsible?: string; // ответственный
+  users?: User[]; // пользователь данные узла
+  duration: number; // Длительность шага
+  status?: 'pending' | 'in-progress' | 'completed'; // статус узла при выполнении процесса
+}
 
 export interface User {
   id: string;
   name: string;
 }
-
-export interface ApprovalStepData {
-  title: string;
-  label: string;
-  responsible?: string;
-  users?: User[]; // Добавляем пользователей в данные узла
-  duration: number; // Длительность шага
-}
-
-export type ApprovalStep = Node<ApprovalStepData> & {
-  type: ApprovalStepType;
-};
 
 export interface ApprovalConnection extends Edge {
   source: string;
@@ -37,6 +38,7 @@ export enum TemplateType {
   ALL = 'Все',
   ANY = 'Любой',
 }
+
 //типы доступных для согласования сущностей
 export enum EntityType {
   BUDGET = 'Бюджет',
@@ -44,12 +46,14 @@ export enum EntityType {
   DOCUMENT = 'Документ'
 }
 
+//статус всего процесса после запуска
 export enum ProcessStatus {
   DRAFT = 'Черновик',
   ACTIVE = 'В работе',
   COMPLETE = 'Выполнен'
 }
 
+//шаблон процесса
 export interface ApprovalTemplate {
   id: string; //ID шаблона
   name: string; // Название шаблона
@@ -60,6 +64,7 @@ export interface ApprovalTemplate {
   edges: ApprovalConnection[]; //Связи
 }
 
+//экземпляр процесса для сущности
 export interface ApprovalInstance {
   id: string; //ID экземпляра процесса
   entityId: string; // ID привязанной сущности
@@ -69,7 +74,6 @@ export interface ApprovalInstance {
   status: ProcessStatus; // статус
 }
 
-// Обновляем пропсы компонента
 export interface ApprovalProcessEditorProps {
   mode: ProcessMode;
   entityId?: string;
