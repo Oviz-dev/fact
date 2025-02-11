@@ -21,6 +21,7 @@ const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep 
   const handleCompleteStep = () => {
     updateNodeData({ status: 'completed' });
     onCompleteStep?.(nodeId); // Вызываем колбэк завершения шага
+    console.log(`Вызываем onCompleteStep для узла ${nodeId}`); // Для отладки
   };
 
   return (
@@ -60,11 +61,14 @@ const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep 
 
       {data.status && (
         <div className="step-status">
-          <Tag color={
-            data.status === 'pending' ? 'default' :
-            data.status === 'in-progress' ? 'blue' :
-            'green'
-          }>
+          <Tag
+            key={data.status}
+            color={
+                data.status === 'pending' ? 'default' :
+                data.status === 'in-progress' ? 'blue' :
+                'green'
+            }
+          >
             {data.status === 'pending' && 'Ожидает'}
             {data.status === 'in-progress' && 'В работе'}
             {data.status === 'completed' && 'Завершено'}
@@ -96,7 +100,7 @@ const nodeTypes = {
         data={data}
         isSelected={selected}
         nodeId={id}
-        //onCompleteStep // разобраться не работает
+        onCompleteStep= {(nodeId) => console.log(`Шаг ${nodeId} завершен`)}// разобраться не работает
       />
       <Handle
         type="target"
@@ -130,7 +134,7 @@ const nodeTypes = {
         data={data}
         isSelected={selected}
         nodeId={id}
-        //onCompleteStep // разобраться не работает
+        onCompleteStep={(nodeId) => console.log(`Шаг ${nodeId} завершен`)} // разобраться не работает
       />
       <Handle
         type="target"

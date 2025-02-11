@@ -20,15 +20,22 @@ const Entity = {
 };
 
 const EntityApprovalPage: React.FC = () => {
-  const [entity, setEntity] = useState(Entity);
-  const [mode, setMode] = useState<ProcessMode>(ProcessMode.INSTANCE);
-  const [templateData, setTemplateData] = useState({
-    id: '',
-    name: '',
-    description: '',
-    templateType: '',
-    entityType: '',
-  });
+    const [entity, setEntity] = useState(Entity);
+    const [mode, setMode] = useState<ProcessMode>(ProcessMode.INSTANCE);
+    const [templateData, setTemplateData] = useState({
+        id: '',
+        name: '',
+        description: '',
+        templateType: '',
+        entityType: '',
+    });
+//поправить для сохранения в файл
+    const [instanceData, setInstanceData] = useState({
+        id: '122345',
+        entityId: '123',
+        templateId: '45667',
+        status:'ProcessStatus.DRAFT',
+    });
 
   const handleStartProcess = () => {
     setEntity(prev => ({
@@ -69,8 +76,8 @@ const EntityApprovalPage: React.FC = () => {
               {mode === ProcessMode.INSTANCE && (
                 <Form
                   layout="horizontal"
-                  initialValues={templateData}
-                  //onValuesChange={(_, values) => setTemplateData(values)}
+                  initialValues={instanceData}
+                  onValuesChange={(_, values) => setInstanceData(values)}
                 >
 
                     <Row gutter={[16, 16]}>
@@ -164,11 +171,11 @@ const EntityApprovalPage: React.FC = () => {
               <UserProvider>
                 <ReactFlowProvider>
                   <ApprovalProcessEditor
-                    entityId={mode === ProcessMode.INSTANCE ? Entity.entityId : undefined}
                     processStatus={mode === ProcessMode.INSTANCE ? entity.status: undefined}
                     onStartProcess={mode === ProcessMode.INSTANCE ?handleStartProcess: undefined}
                     onCompleteProcess={mode === ProcessMode.INSTANCE ?handleCompleteProcess:undefined}
                     mode={mode}
+                    instanceData={mode === ProcessMode.INSTANCE ? instanceData: undefined}
                     templateData={mode === ProcessMode.TEMPLATE ? templateData : undefined}
                     initialNodes={[]} 
                     initialEdges={[]} 

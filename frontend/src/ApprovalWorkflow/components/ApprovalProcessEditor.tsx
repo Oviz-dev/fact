@@ -59,8 +59,14 @@ const layoutElements = (nodes: ApprovalStep[], edges: ApprovalConnection[]): App
 };
 
 interface ApprovalProcessEditorProps {
-    entityId?: string;
+    //entityId: string;
     mode: ProcessMode;
+    instanceData?: {
+        id: string;
+        entityId: string;
+        templateId: string;
+        status: string;
+    };
     templateData?: {
         id: string;
         name: string;
@@ -76,9 +82,10 @@ interface ApprovalProcessEditorProps {
 }
 
 const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
-        entityId,
+        //entityId,
         initialNodes,
         initialEdges,
+        instanceData,
         templateData,
         mode,
         processStatus,
@@ -154,6 +161,21 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
         setNodes((prevNodes) => layoutElements(prevNodes as ApprovalStep[], edges));
     }, [edges]);
 
+    //функция сохранения файла
+    const saveToFile = (data: object, filename: string) => {
+      const json = JSON.stringify(data, null, 2); // Формат JSON с отступами
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    };
+
     // Функция для сохранения процесса
     const handleSave = useCallback(async () => {
         try {
@@ -171,25 +193,39 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
                       message.error('Отсутствуют данные шаблона');
                       return prevNodes;
                     }
-                    saveApprovalTemplate({
-                      id: templateData.id,
-                      name: templateData.name,
-                      description: templateData.description,
-                      templateType: templateData.templateType,
-                      entityType: templateData.entityType,
-                      nodes: arrangedNodes,
-                      edges,
+                    const templatePayload = {
+                          id: templateData.id,
+                          name: templateData.name,
+                          description: templateData.description,
+                          templateType: templateData.templateType,
+                          entityType: templateData.entityType,
+                          nodes: arrangedNodes,
+                          edges,
+                    }
+                    saveApprovalTemplate(templatePayload)
+                    .then(() => {
+                        message.success('Шаблон успешно сохранен');
+                        saveToFile(templatePayload, `template-${templateData.id}.json`);
                     })
-                    .then(() => message.success('Шаблон успешно сохранен'))
                     .catch(() => message.error('Ошибка сохранения шаблона'));
                 } else {
-                    saveApprovalInstance({
-                        entityId,
+                    if (!instanceData) {
+                      message.error('Отсутствуют данные процесса');
+                      return prevNodes;
+                    }
+                    const instancePayload={
+                        id: instanceData.id,
+                        entityId: instanceData.entityId,
+                        templateId: instanceData.templateId,
+                        status: instanceData.status,
                         nodes: arrangedNodes,
                         edges
-                        //добавить остальные параметры процесса
+                    }
+                    saveApprovalInstance(instancePayload)
+                    .then(() => {
+                        message.success('Процесс успешно сохранен');
+                        saveToFile(instancePayload, `process-${instanceData.entityId}.json`);
                     })
-                    .then(() => message.success('Процесс успешно сохранен'))
                     .catch(() => message.error('Ошибка сохранения процесса'));
                 }
 
@@ -198,7 +234,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
         } catch {
           message.error('Ошибка сохранения процесса');
         }
-    }, [entityId, edges, mode, templateData]);
+    }, [edges, mode, instanceData, templateData]);
 
     // Функция для добавления нового узла
     const addNode = useCallback((type: ApprovalStepType) => {
