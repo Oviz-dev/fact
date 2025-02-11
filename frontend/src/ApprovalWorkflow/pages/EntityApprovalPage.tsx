@@ -13,8 +13,9 @@ const { Text } = Typography;
 // Моковые данные сущности
 const Entity = {
   id: Date.now(),
+  templateId: '234',
+  entityId: '123',
   templateName: 'Процесс согласования договоров', // в будущем вытаскивать по id шаблона название
-  entityId: '123', //
   name: 'Договор № ПИР 2025-01', // делать выбор экземпляра либо подставлять сущность из карточки
   status: ProcessStatus.DRAFT,
 };
@@ -29,16 +30,16 @@ const EntityApprovalPage: React.FC = () => {
         templateType: '',
         entityType: '',
     });
-//поправить для сохранения в файл
+
     const [instanceData, setInstanceData] = useState({
-        id: '122345',
-        entityId: '123',
-        templateId: '45667',
-        status:'ProcessStatus.DRAFT',
+        id: String(Entity.id),
+        entityId: Entity.entityId,
+        templateId: Entity.templateId,
+        status: Entity.status,
     });
 
   const handleStartProcess = () => {
-    setEntity(prev => ({
+    setInstanceData(prev => ({
       ...prev,
       status: ProcessStatus.ACTIVE, // Меняем статус процесса на "В работе"
     }));
@@ -83,17 +84,17 @@ const EntityApprovalPage: React.FC = () => {
                     <Row gutter={[16, 16]}>
                       <Col md={24} lg={12} xl={6}>
                         <Form.Item label="ID процесса">
-                            <Text>{Entity.id}</Text>
+                            <Text>{instanceData.id}</Text>
                         </Form.Item>
                       </Col>
                       <Col md={24} lg={12} xl={6}>
                         <Form.Item label="Экземпляр сущности:">
-                            <Text> {Entity.name}</Text>
+                            <Text> {instanceData.entityId} {Entity.name}</Text>
                         </Form.Item>
                       </Col>
                       <Col md={24} lg={12} xl={6}>
                         <Form.Item label="Шаблон:">
-                            <Text>{Entity.templateName}</Text>
+                            <Text>{instanceData.templateId} {Entity.templateName}</Text>
                         </Form.Item>
                       </Col>
                       <Col md={24} lg={12} xl={6}>
@@ -102,12 +103,12 @@ const EntityApprovalPage: React.FC = () => {
                             <Tag
                               key="status"
                               color={
-                                entity.status === ProcessStatus.DRAFT ? 'default' :
-                                entity.status === ProcessStatus.ACTIVE ? 'blue' :
+                                instanceData.status === ProcessStatus.DRAFT ? 'default' :
+                                instanceData.status === ProcessStatus.ACTIVE ? 'blue' :
                                 'green'
                               }
                             >
-                              {entity.status}
+                              {instanceData.status}
                             </Tag>
                           ]}
                         </Form.Item>
@@ -171,7 +172,7 @@ const EntityApprovalPage: React.FC = () => {
               <UserProvider>
                 <ReactFlowProvider>
                   <ApprovalProcessEditor
-                    processStatus={mode === ProcessMode.INSTANCE ? entity.status: undefined}
+                    processStatus={mode === ProcessMode.INSTANCE ? instanceData.status: undefined}
                     onStartProcess={mode === ProcessMode.INSTANCE ?handleStartProcess: undefined}
                     onCompleteProcess={mode === ProcessMode.INSTANCE ?handleCompleteProcess:undefined}
                     mode={mode}
