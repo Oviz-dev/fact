@@ -21,7 +21,6 @@ const Entity = {
 };
 
 const EntityApprovalPage: React.FC = () => {
-    const [entity, setEntity] = useState(Entity);
     const [mode, setMode] = useState<ProcessMode>(ProcessMode.INSTANCE);
     const [templateData, setTemplateData] = useState({
         id: '',
@@ -47,7 +46,7 @@ const EntityApprovalPage: React.FC = () => {
   };
 
   const handleCompleteProcess = () => {
-    setEntity(prev => ({
+    setInstanceData(prev => ({
       ...prev,
       status: ProcessStatus.COMPLETE, // Меняем статус процесса на "Выполнен"
     }));

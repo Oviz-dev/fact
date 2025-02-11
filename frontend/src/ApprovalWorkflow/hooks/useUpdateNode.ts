@@ -10,7 +10,6 @@ const useUpdateNode = (nodeId: string) => {
       const currentNodes = getNodes();
       return nodes.map((node: Node<ApprovalStepData>, index) => {
         if (node.id === nodeId) {
-          console.log(`✅ Завершаем узел ${nodeId}`);
           return { ...node, data: { ...node.data, ...newData } };
         }
         if (newData.status === "completed") {
