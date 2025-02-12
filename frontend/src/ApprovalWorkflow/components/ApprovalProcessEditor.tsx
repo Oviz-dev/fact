@@ -35,6 +35,7 @@ const layoutElements = (nodes: ApprovalStep[], edges: ApprovalConnection[]): App
         ranksep: 80
     });
 
+
     nodes.forEach(node => {
         const nodeWidth = node.style?.width ? parseInt(node.style.width as string, 10) : nodeWidthStart;
         dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
@@ -59,7 +60,6 @@ const layoutElements = (nodes: ApprovalStep[], edges: ApprovalConnection[]): App
 };
 
 interface ApprovalProcessEditorProps {
-    //entityId: string;
     mode: ProcessMode;
     instanceData?: {
         id: string;
@@ -82,7 +82,6 @@ interface ApprovalProcessEditorProps {
 }
 
 const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
-        //entityId,
         initialNodes,
         initialEdges,
         instanceData,
@@ -96,6 +95,12 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
     const [edges, setEdges, onEdgesChange] = useEdgesState<ApprovalConnection>(initialEdges);
     const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
     const { users } = useUserContext();
+
+    useEffect(() => {
+        console.log('Nodes:', initialNodes);
+        console.log('Edges:', initialEdges);
+    }, [initialNodes, initialEdges]);
+
 
     // Логика перехода между узлами
     useEffect(() => {
@@ -372,8 +377,8 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
             </div>
 
             <ReactFlow
-                nodes={nodesWithUsers}
-                edges={edges}
+                nodes={initialNodes.length > 0 ? initialNodes : nodesWithUsers} // Сначала проверяем начальные узлы, если они есть, иначе используем существующие
+                edges={initialEdges.length > 0 ? initialEdges : edges} // Сначала проверяем начальные соединения, если они есть, иначе используем существующие
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
                 onEdgeUpdate={onEdgeUpdate}  // Позволяет перетаскивать соединения
