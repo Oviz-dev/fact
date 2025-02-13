@@ -6,7 +6,6 @@ import ApprovalProcessEditor from '../components/ApprovalProcessEditor';
 import Header from '../../components/Header';
 import {ProcessMode, TemplateType, EntityType, ProcessStatus, ApprovalStep, ApprovalConnection } from '../types';
 
-
 const { Panel } = Collapse;
 const { Content } = Layout;
 const { Text } = Typography;
@@ -53,8 +52,6 @@ const EntityApprovalPage: React.FC = () => {
             }));
         message.error('Процесс отменен');
     };
-
-
 
     const handleCompleteProcess = () => {
         setInstanceData(prev => ({

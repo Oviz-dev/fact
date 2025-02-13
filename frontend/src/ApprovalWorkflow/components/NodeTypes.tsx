@@ -11,6 +11,7 @@ interface NodeContentProps {
     data: ApprovalStepData;
     isSelected: boolean;
     nodeId: string;
+    //mode: ProcessMode;
     onCompleteStep?: (nodeId: string) => void;
     onCancelStep?: (nodeId: string) => void;
 }
@@ -67,7 +68,7 @@ const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep,
                 <span>дней</span>
             </div>
 
-            {data.status && (
+            {data.status && (  //&& ProcessMode.INSTANCE??  && mode !== ProcessMode.TEMPLATE
                 <div className="step-status">
                     <Tag
                         key={data.status}

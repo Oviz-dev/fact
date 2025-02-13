@@ -308,7 +308,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
             <div className="editor-toolbar">
                 <Button
                     onClick={() => addNode('sequential')}
-                    disabled={hasOutgoingEdges}
+                    disabled={hasOutgoingEdges || processStatus === ProcessStatus.ACTIVE}
                     style={{
                     border: '2px solid #52c41a', // Формат для последовательного шага
                     }}
@@ -320,6 +320,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
 
                 <Button
                     onClick={() => addNode('parallel')}
+                    disabled={hasOutgoingEdges || processStatus === ProcessStatus.ACTIVE}
                     style={{
                     border: '2px solid #faad14', // Формат для параллельного шага
                     }}
@@ -329,11 +330,18 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
                     <PlusOutlined /> Ветка
                 </Button>
 
-                <Button onClick={arrangeLayout}>
+                <Button
+                    onClick={arrangeLayout}
+                    disabled={ processStatus === ProcessStatus.ACTIVE}
+                >
                     Выровнять схему
                 </Button>
 
-                <Button type="default" onClick={handleSave}>
+                <Button
+                    type="default"
+                    onClick={handleSave}
+                    disabled={processStatus === ProcessStatus.ACTIVE}
+                >
                     Сохранить
                 </Button>
                 {mode === ProcessMode.INSTANCE &&(
@@ -357,13 +365,14 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
                 )}
             </div>
             <ReactFlow
+                 // добавить mode
                 nodes={nodes}
                 edges={edges}
-                onNodesChange={onNodesChange}
-                onEdgesChange={onEdgesChange}
-                onEdgeUpdate={onEdgeUpdate}  // Позволяет перетаскивать соединения
-                connectionMode={ConnectionMode.Loose}  // Позволяет соединять с любыми точками
-                onConnect={handleConnect} // Позволяет добавлять соединения вручную
+                onNodesChange={processStatus!==ProcessStatus.ACTIVE ? onNodesChange: undefined}
+                onEdgesChange={processStatus!==ProcessStatus.ACTIVE ? onEdgesChange: undefined}
+                onEdgeUpdate={processStatus!==ProcessStatus.ACTIVE ? onEdgeUpdate: undefined}  // Позволяет перетаскивать соединения
+                connectionMode={processStatus!==ProcessStatus.ACTIVE ? ConnectionMode.Loose: undefined}  // Позволяет соединять с любыми точками
+                onConnect={processStatus!==ProcessStatus.ACTIVE ? handleConnect: undefined} // Позволяет добавлять соединения вручную
                 onNodeClick={(_, node) => setSelectedNodeId(node.id)}
                 onPaneClick={() => setSelectedNodeId(null)}
                 nodeTypes={nodeTypes}
