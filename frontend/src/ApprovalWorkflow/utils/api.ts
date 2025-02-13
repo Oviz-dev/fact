@@ -4,7 +4,7 @@ export const saveApprovalInstance = async (flow: any) => {
     setTimeout(() => resolve({ success: true }), 500)
   );
 };
-// добавить атрибуты из шаблона процесса +тип процесса
+
 export const saveApprovalTemplate = async (flow: any) => {
   console.log('Моковые данные:', {flow});
   return new Promise(resolve =>

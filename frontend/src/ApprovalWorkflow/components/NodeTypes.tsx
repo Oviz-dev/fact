@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Handle, Position, NodeProps } from 'react-flow-renderer';
-import { Input, Select, InputNumber, Button, Tag } from 'antd';
+import { Input, Select, InputNumber, Button, Tag, Tooltip } from 'antd';
 import { ApprovalStepData,  ProcessMode} from '../types';
 import useUpdateNode from '../hooks/useUpdateNode';
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+
+
 
 const { Option } = Select;
 
@@ -11,9 +14,10 @@ interface NodeContentProps {
   isSelected: boolean;
   nodeId: string;
   onCompleteStep?: (nodeId: string) => void;
+  onCancelStep?: (nodeId: string) => void;
 }
 
-const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep }) => { //mode?
+const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep, onCancelStep }) => { //mode?
   const { updateNodeData } = useUpdateNode(nodeId);
   const textRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(200); // Минимальная ширина узла
@@ -23,6 +27,14 @@ const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep 
     onCompleteStep?.(nodeId); // Вызываем колбэк завершения шага
     console.log(`Вызываем onCompleteStep для узла ${nodeId}`); // Для отладки
   };
+
+  const handleCanceleStep = () => {
+    updateNodeData({ status: 'canceled' });
+    onCancelStep?.(nodeId); // Вызываем колбэк отмены шага
+    console.log(`Вызываем onCancelStep для узла ${nodeId}`); // Для отладки
+  };
+
+
 
   return (
     <div ref={textRef} style={{ width: `${width}px` }} className="node-content">
@@ -66,21 +78,34 @@ const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep 
             color={
                 data.status === 'pending' ? 'default' :
                 data.status === 'in-progress' ? 'blue' :
+                data.status === 'canceled' ? 'red' :
                 'green'
             }
           >
             {data.status === 'pending' && 'Ожидает'}
             {data.status === 'in-progress' && 'В работе'}
-            {data.status === 'completed' && 'Завершено'}
+            {data.status === 'completed' && 'Завершен'}
+            {data.status === 'canceled' && 'Отменён'}
           </Tag>
           {data.status === 'in-progress' && (
-            <Button
-              size="small"
-              onClick={handleCompleteStep}
-              style={{ marginLeft: 8 }}
-            >
-              Завершить
-            </Button>
+              <>
+        <Tooltip title="Завершить">
+          <Button
+            size="small"
+            onClick={handleCompleteStep}
+            style={{ marginLeft: 8, color: 'green', borderColor: 'green' }}
+            icon={<CheckOutlined />}
+          />
+        </Tooltip>
+        <Tooltip title="Отменить">
+          <Button
+            size="small"
+            onClick={handleCanceleStep}
+            style={{ marginLeft: 8, color: 'red', borderColor: 'red' }}
+            icon={<CloseOutlined />}
+          />
+        </Tooltip>
+            </>
           )}
         </div>
       )}
@@ -100,7 +125,8 @@ const nodeTypes = {
         data={data}
         isSelected={selected}
         nodeId={id}
-        onCompleteStep= {(nodeId) => console.log(`Шаг ${nodeId} завершен`)}// разобраться не работает
+        onCompleteStep= {(nodeId) => console.log(`Шаг ${nodeId} завершен`)}
+        onCancelStep= {(nodeId) => console.log(`Шаг ${nodeId} отменён`)}
       />
       <Handle
         type="target"
@@ -134,7 +160,8 @@ const nodeTypes = {
         data={data}
         isSelected={selected}
         nodeId={id}
-        onCompleteStep={(nodeId) => console.log(`Шаг ${nodeId} завершен`)} // разобраться не работает
+        onCompleteStep={(nodeId) => console.log(`Шаг ${nodeId} завершен`)}
+        onCancelStep= {(nodeId) => console.log(`Шаг ${nodeId} отменён`)}
       />
       <Handle
         type="target"

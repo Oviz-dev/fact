@@ -56,6 +56,7 @@ const EntityApprovalPage: React.FC = () => {
     const [loadedNodes, setLoadedNodes] = useState<ApprovalStep[]>([]);
     const [loadedEdges, setLoadedEdges] = useState<ApprovalConnection[]>([]);
 
+    //функция загрузки из файла
     const handleLoadFromFile = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
@@ -83,8 +84,6 @@ const EntityApprovalPage: React.FC = () => {
                     setLoadedNodes(json.nodes);
                     setLoadedEdges(json.edges);
                     message.success("Шаблон загружен.");
-                    console.log(loadedNodes);
-                    console.log(loadedEdges);
 
                 } else if (json.status) {
                     // Загружаем экземпляр
@@ -98,8 +97,6 @@ const EntityApprovalPage: React.FC = () => {
                     setLoadedNodes(json.nodes);
                     setLoadedEdges(json.edges);
                     message.success("Процесс загружен.");
-                    console.log(loadedNodes);
-                    console.log(loadedEdges);
                 } else {
                     message.error("Файл не содержит корректных данных.");
                 }

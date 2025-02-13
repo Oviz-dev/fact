@@ -97,10 +97,9 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
     const { users } = useUserContext();
 
     useEffect(() => {
-        console.log('Nodes:', initialNodes);
-        console.log('Edges:', initialEdges);
-    }, [initialNodes, initialEdges]);
-
+        setNodes(initialNodes);
+        setEdges(initialEdges);
+    }, [ initialNodes, initialEdges]);
 
     // Логика перехода между узлами
     useEffect(() => {
@@ -239,7 +238,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
         } catch {
           message.error('Ошибка сохранения процесса');
         }
-    }, [edges, mode, instanceData, templateData]);
+    }, [nodes, edges, mode, instanceData, templateData]);
 
     // Функция для добавления нового узла
     const addNode = useCallback((type: ApprovalStepType) => {
@@ -377,8 +376,8 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
             </div>
 
             <ReactFlow
-                nodes={initialNodes.length > 0 ? initialNodes : nodesWithUsers} // Сначала проверяем начальные узлы, если они есть, иначе используем существующие
-                edges={initialEdges.length > 0 ? initialEdges : edges} // Сначала проверяем начальные соединения, если они есть, иначе используем существующие
+                nodes={nodes}
+                edges={edges}
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
                 onEdgeUpdate={onEdgeUpdate}  // Позволяет перетаскивать соединения

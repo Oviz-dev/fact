@@ -6,7 +6,7 @@ import PnLPage from './pnl/pages/PnLPage';
 import References from './pages/references';
 import Main from './pages/Main';
 import ContractPage from './contract/pages/ContractPage';
-import EntityApprovalPage from './ApprovalWorkflow/pages/EntityApprovalPage';
+import ApprovalPage from './ApprovalWorkflow/pages/ApprovalPage';
 
 
 const App = () => {
@@ -20,7 +20,7 @@ const App = () => {
         <Route path="/references/pnl" element={<PnLPage />} />
         <Route path="/contracts"  element={<ContractPage/>} />
         <Route path="/references"  element={<References/>} />
-        <Route path="/approval"  element={<EntityApprovalPage/>} />
+        <Route path="/approval"  element={<ApprovalPage/>} />
       </Routes>
     </Router>
   );

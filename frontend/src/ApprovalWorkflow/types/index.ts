@@ -12,7 +12,7 @@ export interface ApprovalStepData {
   responsible?: string; // ответственный
   users?: User[]; // пользователь данные узла
   duration: number; // Длительность шага
-  status?: 'pending' | 'in-progress' | 'completed'; // статус узла при выполнении процесса
+  status?: 'pending' | 'in-progress' | 'completed' | 'canceled'; // статус узла при выполнении процесса
 }
 
 export interface User {
@@ -50,7 +50,8 @@ export enum EntityType {
 export enum ProcessStatus {
   DRAFT = 'Черновик',
   ACTIVE = 'В работе',
-  COMPLETE = 'Выполнен'
+  COMPLETE = 'Выполнен',
+  CANCEL = 'Отменён'
 }
 
 //шаблон процесса
