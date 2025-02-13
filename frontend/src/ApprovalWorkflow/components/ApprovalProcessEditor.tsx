@@ -7,11 +7,11 @@ import ReactFlow, {
     useNodesState,
     useEdgesState,
     BackgroundVariant,
-    Node,
+//    Node,
     updateEdge,
     ConnectionMode,
 } from 'react-flow-renderer';
-import { useNodes, useEdges, useReactFlow } from 'react-flow-renderer';
+//import { useNodes, useEdges, useReactFlow } from 'react-flow-renderer';
 import { Button, message, Tooltip } from 'antd';
 import { PlusOutlined, StopOutlined, CaretRightOutlined } from '@ant-design/icons';
 import dagre from 'dagre';
@@ -34,7 +34,6 @@ const layoutElements = (nodes: ApprovalStep[], edges: ApprovalConnection[]): App
         nodesep: 100,
         ranksep: 80
     });
-
 
     nodes.forEach(node => {
         const nodeWidth = node.style?.width ? parseInt(node.style.width as string, 10) : nodeWidthStart;
@@ -101,7 +100,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
     useEffect(() => {
         setNodes(initialNodes);
         setEdges(initialEdges);
-    }, [ initialNodes, initialEdges]);
+    }, [ setEdges, setNodes, initialNodes, initialEdges]);
 
     // Логика перехода между узлами
     useEffect(() => {
@@ -118,54 +117,21 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
                 ));
             }
         }
-    }, [processStatus, nodes]);
-
-    const handleCompleteStep = (nodeId: string) => {
-        setNodes(nds => nds.map(node =>
-            node.id === nodeId
-                ? { ...node, data: { ...node.data, status: 'completed' } }
-                : node
-        ));
-
-        const nextNode = edges
-            .filter(edge => edge.source === nodeId)
-            .map(edge => nodes.find(node => node.id === edge.target))
-            .find(Boolean);
-
-        if (nextNode) {
-            setNodes(nds => nds.map(node =>
-                node.id === nextNode.id
-                    ? { ...node, data: { ...node.data, status: 'in-progress' } }
-                    : node
-            ));
-        } else {
-            onCompleteProcess?.(); // Завершаем процесс, если нет следующего узла
-        }
-    };
+    }, [setNodes, processStatus, nodes]);
 
     const onEdgeUpdate = (oldEdge: Edge, newConnection: Connection) => {
         setEdges((prevEdges) => updateEdge(oldEdge, newConnection, prevEdges));
     };
 
-    const selectedNode = selectedNodeId ? nodes.find(node => node.id === selectedNodeId) : null;
     const hasOutgoingEdges = useMemo(() => {
         if (!selectedNodeId) return false;
         return edges.some(edge => edge.source === selectedNodeId);
     }, [selectedNodeId, edges]);
 
-    // Мемоизация списка пользователей для узлов
-    const nodesWithUsers = useMemo(() => nodes.map(node => ({
-        ...node,
-        data: {
-          ...node.data,
-          users,
-        }
-    })), [nodes, users]);
-
     // Функция для выравнивания узлов
     const arrangeLayout = useCallback(() => {
         setNodes((prevNodes) => layoutElements(prevNodes as ApprovalStep[], edges));
-    }, [edges]);
+    }, [setNodes, edges]);
 
     //функция сохранения файла
     const saveToFile = (data: object, filename: string) => {
@@ -240,7 +206,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
         } catch {
           message.error('Ошибка сохранения процесса');
         }
-    }, [nodes, edges, mode, instanceData, templateData]);
+    }, [setNodes, edges, mode, instanceData, templateData]);
 
     // Функция для добавления нового узла
     const addNode = useCallback((type: ApprovalStepType) => {
@@ -320,7 +286,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
 
         return updatedNodes; // Возвращаем обновленные узлы
         });
-    }, [edges, users, selectedNodeId, hasOutgoingEdges]);
+    }, [setNodes, setEdges, edges, users, selectedNodeId]);
 
     // Функция для обработки соединений
     const handleConnect = useCallback((params: Connection) => {
@@ -335,7 +301,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
                 target: params.target
             } as ApprovalConnection
         ]);
-    }, []);
+    }, [setEdges]);
 
     return (
         <div className="workflow-editor">
