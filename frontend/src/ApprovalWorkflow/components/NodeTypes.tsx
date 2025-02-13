@@ -17,7 +17,7 @@ interface NodeContentProps {
   onCancelStep?: (nodeId: string) => void;
 }
 
-const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep, onCancelStep }) => { //mode?
+const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep, onCancelStep }) => {
   const { updateNodeData } = useUpdateNode(nodeId);
   const textRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(200); // Минимальная ширина узла
@@ -25,13 +25,13 @@ const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep,
   const handleCompleteStep = () => {
     updateNodeData({ status: 'completed' });
     onCompleteStep?.(nodeId); // Вызываем колбэк завершения шага
-    console.log(`Вызываем onCompleteStep для узла ${nodeId}`); // Для отладки
+    //console.log(`Вызываем onCompleteStep для узла ${nodeId}`); // Для отладки
   };
 
   const handleCanceleStep = () => {
     updateNodeData({ status: 'canceled' });
     onCancelStep?.(nodeId); // Вызываем колбэк отмены шага
-    console.log(`Вызываем onCancelStep для узла ${nodeId}`); // Для отладки
+    //console.log(`Вызываем onCancelStep для узла ${nodeId}`); // Для отладки
   };
 
 

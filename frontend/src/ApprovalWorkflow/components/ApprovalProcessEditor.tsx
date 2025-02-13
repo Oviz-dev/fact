@@ -12,8 +12,8 @@ import ReactFlow, {
     ConnectionMode,
 } from 'react-flow-renderer';
 import { useNodes, useEdges, useReactFlow } from 'react-flow-renderer';
-import { Button, message } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Button, message, Tooltip } from 'antd';
+import { PlusOutlined, StopOutlined, CaretRightOutlined } from '@ant-design/icons';
 import dagre from 'dagre';
 import { ApprovalStep, ApprovalConnection, ApprovalStepType, ProcessMode, ProcessStatus } from '../types';
 import { useUserContext } from '../context/UserContext';
@@ -79,6 +79,7 @@ interface ApprovalProcessEditorProps {
     processStatus?: ProcessStatus; // Статус процесса для запущенного экземпляра
     onStartProcess?: () => void; // Колбэк для запуска процесса
     onCompleteProcess?: () => void; // Колбэк для завершения процесса
+    onStopProcess?: () => void; //Колбэк для остановки процесса
 }
 
 const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
@@ -89,6 +90,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
         mode,
         processStatus,
         onStartProcess,
+        onStopProcess,
         onCompleteProcess
     }) => {
     const [nodes, setNodes, onNodesChange] = useNodesState<ApprovalStep['data']>(initialNodes);
@@ -369,12 +371,25 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
                     Сохранить
                 </Button>
                 {mode === ProcessMode.INSTANCE &&(
-                    <Button type="primary" onClick={onStartProcess}>
-                        Запустить
-                    </Button>
+                    processStatus === ProcessStatus.ACTIVE ? (
+                        <Tooltip title="Остановить">
+                            <Button
+                                onClick={onStopProcess}
+                                danger
+                                icon={<StopOutlined />}
+                            />
+                        </Tooltip>
+                    ) : (
+                        <Tooltip title="Запустить">
+                            <Button
+                                onClick={onStartProcess}
+                                type="primary"
+                                icon={<CaretRightOutlined />}
+                            />
+                        </Tooltip>
+                    )
                 )}
             </div>
-
             <ReactFlow
                 nodes={nodes}
                 edges={edges}

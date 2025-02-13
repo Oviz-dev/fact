@@ -46,6 +46,16 @@ const EntityApprovalPage: React.FC = () => {
         message.success('Процесс запущен');
     };
 
+    const handleStopProcess = () => {
+        setInstanceData(prev => ({
+            ...prev,
+            status: ProcessStatus.CANCEL, // Меняем статус процесса на "отменен"
+            }));
+        message.error('Процесс отменен');
+    };
+
+
+
     const handleCompleteProcess = () => {
         setInstanceData(prev => ({
             ...prev,
@@ -168,6 +178,7 @@ const EntityApprovalPage: React.FC = () => {
                                                     color={
                                                     instanceData.status === ProcessStatus.DRAFT ? 'default' :
                                                     instanceData.status === ProcessStatus.ACTIVE ? 'blue' :
+                                                    instanceData.status === ProcessStatus.CANCEL ? 'red' :
                                                     'green'
                                                     }
                                                 >
@@ -250,6 +261,7 @@ const EntityApprovalPage: React.FC = () => {
                                     <ApprovalProcessEditor
                                         processStatus={mode === ProcessMode.INSTANCE ? instanceData.status: undefined}
                                         onStartProcess={mode === ProcessMode.INSTANCE ?handleStartProcess: undefined}
+                                        onStopProcess={mode === ProcessMode.INSTANCE ?handleStopProcess: undefined}
                                         onCompleteProcess={mode === ProcessMode.INSTANCE ?handleCompleteProcess:undefined}
                                         mode={mode}
                                         instanceData={mode === ProcessMode.INSTANCE ? instanceData: undefined}
