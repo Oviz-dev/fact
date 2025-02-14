@@ -68,7 +68,7 @@ const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep,
                 <span>дней</span>
             </div>
 
-            {data.status && (  //&& ProcessMode.INSTANCE??  && mode !== ProcessMode.TEMPLATE
+            {data.status && (  //&& ProcessMode.INSTANCE??  /&& mode !== ProcessMode.TEMPLATE
                 <div className="step-status">
                     <Tag
                         key={data.status}

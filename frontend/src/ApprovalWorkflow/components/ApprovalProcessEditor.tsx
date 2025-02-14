@@ -320,7 +320,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
 
                 <Button
                     onClick={() => addNode('parallel')}
-                    disabled={hasOutgoingEdges || processStatus === ProcessStatus.ACTIVE}
+                    disabled={ processStatus === ProcessStatus.ACTIVE}
                     style={{
                     border: '2px solid #faad14', // Формат для параллельного шага
                     }}
