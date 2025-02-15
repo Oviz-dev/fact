@@ -3,6 +3,7 @@ import {ProcessMode, ProcessStatus} from '../types';
 
 interface ApprovalProcessContextProps {
   processStatus?: ProcessStatus;
+  setProcessStatus?: (status: ProcessStatus) => void;
   mode: ProcessMode;
 }
 

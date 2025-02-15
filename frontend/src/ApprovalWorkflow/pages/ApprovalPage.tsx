@@ -5,6 +5,7 @@ import { UserProvider } from '../context/UserContext';
 import ApprovalProcessEditor from '../components/ApprovalProcessEditor';
 import Header from '../../components/Header';
 import {ProcessMode, TemplateType, EntityType, ProcessStatus, ApprovalStep, ApprovalConnection } from '../types';
+import {controlHeight} from '../components/UIKit';
 
 const { Panel } = Collapse;
 const { Content } = Layout;
@@ -117,9 +118,9 @@ const ApprovalPage: React.FC = () => {
     return (
         <Layout style={{ minHeight: '100vh' }}>
             <Header />
-            <Content style={{ padding: '0 24px', marginTop: 24 }}>
+            <Content style={{ padding: '0 8px', marginTop: 8 }}>
                 <Card>
-                    <div style={{ marginBottom: 16 }}>
+                    <div style={{ marginBottom: 8 }}>
                         <input
                             type="file"
                             accept="application/json"
@@ -127,7 +128,11 @@ const ApprovalPage: React.FC = () => {
                             style={{ display: 'none' }}
                             id="file-upload"
                         />
-                        <Button type="default" onClick={() => document.getElementById('file-upload')?.click()}>
+                        <Button
+                            type="default"
+                            onClick={() => document.getElementById('file-upload')?.click()}
+                            style={{ height: controlHeight}}
+                        >
                             Загрузить процесс
                         </Button>
                     </div>
@@ -141,7 +146,7 @@ const ApprovalPage: React.FC = () => {
                             <Radio.Group
                                 value={mode}
                                 onChange={e => setMode(e.target.value)}
-                                style={{ marginBottom: 16 }}
+                                style={{ marginBottom: 8 , height: controlHeight}}
                             >
                                 <Radio.Button value={ProcessMode.INSTANCE}>Экземпляр</Radio.Button>
                                 <Radio.Button value={ProcessMode.TEMPLATE}>Шаблон</Radio.Button>
