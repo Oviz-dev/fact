@@ -7,11 +7,9 @@ import ReactFlow, {
     useNodesState,
     useEdgesState,
     BackgroundVariant,
-//    Node,
     updateEdge,
     ConnectionMode,
 } from 'react-flow-renderer';
-//import { useNodes, useEdges, useReactFlow } from 'react-flow-renderer';
 import { Button, message, Tooltip } from 'antd';
 import { PlusOutlined, StopOutlined, CaretRightOutlined } from '@ant-design/icons';
 import dagre from 'dagre';
@@ -21,6 +19,7 @@ import { validateFlow } from '../utils/validation';
 import { saveApprovalInstance , saveApprovalTemplate} from '../utils/api';
 import nodeTypes from './NodeTypes';
 import '../styles/workflow.css';
+import { ApprovalProcessContext, useApprovalProcessContext } from "./ApprovalProcessContext";
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -82,12 +81,12 @@ interface ApprovalProcessEditorProps {
 }
 
 const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
-        initialNodes,
-        initialEdges,
-        instanceData,
-        templateData,
-        mode,
-        processStatus,
+        initialNodes, //загруженные из файла узлы
+        initialEdges, //загруженные из файла связи
+        instanceData, //данные экземпляра процесса
+        templateData, //данные шаблона процесса
+        mode, // режим работы (шаблон/экземпляр)
+        processStatus, // статус процесса
         onStartProcess,
         onStopProcess,
         onCompleteProcess
@@ -364,28 +363,29 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
                     )
                 )}
             </div>
-            <ReactFlow
-                 // добавить mode
-                nodes={nodes}
-                edges={edges}
-                onNodesChange={processStatus!==ProcessStatus.ACTIVE ? onNodesChange: undefined}
-                onEdgesChange={processStatus!==ProcessStatus.ACTIVE ? onEdgesChange: undefined}
-                onEdgeUpdate={processStatus!==ProcessStatus.ACTIVE ? onEdgeUpdate: undefined}  // Позволяет перетаскивать соединения
-                connectionMode={processStatus!==ProcessStatus.ACTIVE ? ConnectionMode.Loose: undefined}  // Позволяет соединять с любыми точками
-                onConnect={processStatus!==ProcessStatus.ACTIVE ? handleConnect: undefined} // Позволяет добавлять соединения вручную
-                onNodeClick={(_, node) => setSelectedNodeId(node.id)}
-                onPaneClick={() => setSelectedNodeId(null)}
-                nodeTypes={nodeTypes}
-                snapToGrid={true}
-                fitView
-            >
-                <Background
-                    variant={BackgroundVariant.Lines}
-                    gap={100}
-                    color="#e5e7eb"
-                />
-                <Controls />
-            </ReactFlow>
+            <ApprovalProcessContext.Provider value={{ processStatus, mode }}>
+                <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    onNodesChange={processStatus!==ProcessStatus.ACTIVE ? onNodesChange: undefined}
+                    onEdgesChange={processStatus!==ProcessStatus.ACTIVE ? onEdgesChange: undefined}
+                    onEdgeUpdate={processStatus!==ProcessStatus.ACTIVE ? onEdgeUpdate: undefined}  // Позволяет перетаскивать соединения
+                    connectionMode={processStatus!==ProcessStatus.ACTIVE ? ConnectionMode.Loose: undefined}  // Позволяет соединять с любыми точками
+                    onConnect={processStatus!==ProcessStatus.ACTIVE ? handleConnect: undefined} // Позволяет добавлять соединения вручную
+                    onNodeClick={(_, node) => setSelectedNodeId(node.id)}
+                    onPaneClick={() => setSelectedNodeId(null)}
+                    nodeTypes={nodeTypes}
+                    snapToGrid={true}
+                    fitView
+                >
+                    <Background
+                        variant={BackgroundVariant.Lines}
+                        gap={100}
+                        color="#e5e7eb"
+                    />
+                    <Controls />
+                </ReactFlow>
+            </ApprovalProcessContext.Provider>
         </div>
     );
 };

@@ -12,15 +12,15 @@ const { Text } = Typography;
 
 // Моковые данные сущности
 const Entity = {
-    id: Date.now(),
-    templateId: '555',
-    entityId: '333',
-    templateName: 'Процесс согласования договоров', // в будущем вытаскивать по id шаблона название
-    name: 'Договор № ПИР 2025-01', // делать выбор экземпляра либо подставлять сущность из карточки
-    status: ProcessStatus.DRAFT,
+    id: Date.now(), // ID экземпляра процесса
+    templateId: '555', // ID шаблона согласования
+    entityId: '333', // ID сущности по которой требуется согласование
+    templateName: 'Процесс согласования бюджета', // в будущем вытаскивать по id шаблона название
+    name: 'Бюджет проекта "Космопорт". версия 1', // делать выбор экземпляра либо подставлять сущность из карточки
+    status: ProcessStatus.DRAFT, // стартовый статус
 };
 
-const EntityApprovalPage: React.FC = () => {
+const ApprovalPage: React.FC = () => {
     const [mode, setMode] = useState<ProcessMode>(ProcessMode.INSTANCE);
     const [templateData, setTemplateData] = useState({
         id: '',
@@ -276,4 +276,4 @@ const EntityApprovalPage: React.FC = () => {
     );
 };
 
-export default EntityApprovalPage;
+export default ApprovalPage;

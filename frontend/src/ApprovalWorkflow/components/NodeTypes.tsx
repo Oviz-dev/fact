@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Handle, Position, NodeProps } from 'react-flow-renderer';
 import { Input, Select, InputNumber, Button, Tag, Tooltip } from 'antd';
-import { ApprovalStepData,  ProcessMode} from '../types';
+import { ApprovalStepData,  ProcessMode, ProcessStatus} from '../types';
 import useUpdateNode from '../hooks/useUpdateNode';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { useApprovalProcessContext } from "./ApprovalProcessContext";
 
 const { Option } = Select;
 
@@ -11,12 +12,17 @@ interface NodeContentProps {
     data: ApprovalStepData;
     isSelected: boolean;
     nodeId: string;
-    //mode: ProcessMode;
     onCompleteStep?: (nodeId: string) => void;
     onCancelStep?: (nodeId: string) => void;
 }
 
-const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep, onCancelStep }) => {
+const NodeContent: React.FC<NodeContentProps> = ({
+        data,
+        nodeId,
+        onCompleteStep,
+        onCancelStep,
+    }) => {
+    const { processStatus, mode } = useApprovalProcessContext();
     const { updateNodeData } = useUpdateNode(nodeId);
     const textRef = useRef<HTMLDivElement>(null);
     const [width, setWidth] = useState(200); // Минимальная ширина узла
@@ -38,6 +44,7 @@ const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep,
             {/* Поле названия шага */}
             <Input
                 value={data.title || ''}
+                disabled={processStatus === ProcessStatus.ACTIVE}
                 onChange={(e) => updateNodeData({ title: e.target.value })}
                 placeholder="Название шага"
                 style={{ marginBottom: '12px' }}
@@ -46,6 +53,7 @@ const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep,
             {/* Поле выбора ответственного */}
             <Select
                 value={data.responsible || undefined}
+                disabled={processStatus === ProcessStatus.ACTIVE}
                 onChange={(value) => updateNodeData({ responsible: value })}
                 placeholder="Выберите ответственного"
                 style={{ width: '100%', marginBottom: '12px' }}
@@ -62,13 +70,14 @@ const NodeContent: React.FC<NodeContentProps> = ({ data, nodeId, onCompleteStep,
                 <InputNumber
                     min={1}
                     value={data.duration || 1}
+                    disabled={processStatus === ProcessStatus.ACTIVE}
                     onChange={(value) => updateNodeData({ duration: value || 1 })}
                     style={{ width: '30%' }} // 30% ширины
                 />
                 <span>дней</span>
             </div>
 
-            {data.status && (  //&& ProcessMode.INSTANCE??  /&& mode !== ProcessMode.TEMPLATE
+            {data.status && mode !== ProcessMode.TEMPLATE &&(  // сделать отображение при условии mode !== ProcessMode.TEMPLATE
                 <div className="step-status">
                     <Tag
                         key={data.status}
@@ -121,6 +130,7 @@ const nodeTypes = {
         data={data}
         isSelected={selected}
         nodeId={id}
+        //processStatus={processStatus}
         onCompleteStep= {(nodeId) => console.log(`Шаг ${nodeId} завершен`)}
         onCancelStep= {(nodeId) => console.log(`Шаг ${nodeId} отменён`)}
       />
