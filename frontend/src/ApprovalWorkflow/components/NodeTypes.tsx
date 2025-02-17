@@ -47,44 +47,6 @@ const NodeContent: React.FC<NodeContentProps> = ({
 
     return (
         <div ref={textRef} style={{ width: `${width}px` }} className="node-content">
-            {data.status && mode !== ProcessMode.TEMPLATE && processStatus !== ProcessStatus.DRAFT &&(
-                <div className="step-status">
-                    <Tag
-                        key={data.status}
-                        color={
-                            data.status === 'pending' ? 'default' :
-                            data.status === 'in-progress' ? 'blue' :
-                            data.status === 'canceled' ? 'red' :
-                            'green'
-                        }
-                    >
-                        {data.status === 'pending' && 'Ожидает'}
-                        {data.status === 'in-progress' && 'В работе'}
-                        {data.status === 'completed' && 'Завершен'}
-                        {data.status === 'canceled' && 'Отменён'}
-                    </Tag>
-                    {data.status === 'in-progress' && (
-                    <>
-                        <Tooltip title="Завершить">
-                            <Button
-                                size="small"
-                                onClick={handleCompleteStep}
-                                style={{ margin: 8, color: 'green', borderColor: 'green' }}
-                                icon={<CheckOutlined />}
-                            />
-                        </Tooltip>
-                        <Tooltip title="Отменить">
-                            <Button
-                                size="small"
-                                onClick={handleCanceleStep}
-                                style={{ margin: 8, color: 'red', borderColor: 'red'}}
-                                icon={<CloseOutlined />}
-                            />
-                        </Tooltip>
-                    </>
-                    )}
-                </div>
-            )}
 
             {/* Поле названия шага */}
             <Input
@@ -111,16 +73,54 @@ const NodeContent: React.FC<NodeContentProps> = ({
             </Select>
 
             {/* Поле длительности */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <InputNumber
-                    min={1}
-                    value={data.duration || 1}
-                    disabled={processStatus === ProcessStatus.ACTIVE}
-                    onChange={(value) => updateNodeData({ duration: value || 1 })}
-                    style={{ width: '30%' , height: controlHeight}} // 30% ширины
-                />
-                <span>дней</span>
-            </div>
+ <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+     <InputNumber
+         min={1}
+         value={data.duration || 1}
+         disabled={processStatus === ProcessStatus.ACTIVE}
+         onChange={(value) => updateNodeData({ duration: value || 1 })}
+         style={{ width: '60px', height: controlHeight }} // 30% ширины
+     />
+     <span>дней</span>
+     {data.status && mode !== ProcessMode.TEMPLATE && processStatus !== ProcessStatus.DRAFT && (
+         <>
+             <Tag
+                 key={data.status}
+                 color={
+                     data.status === 'pending' ? 'default' :
+                     data.status === 'in-progress' ? 'blue' :
+                     data.status === 'canceled' ? 'red' :
+                     'green'
+                 }
+             >
+                 {data.status === 'pending' && 'Ожидает'}
+                 {data.status === 'in-progress' && 'В работе'}
+                 {data.status === 'completed' && 'Завершен'}
+                 {data.status === 'canceled' && 'Отменён'}
+             </Tag>
+             {data.status === 'in-progress' && (
+                 <>
+                     <Tooltip title="Завершить">
+                         <Button
+                             size="small"
+                             onClick={handleCompleteStep}
+                             style={{ margin: 2, color: 'green', borderColor: 'green' }}
+                             icon={<CheckOutlined />}
+                         />
+                     </Tooltip>
+                     <Tooltip title="Отменить">
+                         <Button
+                             size="small"
+                             onClick={handleCanceleStep}
+                             style={{ margin: 2, color: 'red', borderColor: 'red' }}
+                             icon={<CloseOutlined />}
+                         />
+                     </Tooltip>
+                 </>
+             )}
+         </>
+     )}
+ </div>
 
         </div>
     );

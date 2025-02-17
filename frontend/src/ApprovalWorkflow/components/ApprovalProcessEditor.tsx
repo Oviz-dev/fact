@@ -25,7 +25,7 @@ import {controlHeight} from './UIKit';
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-const nodeWidthStart = 240;// ширина узла по умолчанию
+const nodeWidthStart = 300;// ширина узла по умолчанию
 const nodeHeight = 120; // высота узла
 
 const layoutElements = (nodes: ApprovalStep[], edges: ApprovalConnection[]): ApprovalStep[] => {
