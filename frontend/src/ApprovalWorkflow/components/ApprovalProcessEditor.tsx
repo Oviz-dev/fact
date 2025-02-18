@@ -20,12 +20,11 @@ import { saveApprovalInstance , saveApprovalTemplate} from '../utils/api';
 import nodeTypes from './NodeTypes';
 import '../styles/workflow.css';
 import { ApprovalProcessContext, useApprovalProcessContext } from './ApprovalProcessContext';
-import {controlHeight} from './UIKit';
+import {controlHeight ,nodeWidthStart} from './UIKit';
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-const nodeWidthStart = 300;// ширина узла по умолчанию
 const nodeHeight = 120; // высота узла
 
 const layoutElements = (nodes: ApprovalStep[], edges: ApprovalConnection[]): ApprovalStep[] => {
@@ -128,7 +127,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
         return edges.some(edge => edge.source === selectedNodeId);
     }, [selectedNodeId, edges]);
 
-    // Функция для выравнивания узлов
+    // Функция выравнивания узлов
     const arrangeLayout = useCallback(() => {
         setNodes((prevNodes) => layoutElements(prevNodes as ApprovalStep[], edges));
     }, [setNodes, edges]);

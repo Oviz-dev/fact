@@ -3,7 +3,7 @@ import { Node, useReactFlow } from 'react-flow-renderer';
 import { ApprovalStepData } from '../types';
 
 const useUpdateNode = (nodeId: string) => {
-    const { setNodes, getNodes } = useReactFlow(); // Добавляем getNodes
+    const { setNodes, getNodes } = useReactFlow();
 
     const updateNodeData = useCallback((newData: Partial<ApprovalStepData>) => {
         setNodes((nodes) => {
