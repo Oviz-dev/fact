@@ -5,7 +5,7 @@ import { ApprovalStepData,  ProcessMode, ProcessStatus} from '../types';
 import useUpdateNode from '../hooks/useUpdateNode';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { useApprovalProcessContext } from "./ApprovalProcessContext";
-import {controlHeight} from './UIKit';
+import {controlHeight,nodeWidthStart} from './UIKit';
 
 const { Option } = Select;
 
@@ -26,7 +26,7 @@ const NodeContent: React.FC<NodeContentProps> = ({
     const { processStatus,setProcessStatus, mode } = useApprovalProcessContext();
     const { updateNodeData } = useUpdateNode(nodeId);
     const textRef = useRef<HTMLDivElement>(null);
-    const [width, setWidth] = useState(200); // Минимальная ширина узла
+    const [width, setWidth] = useState(nodeWidthStart); // Минимальная ширина узла
 
     const handleCompleteStep = () => {
         updateNodeData({ status: 'completed' });
@@ -121,10 +121,9 @@ const NodeContent: React.FC<NodeContentProps> = ({
                      </>
                  )}
              </div>
-
-                    </div>
-                );
-            };
+        </div>
+    );
+};
 
 const nodeTypes = {
   sequential: ({ data, selected, id }: NodeProps<ApprovalStepData>) => (

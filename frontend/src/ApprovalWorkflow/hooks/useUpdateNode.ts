@@ -110,7 +110,17 @@ const useUpdateNode = (nodeId: string) => {
                 );
             }
 
-            return updateNodeStatus(nodeId, newData.status!, currentNodes as ApprovalStep[], edges);
+            // Обновляем данные узла
+            const updatedNodes = nodes.map((node) =>
+                node.id === nodeId ? { ...node, data: { ...node.data, ...newData } } : node
+            );
+
+            // Если статус изменился на "completed", обновляем порядок узлов
+            if (newData.status === 'completed') {
+                return updateNodeStatus(nodeId, newData.status, updatedNodes as ApprovalStep[], edges);
+            }
+
+            return updatedNodes;
         });
     }, [nodeId, setNodes, getNodes, getEdges]);
 
