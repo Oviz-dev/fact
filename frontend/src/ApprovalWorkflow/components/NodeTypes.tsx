@@ -31,17 +31,11 @@ const NodeContent: React.FC<NodeContentProps> = ({
     const handleCompleteStep = () => {
         updateNodeData({ status: 'completed' });
         onCompleteStep?.(nodeId); // Вызываем колбэк завершения шага
-        //console.log(`Вызываем onCompleteStep для узла ${nodeId}`); // Для отладки
     };
 
     const handleCanceleStep = () => {
         updateNodeData({ status: 'canceled' });
-        //if (setProcessStatus) {
-        //    setProcessStatus(ProcessStatus.CANCEL);
-        //    console.log("Статус процесса: ${processStatus}");
-        //} else {
-        //    console.error("Ошибка: setProcessStatus не определён");
-        //}
+        // устанавливать для процесса в целом отмену при отмене узла: setProcessStatus(ProcessStatus.CANCEL);
         onCancelStep?.(nodeId); // Вызываем колбэк отмены шага
     };
 
@@ -79,7 +73,7 @@ const NodeContent: React.FC<NodeContentProps> = ({
                      value={data.duration || 1}
                      disabled={processStatus === ProcessStatus.ACTIVE}
                      onChange={(value) => updateNodeData({ duration: value || 1 })}
-                     style={{ width: '60px', height: controlHeight }} // 30% ширины
+                     style={{ width: '60px', height: controlHeight }}
                  />
                  <span>дней</span>
                  {data.status && mode !== ProcessMode.TEMPLATE && processStatus !== ProcessStatus.DRAFT && (
@@ -98,7 +92,7 @@ const NodeContent: React.FC<NodeContentProps> = ({
                              {data.status === 'completed' && 'Завершен'}
                              {data.status === 'canceled' && 'Отменён'}
                          </Tag>
-                         {data.status === 'in-progress' && (
+                         {data.status === 'in-progress' && processStatus === ProcessStatus.ACTIVE &&(
                              <>
                                  <Tooltip title="Завершить">
                                      <Button

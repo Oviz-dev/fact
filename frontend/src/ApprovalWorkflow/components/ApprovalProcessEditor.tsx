@@ -147,7 +147,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
       URL.revokeObjectURL(url);
     };
 
-    // Функция для сохранения процесса
+    // Функция сохранения процесса
     const handleSave = useCallback(async () => {
         try {
             setNodes((prevNodes) => {
@@ -207,7 +207,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
         }
     }, [setNodes, edges, mode, instanceData, templateData]);
 
-    // Функция для добавления нового узла
+    // Функция добавления нового узла
     const addNode = useCallback((type: ApprovalStepType) => {
         setNodes((prevNodes) => {
             const lastNode = prevNodes.length > 0 ? prevNodes[prevNodes.length - 1] : null;

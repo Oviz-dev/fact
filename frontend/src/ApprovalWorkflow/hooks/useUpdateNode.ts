@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Node, useReactFlow } from 'react-flow-renderer';
+import { useReactFlow } from 'react-flow-renderer';
 import { ApprovalStepData, ApprovalStep, ApprovalConnection } from '../types';
 
 // Функция для определения порядка узлов на основе связей
@@ -96,11 +96,10 @@ const updateNodeStatus = (nodeId: string, newStatus: string, nodes: ApprovalStep
 };
 
 const useUpdateNode = (nodeId: string) => {
-    const { setNodes, getNodes, getEdges } = useReactFlow();
+    const { setNodes, getEdges } = useReactFlow();
 
     const updateNodeData = useCallback((newData: Partial<ApprovalStepData>) => {
         setNodes((nodes) => {
-            const currentNodes = getNodes();
             const edges = getEdges();
 
             // Если статус "canceled", прекращаем процесс, статусы не меняем
@@ -122,7 +121,7 @@ const useUpdateNode = (nodeId: string) => {
 
             return updatedNodes;
         });
-    }, [nodeId, setNodes, getNodes, getEdges]);
+    }, [nodeId, setNodes, getEdges]);
 
     return { updateNodeData };
 };
