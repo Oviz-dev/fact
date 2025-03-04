@@ -7,7 +7,7 @@ import References from './pages/references';
 import Main from './pages/Main';
 import ContractPage from './contract/pages/ContractPage';
 import ApprovalPage from './ApprovalWorkflow/pages/ApprovalPage';
-
+import NewPage from './ApprovalWorkflow/pages/newpage';
 
 const App = () => {
   return (
@@ -21,6 +21,7 @@ const App = () => {
         <Route path="/contracts"  element={<ContractPage/>} />
         <Route path="/references"  element={<References/>} />
         <Route path="/approval"  element={<ApprovalPage/>} />
+        <Route path="/new"  element={<NewPage/>} />
       </Routes>
     </Router>
   );

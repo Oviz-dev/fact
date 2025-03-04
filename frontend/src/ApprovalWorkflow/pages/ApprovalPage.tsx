@@ -6,6 +6,7 @@ import ApprovalProcessEditor from '../components/ApprovalProcessEditor';
 import Header from '../../components/Header';
 import {ProcessMode, TemplateType, EntityType, ProcessStatus, ApprovalStep, ApprovalConnection } from '../types';
 import {controlHeight} from '../components/UIKit';
+import { ControlOutlined } from '@ant-design/icons';
 
 const { Panel } = Collapse;
 const { Content } = Layout;
@@ -115,6 +116,14 @@ const ApprovalPage: React.FC = () => {
         reader.readAsText(file);
     };
 
+    const [isPanelVisible, setPanelVisible] = useState(false);
+
+    const togglePanel = () => {
+        setPanelVisible(!isPanelVisible);
+    };
+
+
+
     return (
         <Layout style={{ minHeight: '100vh' }}>
             <Header />
@@ -135,12 +144,22 @@ const ApprovalPage: React.FC = () => {
                         >
                             Загрузить процесс
                         </Button>
+
+                        <Button //расположить справа на экране
+                            onClick={togglePanel} //определяет видимость панели с основной информацией (при нажатии раскрывает панель на экране или скрывает панель с экрана)
+                            style={{border: 'none', color: 'gray' , height: controlHeight}}
+                            icon={<ControlOutlined />}
+
+                        />
+
                     </div>
-                    <Collapse defaultActiveKey={['info', 'approval']}>
+                    <Collapse style={{border:'none'}} activeKey={isPanelVisible ? ['info'] : []}>
                         {/* Основная информация */}
+                        {isPanelVisible && (
                         <Panel
                             header="Основная информация"
                             key="info"
+                            showArrow={false}
                         >
                             {/* Переключатель режима */}
                             <Radio.Group
@@ -250,7 +269,9 @@ const ApprovalPage: React.FC = () => {
                                 </Form>
                             )}
                         </Panel>
-
+                        )}
+                    </Collapse>
+                    <Collapse style={{border:'none'}} defaultActiveKey={['approval']}>
                         {/* Процесс согласования */}
                         <Panel
                             header="Процесс согласования"
