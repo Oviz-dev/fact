@@ -309,7 +309,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
                     onClick={() => addNode('sequential')}
                     disabled={hasOutgoingEdges || processStatus === ProcessStatus.ACTIVE}
                     style={{
-                        border: '2px solid #52c41a',
+                        border: 'none',//'2px solid #52c41a',
                         height: controlHeight
                     }}
                     onMouseEnter={(e) => e.currentTarget.style.color = '#52c41a'}
@@ -322,7 +322,7 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
                     onClick={() => addNode('parallel')}
                     disabled={ processStatus === ProcessStatus.ACTIVE}
                     style={{
-                        border: '2px solid #faad14',
+                        border: 'none',//'2px solid #faad14',
                         height: controlHeight
                     }}
                     onMouseEnter={(e) => e.currentTarget.style.color = '#faad14'}
@@ -334,7 +334,10 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
                 <Button
                     onClick={arrangeLayout}
                     disabled={ processStatus === ProcessStatus.ACTIVE}
-                    style={{height: controlHeight}}
+                    style={{
+                        border: 'none',
+                        height: controlHeight
+                    }}
                 >
                     Выровнять схему
                 </Button>
@@ -343,7 +346,10 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
                     type="default"
                     onClick={handleSave}
                     disabled={processStatus === ProcessStatus.ACTIVE}
-                    style={{height: controlHeight}}
+                    style={{
+                        border: 'none',
+                        height: controlHeight
+                    }}
                 >
                     Сохранить
                 </Button>
@@ -353,7 +359,10 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
                             <Button
                                 onClick={onStopProcess}
                                 danger
-                                style={{height: controlHeight}}
+                                style={{
+                                    border: 'none',
+                                    height: controlHeight
+                                }}
                                 icon={<StopOutlined />}
                             />
                         </Tooltip>
@@ -361,7 +370,10 @@ const ApprovalProcessEditor: React.FC<ApprovalProcessEditorProps> = ({
                         <Tooltip title="Запустить">
                             <Button
                                 onClick={onStartProcess}
-                                style={{height: controlHeight}}
+                                style={{
+                                    border: 'none',
+                                    height: controlHeight
+                                }}
                                 type="primary"
                                 icon={<CaretRightOutlined />}
                             />

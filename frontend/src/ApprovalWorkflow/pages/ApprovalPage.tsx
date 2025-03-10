@@ -130,22 +130,9 @@ const ApprovalPage: React.FC = () => {
             <Content style={{ padding: '0 8px', marginTop: 8 }}>
                 <Card>
                     <div style={{ marginBottom: 8 }}>
-                        <input
-                            type="file"
-                            accept="application/json"
-                            onChange={handleLoadFromFile}
-                            style={{ display: 'none' }}
-                            id="file-upload"
-                        />
-                        <Button
-                            type="default"
-                            onClick={() => document.getElementById('file-upload')?.click()}
-                            style={{ height: controlHeight}}
-                        >
-                            Загрузить процесс
-                        </Button>
 
                         <Button //расположить справа на экране
+                            type="text"
                             onClick={togglePanel} //определяет видимость панели с основной информацией (при нажатии раскрывает панель на экране или скрывает панель с экрана)
                             style={{border: 'none', color: 'gray' , height: controlHeight}}
                             icon={<ControlOutlined />}
@@ -153,7 +140,7 @@ const ApprovalPage: React.FC = () => {
                         />
 
                     </div>
-                    <Collapse style={{border:'none'}} activeKey={isPanelVisible ? ['info'] : []}>
+                    <Collapse style={{backgroundColor: 'white', border:'none'}} activeKey={isPanelVisible ? ['info','approval'] : []}>
                         {/* Основная информация */}
                         {isPanelVisible && (
                         <Panel
@@ -161,6 +148,22 @@ const ApprovalPage: React.FC = () => {
                             key="info"
                             showArrow={false}
                         >
+
+                            <input
+                                type="file"
+                                accept="application/json"
+                                onChange={handleLoadFromFile}
+                                style={{ display: 'none' }}
+                                id="file-upload"
+                            />
+                            <Button
+                                type="default"
+                                onClick={() => document.getElementById('file-upload')?.click()}
+                                style={{ height: controlHeight}}
+                            >
+                                Загрузить процесс
+                            </Button>
+
                             {/* Переключатель режима */}
                             <Radio.Group
                                 value={mode}
@@ -270,14 +273,12 @@ const ApprovalPage: React.FC = () => {
                             )}
                         </Panel>
                         )}
-                    </Collapse>
-                    <Collapse style={{border:'none'}} defaultActiveKey={['approval']}>
                         {/* Процесс согласования */}
                         <Panel
                             header="Процесс согласования"
                             key="approval"
                             collapsible="header"
-                            style={{ background: '#fafafa' }}
+                            style={{ backgroundColor: 'white', }}
                         >
                             <UserProvider>
                                 <ReactFlowProvider>
