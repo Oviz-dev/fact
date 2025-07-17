@@ -8,6 +8,7 @@ import Main from './pages/Main';
 import ContractPage from './contract/pages/ContractPage';
 import ApprovalPage from './ApprovalWorkflow/pages/ApprovalPage';
 import NewPage from './ApprovalWorkflow/pages/newpage';
+import LLMPage from './LLM/pages/LLMPage';
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/references"  element={<References/>} />
         <Route path="/approval"  element={<ApprovalPage/>} />
         <Route path="/new"  element={<NewPage/>} />
+        <Route path="/model"  element={<LLMPage/>} />
       </Routes>
     </Router>
   );

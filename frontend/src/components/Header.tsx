@@ -33,6 +33,7 @@ const Header: React.FC = () => {
         <Menu.Item key="/references">Справочники</Menu.Item>
         <Menu.Item key="/approval">Согласование</Menu.Item>
         <Menu.Item key="/new">Новое</Menu.Item>
+        <Menu.Item key="/model">Модель</Menu.Item>
       </Menu>
     </AntHeader>
   );
